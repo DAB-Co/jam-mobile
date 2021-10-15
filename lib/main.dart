@@ -1,61 +1,57 @@
 import 'package:flutter/material.dart';
+import '/pages/dashboard.dart';
+import '/pages/login.dart';
+import '/pages/register.dart';
+import '/pages/welcome.dart';
+import '/providers/auth.dart';
+import '/providers/user_provider.dart';
+import '/util/shared_preference.dart';
+import 'package:provider/provider.dart';
+
+import 'domain/user.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Jam',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: MyHomePage(title: 'Jam'),
-    );
-  }
-}
+    Future<User> getUserData() => UserPreferences().getUser();
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-
-  void _hello() {
-    setState(() {
-      final scaffold = ScaffoldMessenger.of(context);
-      scaffold.showSnackBar(
-        SnackBar(
-          content: const Text('Hello'),
-        ),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Text(
-          'Hello World',
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _hello,
-        tooltip: 'Hello',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+      ],
+      child: MaterialApp(
+          title: 'Jam',
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+            visualDensity: VisualDensity.adaptivePlatformDensity,
+          ),
+          home: FutureBuilder(
+              future: getUserData(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return CircularProgressIndicator();
+                  default:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    else if (snapshot.data.token == null)
+                      return Login();
+                    else
+                      UserPreferences().removeUser();
+                    return Welcome(user: snapshot.data);
+                }
+              }),
+          routes: {
+            '/dashboard': (context) => DashBoard(),
+            '/login': (context) => Login(),
+            '/register': (context) => Register(),
+          }),
     );
   }
 }
