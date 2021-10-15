@@ -15,7 +15,7 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final formKey = new GlobalKey<FormState>();
 
-  String _username, _password;
+  String? _username, _password;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class _LoginState extends State<Login> {
     final passwordField = TextFormField(
       autofocus: false,
       obscureText: true,
-      validator: (value) => value.isEmpty ? "Please enter password" : null,
+      validator: (value) => value!.isEmpty ? "Please enter password" : null,
       onSaved: (value) => _password = value,
       decoration: buildInputDecoration("Enter your password", Icons.lock),
     );
@@ -66,7 +66,7 @@ class _LoginState extends State<Login> {
     );
 
     var doLogin = () {
-      final form = formKey.currentState;
+      final form = formKey.currentState!;
 
       if (form.validate()) {
         form.save();
@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
 
         successfulMessage.then((response) {
           if (response['status']) {
-            User user = response['user'];
+            User? user = response['user'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, '/dashboard');
           } else {

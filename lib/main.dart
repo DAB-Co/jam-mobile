@@ -40,11 +40,11 @@ class MyApp extends StatelessWidget {
                   default:
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
-                    else if (snapshot.data.token == null)
+                    else if ((snapshot.data as User).token == null)
                       return Login();
                     else
                       UserPreferences().removeUser();
-                    return Welcome(user: snapshot.data);
+                    return Welcome(user: snapshot.data as User);
                 }
               }),
           routes: {

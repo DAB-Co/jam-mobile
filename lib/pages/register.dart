@@ -15,7 +15,7 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
   final formKey = new GlobalKey<FormState>();
 
-  String _username, _password, _confirmPassword;
+  String? _username, _password, _confirmPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -31,14 +31,14 @@ class _RegisterState extends State<Register> {
     final passwordField = TextFormField(
       autofocus: false,
       obscureText: true,
-      validator: (value) => value.isEmpty ? "Please enter password" : null,
+      validator: (value) => value!.isEmpty ? "Please enter password" : null,
       onSaved: (value) => _password = value,
       decoration: buildInputDecoration("Enter password", Icons.lock),
     );
 
     final confirmPassword = TextFormField(
       autofocus: false,
-      validator: (value) => value.isEmpty ? "Your password is required" : null,
+      validator: (value) => value!.isEmpty ? "Your password is required" : null,
       onSaved: (value) => _confirmPassword = value,
       obscureText: true,
       decoration: buildInputDecoration("Confirm password", Icons.lock),
@@ -53,12 +53,12 @@ class _RegisterState extends State<Register> {
     );
 
     var doRegister = () {
-      final form = formKey.currentState;
+      final form = formKey.currentState!;
       if (form.validate()) {
         form.save();
         auth.register(_username, _password, _confirmPassword).then((response) {
           if (response['status']) {
-            User user = response['data'];
+            User? user = response['data'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, '/dashboard');
           } else {

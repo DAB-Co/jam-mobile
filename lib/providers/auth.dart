@@ -27,7 +27,7 @@ class AuthProvider with ChangeNotifier {
   Status get registeredInStatus => _registeredInStatus;
 
 
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String? email, String? password) async {
     var result;
 
     final Map<String, dynamic> loginData = {
@@ -70,7 +70,7 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<Map<String, dynamic>> register(String email, String password, String passwordConfirmation) async {
+  Future<Map<String, dynamic>> register(String? email, String? password, String? passwordConfirmation) async {
 
     final Map<String, dynamic> registrationData = {
       'user': {
@@ -79,22 +79,22 @@ class AuthProvider with ChangeNotifier {
         'password_confirmation': passwordConfirmation
       }
     };
-    return await post(
+    return await (post(
         Uri.parse(AppUrl.register),
         body: json.encode(registrationData),
         headers: {'Content-Type': 'application/json'})
         .then(onValue)
-        .catchError(onError);
+        .catchError(onError) as FutureOr<Map<String, dynamic>>);
   }
 
   static Future<FutureOr> onValue(Response response) async {
     var result;
-    final Map<String, dynamic> responseData = json.decode(response.body);
+    final Map<String, dynamic>? responseData = json.decode(response.body);
 
     print(response.statusCode);
     if (response.statusCode == 200) {
 
-      var userData = responseData['data'];
+      var userData = responseData!['data'];
 
       User authUser = User.fromJson(userData);
 

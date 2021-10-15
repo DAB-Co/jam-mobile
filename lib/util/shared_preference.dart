@@ -6,13 +6,13 @@ class UserPreferences {
   Future<bool> saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.setInt("userId", user.userId);
-    prefs.setString("name", user.name);
-    prefs.setString("email", user.email);
-    prefs.setString("phone", user.phone);
-    prefs.setString("type", user.type);
-    prefs.setString("token", user.token);
-    prefs.setString("renewalToken", user.renewalToken);
+    prefs.setInt("userId", user.userId!);
+    prefs.setString("name", user.name!);
+    prefs.setString("email", user.email!);
+    prefs.setString("phone", user.phone!);
+    prefs.setString("type", user.type!);
+    prefs.setString("token", user.token!);
+    prefs.setString("renewalToken", user.renewalToken!);
 
     print("object preference");
     print(user.renewalToken);
@@ -23,13 +23,13 @@ class UserPreferences {
   Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    int userId = prefs.getInt("userId");
-    String name = prefs.getString("name");
-    String email = prefs.getString("email");
-    String phone = prefs.getString("phone");
-    String type = prefs.getString("type");
-    String token = prefs.getString("token");
-    String renewalToken = prefs.getString("renewalToken");
+    int? userId = prefs.getInt("userId");
+    String? name = prefs.getString("name");
+    String? email = prefs.getString("email");
+    String? phone = prefs.getString("phone");
+    String? type = prefs.getString("type");
+    String? token = prefs.getString("token");
+    String? renewalToken = prefs.getString("renewalToken");
 
     return User(
         userId: userId,
@@ -51,9 +51,9 @@ class UserPreferences {
     prefs.remove("token");
   }
 
-  Future<String> getToken(args) async {
+  Future<String?> getToken(args) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String token = prefs.getString("token");
+    String? token = prefs.getString("token");
     return token;
   }
 }
