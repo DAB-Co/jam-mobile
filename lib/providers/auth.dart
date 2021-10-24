@@ -70,21 +70,18 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<Map<String, dynamic>> register(String? email, String? password, String? passwordConfirmation) async {
+  Future<dynamic> register(String? email, String? password, String? passwordConfirmation) async {
 
-    final Map<String, dynamic> registrationData = {
-      'user': {
-        'email': email,
-        'password': password,
-        'password_confirmation': passwordConfirmation
-      }
+    final Map<String, String?> registrationData = {
+      'username': email,
+      'password': password,
     };
     return await (post(
         Uri.parse(AppUrl.register),
         body: json.encode(registrationData),
         headers: {'Content-Type': 'application/json'})
         .then(onValue)
-        .catchError(onError) as FutureOr<Map<String, dynamic>>);
+        .catchError(onError));
   }
 
   static Future<FutureOr> onValue(Response response) async {
