@@ -55,6 +55,14 @@ class _RegisterState extends State<Register> {
     var doRegister = () {
       final form = formKey.currentState!;
       if (form.validate()) {
+        if (_password != _confirmPassword) {
+          Flushbar(
+            title: "Registration Failed",
+            message: "Passwords don't match.",
+            duration: Duration(seconds: 10),
+          ).show(context);
+          return;
+        }
         form.save();
         auth.register(_username, _password, _confirmPassword).then((response) {
           if (response['status']) {
