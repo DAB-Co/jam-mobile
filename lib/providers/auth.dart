@@ -47,11 +47,8 @@ class AuthProvider with ChangeNotifier {
     );
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
 
-      var userData = responseData['data'];
-
-      User authUser = User.fromJson(userData);
+      User authUser = User.fromJson(loginData);
 
       UserPreferences().saveUser(authUser);
 
@@ -64,36 +61,26 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       result = {
         'status': false,
-        'message': json.decode(response.body)['error']
+        'message': response.body
       };
     }
     return result;
   }
 
   Future<dynamic> register(String? email, String? password, String? passwordConfirmation) async {
+    var result;
 
     final Map<String, String?> registrationData = {
       'username': email,
       'password': password,
     };
-    return await (post(
+    Response response = await post(
         Uri.parse(AppUrl.register),
         body: json.encode(registrationData),
-        headers: {'Content-Type': 'application/json'})
-        .then(onValue)
-        .catchError(onError));
-  }
+        headers: {'Content-Type': 'application/json'});
 
-  static Future<FutureOr> onValue(Response response) async {
-    var result;
-    final Map<String, dynamic>? responseData = json.decode(response.body);
-
-    print(response.statusCode);
     if (response.statusCode == 200) {
-
-      var userData = responseData!['data'];
-
-      User authUser = User.fromJson(userData);
+      User authUser = User.fromJson(registrationData);
 
       UserPreferences().saveUser(authUser);
       result = {
@@ -102,20 +89,12 @@ class AuthProvider with ChangeNotifier {
         'data': authUser
       };
     } else {
-//      if (response.statusCode == 401) Get.toNamed("/login");
       result = {
         'status': false,
-        'message': 'Registration failed',
-        'data': responseData
+        'message': response.body
       };
     }
-
     return result;
-  }
-
-  static onError(error) {
-    print("the error is $error.detail");
-    return {'status': false, 'message': 'Unsuccessful Request', 'data': error};
   }
 
 }

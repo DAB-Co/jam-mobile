@@ -82,7 +82,7 @@ class _LoginState extends State<Login> {
           } else {
             Flushbar(
               title: "Failed Login",
-              message: response['message']['message'].toString(),
+              message: response['message'],
               duration: Duration(seconds: 3),
             ).show(context);
           }
