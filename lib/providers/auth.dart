@@ -31,10 +31,8 @@ class AuthProvider with ChangeNotifier {
     var result;
 
     final Map<String, dynamic> loginData = {
-      'user': {
-        'email': email,
-        'password': password
-      }
+      'username': email,
+      'password': password,
     };
 
     _loggedInStatus = Status.Authenticating;
@@ -42,8 +40,10 @@ class AuthProvider with ChangeNotifier {
 
     Response response = await post(
       Uri.parse(AppUrl.login),
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8'
+      },
       body: json.encode(loginData),
-      headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode == 200) {
