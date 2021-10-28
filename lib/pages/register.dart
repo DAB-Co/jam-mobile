@@ -55,6 +55,7 @@ class _RegisterState extends State<Register> {
     var doRegister = () {
       final form = formKey.currentState!;
       if (form.validate()) {
+        form.save();
         if (_password != _confirmPassword) {
           Flushbar(
             title: "Registration Failed",
@@ -63,7 +64,6 @@ class _RegisterState extends State<Register> {
           ).show(context);
           return;
         }
-        form.save();
         auth.register(_username, _password, _confirmPassword).then((response) {
           if (response['status']) {
             User? user = response['data'];
