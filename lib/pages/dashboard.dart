@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/util/shared_preference.dart';
 import '/domain/user.dart';
 import '/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,11 @@ class _DashBoardState extends State<DashBoard> {
 
     User user = Provider.of<UserProvider>(context).user!;
 
+    var logout = () {
+      UserPreferences().removeUser();
+      Navigator.pushReplacementNamed(context, '/login');
+    };
+
     return Scaffold(
       appBar: AppBar(
         title: Text("DASHBOARD PAGE"),
@@ -24,7 +30,7 @@ class _DashBoardState extends State<DashBoard> {
           SizedBox(height: 100,),
           Center(child: Text(user.email!)),
           SizedBox(height: 100),
-          RaisedButton(onPressed: (){}, child: Text("Logout"), color: Colors.lightBlueAccent,)
+          RaisedButton(onPressed: logout, child: Text("Logout"), color: Colors.lightBlueAccent,)
         ],
       ),
     );
