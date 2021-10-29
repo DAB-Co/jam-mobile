@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '/domain/user.dart';
 
 class UserProvider with ChangeNotifier {
@@ -8,6 +9,6 @@ class UserProvider with ChangeNotifier {
 
   void setUser(User? user) {
     _user = user;
-    notifyListeners();
+    // notifyListeners();
   }
 }

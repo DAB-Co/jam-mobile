@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import '/pages/dashboard.dart';
 import '/pages/login.dart';
 import '/pages/register.dart';
-import '/pages/welcome.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/shared_preference.dart';
-import 'package:provider/provider.dart';
-
 import 'domain/user.dart';
 
 void main() {
@@ -33,6 +32,7 @@ class MyApp extends StatelessWidget {
           home: FutureBuilder(
               future: getUserData(),
               builder: (context, snapshot) {
+                print(snapshot);
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
@@ -40,11 +40,11 @@ class MyApp extends StatelessWidget {
                   default:
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
-                    else if ((snapshot.data as User).token == null)
+                    else if ((snapshot.data as User).email == null)
                       return Login();
-                    else
-                      UserPreferences().removeUser();
-                    return Welcome(user: snapshot.data as User);
+                    Provider.of<UserProvider>(context)
+                        .setUser(snapshot.data as User);
+                    return DashBoard();
                 }
               }),
           routes: {
