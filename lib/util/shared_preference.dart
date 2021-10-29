@@ -5,10 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '/domain/user.dart';
 
 class UserPreferences {
-  Future<bool> saveUser(User user) async {
+  void saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("email", user.email!);
-    return prefs.commit();
   }
 
   Future<User> getUser() async {

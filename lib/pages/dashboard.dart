@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jam/util/shared_preference.dart';
+import 'package:provider/provider.dart';
+
 import '/domain/user.dart';
 import '/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 
 class DashBoard extends StatefulWidget {
   @override
@@ -12,7 +13,6 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   @override
   Widget build(BuildContext context) {
-
     User user = Provider.of<UserProvider>(context).user!;
 
     var logout = () {
@@ -27,10 +27,18 @@ class _DashBoardState extends State<DashBoard> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 100,),
+          SizedBox(
+            height: 100,
+          ),
           Center(child: Text(user.email!)),
           SizedBox(height: 100),
-          RaisedButton(onPressed: logout, child: Text("Logout"), color: Colors.lightBlueAccent,)
+          ElevatedButton(
+            onPressed: logout,
+            child: Text("Logout"),
+            style: ElevatedButton.styleFrom(
+              primary: Colors.lightBlueAccent,
+            ),
+          )
         ],
       ),
     );
