@@ -73,8 +73,7 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<dynamic> register(
-      String? email, String? password, String? passwordConfirmation) async {
+  Future<dynamic> register(String? email, String? password) async {
     var result;
     var response;
 

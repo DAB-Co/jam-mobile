@@ -31,16 +31,16 @@ class _RegisterState extends State<Register> {
     final passwordField = TextFormField(
       autofocus: false,
       obscureText: true,
-      validator: (value) => value!.isEmpty ? "Please enter password" : null,
+      validator: (value) => validatePassword(value),
       onSaved: (value) => _password = value,
       decoration: buildInputDecoration("Enter password", Icons.lock),
     );
 
     final confirmPassword = TextFormField(
       autofocus: false,
+      obscureText: true,
       validator: (value) => value!.isEmpty ? "Your password is required" : null,
       onSaved: (value) => _confirmPassword = value,
-      obscureText: true,
       decoration: buildInputDecoration("Confirm password", Icons.lock),
     );
 
@@ -64,7 +64,7 @@ class _RegisterState extends State<Register> {
           ).show(context);
           return;
         }
-        auth.register(_username, _password, _confirmPassword).then((response) {
+        auth.register(_username, _password).then((response) {
           if (response['status']) {
             User? user = response['data'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
