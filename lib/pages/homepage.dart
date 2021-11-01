@@ -25,7 +25,9 @@ class _HomepageState extends State<Homepage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushNamed(context, routes.messages);
+            },
             icon: Icon(
               Icons.message,
               color: Colors.white,
@@ -104,9 +106,7 @@ class _HomepageState extends State<Homepage> {
       ),
       body: Column(
         children: [
-          SizedBox(
-            height: 100,
-          ),
+          SizedBox(height: 100),
           Center(
             child: Text("${greetingsText()} ${user.email!}"),
           ),
