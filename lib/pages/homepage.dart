@@ -110,7 +110,18 @@ class _HomepageState extends State<Homepage> {
           Center(
             child: Text("${greetingsText()} ${user.email!}"),
           ),
-          SizedBox(height: 100),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsetsDirectional.only(bottom: 200.0),
+              child: Align(
+                alignment: FractionalOffset.bottomCenter,
+                child: Text(
+                  "Time until next match: 14h 29m 21s",
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
