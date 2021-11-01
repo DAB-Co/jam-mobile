@@ -6,6 +6,7 @@ import '/providers/user_provider.dart';
 import '/util/validators.dart';
 import '/util/widgets.dart';
 import 'package:provider/provider.dart';
+import "/util/routes.dart" as routes;
 
 class Register extends StatefulWidget {
   @override
@@ -68,7 +69,7 @@ class _RegisterState extends State<Register> {
           if (response['status']) {
             User? user = response['data'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
-            Navigator.pushReplacementNamed(context, '/dashboard');
+            Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
             Flushbar(
               title: "Registration Failed",

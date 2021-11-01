@@ -7,6 +7,7 @@ import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/validators.dart';
 import '/util/widgets.dart';
+import "/util/routes.dart" as routes;
 
 class Login extends StatefulWidget {
   @override
@@ -69,7 +70,7 @@ class _LoginState extends State<Login> {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamed(context, '/register');
+            Navigator.pushNamed(context, routes.register);
           },
         ),
       ],
@@ -88,7 +89,7 @@ class _LoginState extends State<Login> {
           if (response['status']) {
             User? user = response['user'];
             Provider.of<UserProvider>(context, listen: false).setUser(user);
-            Navigator.pushReplacementNamed(context, '/dashboard');
+            Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
             Flushbar(
               title: "Failed Login",

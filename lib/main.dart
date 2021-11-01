@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '/pages/dashboard.dart';
+import '/pages/homepage.dart';
 import '/pages/login.dart';
 import '/pages/register.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/shared_preference.dart';
 import 'domain/user.dart';
+import "/util/routes.dart" as routes;
 
 void main() {
   runApp(MyApp());
@@ -46,13 +47,13 @@ class MyApp extends StatelessWidget {
                       return Login();
                     Provider.of<UserProvider>(context)
                         .setUser(snapshot.data as User);
-                    return DashBoard();
+                    return Homepage();
                 }
               }),
           routes: {
-            '/dashboard': (context) => DashBoard(),
-            '/login': (context) => Login(),
-            '/register': (context) => Register(),
+            routes.homepage: (context) => Homepage(),
+            routes.login: (context) => Login(),
+            routes.register: (context) => Register(),
           }),
     );
   }
