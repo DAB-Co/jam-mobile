@@ -16,11 +16,10 @@ MaterialButton longButtons(String title, Function fun,
     height: 45,
     minWidth: 600,
     shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(10))),
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+    ),
   );
 }
-
-label(String title) => Text(title);
 
 InputDecoration buildInputDecoration(String hintText, IconData icon) {
   return InputDecoration(

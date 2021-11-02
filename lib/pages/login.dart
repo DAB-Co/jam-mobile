@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
+import '/config/routes.dart' as routes;
 import '/domain/user.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
-import "/util/routes.dart" as routes;
 import '/util/validators.dart';
-import '/util/widgets.dart';
+import '/widgets/form_widgets.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -90,16 +91,11 @@ class _LoginState extends State<Login> {
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(response["message"]),
-              duration: Duration(seconds: 3),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.black,
-            ));
+            showSnackBar(context, response["message"]);
           }
         });
       } else {
-        print("form is invalid");
+        showSnackBar(context, "Please complete the form properly");
       }
     };
 
@@ -113,11 +109,11 @@ class _LoginState extends State<Login> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 15.0),
-                label("Email"),
+                Text("Email"),
                 SizedBox(height: 5.0),
                 usernameField,
                 SizedBox(height: 20.0),
-                label("Password"),
+                Text("Password"),
                 SizedBox(height: 5.0),
                 passwordField,
                 SizedBox(height: 20.0),

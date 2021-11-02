@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:jam/util/shared_preference.dart';
 import 'package:provider/provider.dart';
 
+import '/config/routes.dart' as routes;
 import '/domain/user.dart';
 import '/providers/user_provider.dart';
 import "/util/greetings.dart";
-import "/util/routes.dart" as routes;
 
 class Homepage extends StatefulWidget {
   @override

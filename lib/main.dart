@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:jam/pages/messages.dart';
 import 'package:provider/provider.dart';
 
+import '/config/routes.dart' as routes;
+import '/domain/user.dart';
 import '/pages/homepage.dart';
 import '/pages/login.dart';
 import '/pages/register.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/shared_preference.dart';
-import 'domain/user.dart';
-import "/util/routes.dart" as routes;
 
 void main() {
   runApp(MyApp());

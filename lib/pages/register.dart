@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:jam/widgets/show_snackbar.dart';
+import 'package:provider/provider.dart';
+
+import '/config/routes.dart' as routes;
 import '/domain/user.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/validators.dart';
-import '/util/widgets.dart';
-import 'package:provider/provider.dart';
-import "/util/routes.dart" as routes;
+import '/widgets/form_widgets.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -57,12 +59,7 @@ class _RegisterState extends State<Register> {
       if (form.validate()) {
         form.save();
         if (_password != _confirmPassword) {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text("Passwords don't match."),
-            duration: Duration(seconds: 5),
-            behavior: SnackBarBehavior.floating,
-            backgroundColor: Colors.black,
-          ));
+          showSnackBar(context, "Passwords don't match.");
           return;
         }
         auth.register(_username, _password).then((response) {
@@ -71,23 +68,12 @@ class _RegisterState extends State<Register> {
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text(response['message']),
-              duration: Duration(seconds: 5),
-              behavior: SnackBarBehavior.floating,
-              backgroundColor: Colors.black,
-            ));
+            showSnackBar(context, response['message']);
           }
         });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Please Complete the form properly"),
-          duration: Duration(seconds: 5),
-          behavior: SnackBarBehavior.floating,
-          backgroundColor: Colors.black,
-        ));
+        showSnackBar(context, "Please complete the form properly");
       }
-
     };
 
     return SafeArea(
@@ -100,15 +86,15 @@ class _RegisterState extends State<Register> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(height: 15.0),
-                label("Email"),
+                Text("Email"),
                 SizedBox(height: 5.0),
                 usernameField,
                 SizedBox(height: 15.0),
-                label("Password"),
+                Text("Password"),
                 SizedBox(height: 10.0),
                 passwordField,
                 SizedBox(height: 15.0),
-                label("Confirm Password"),
+                Text("Confirm Password"),
                 SizedBox(height: 10.0),
                 confirmPassword,
                 SizedBox(height: 20.0),

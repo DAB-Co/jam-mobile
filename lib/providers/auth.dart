@@ -4,8 +4,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
+import '/constants/app_url.dart';
 import '/domain/user.dart';
-import '/util/app_url.dart';
 import '/util/shared_preference.dart';
 
 enum Status {
