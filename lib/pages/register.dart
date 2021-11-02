@@ -1,4 +1,3 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import '/domain/user.dart';
 import '/providers/auth.dart';
@@ -58,11 +57,12 @@ class _RegisterState extends State<Register> {
       if (form.validate()) {
         form.save();
         if (_password != _confirmPassword) {
-          Flushbar(
-            title: "Registration Failed",
-            message: "Passwords don't match.",
-            duration: Duration(seconds: 10),
-          ).show(context);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Passwords don't match."),
+            duration: Duration(seconds: 5),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: Colors.black,
+          ));
           return;
         }
         auth.register(_username, _password).then((response) {
@@ -71,19 +71,21 @@ class _RegisterState extends State<Register> {
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
-            Flushbar(
-              title: "Registration Failed",
-              message: response['message'],
-              duration: Duration(seconds: 10),
-            ).show(context);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(response['message']),
+              duration: Duration(seconds: 5),
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.black,
+            ));
           }
         });
       } else {
-        Flushbar(
-          title: "Invalid form",
-          message: "Please Complete the form properly",
-          duration: Duration(seconds: 10),
-        ).show(context);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Please Complete the form properly"),
+          duration: Duration(seconds: 5),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: Colors.black,
+        ));
       }
 
     };

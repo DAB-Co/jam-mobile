@@ -1,13 +1,12 @@
-import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '/domain/user.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
+import "/util/routes.dart" as routes;
 import '/util/validators.dart';
 import '/util/widgets.dart';
-import "/util/routes.dart" as routes;
 
 class Login extends StatefulWidget {
   @override
@@ -91,11 +90,12 @@ class _LoginState extends State<Login> {
             Provider.of<UserProvider>(context, listen: false).setUser(user);
             Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
-            Flushbar(
-              title: "Failed Login",
-              message: response['message'],
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(response["message"]),
               duration: Duration(seconds: 3),
-            ).show(context);
+              behavior: SnackBarBehavior.floating,
+              backgroundColor: Colors.black,
+            ));
           }
         });
       } else {
