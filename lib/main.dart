@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jam/pages/dm.dart';
 import 'package:jam/pages/messages.dart';
-import 'package:jam/providers/mqtt.dart' as mqttWrapper;
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -51,7 +50,6 @@ class MyApp extends StatelessWidget {
                     var user = snapshot.data as User;
                     Provider.of<UserProvider>(context)
                         .setUser(user);
-                    mqttWrapper.connect(user.email!);
                     return Homepage();
                 }
               }),

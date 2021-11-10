@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/providers/mqtt.dart' as mqttWrapper;
 import 'package:jam/util/shared_preference.dart';
 import 'package:provider/provider.dart';
 
@@ -16,6 +17,7 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
+    mqttWrapper.connect(user.email!);
 
     return Scaffold(
       appBar: AppBar(
