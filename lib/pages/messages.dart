@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,7 @@ class Messages extends StatefulWidget {
 class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
-    var chats = Provider.of<MessageProvider>(context).getAllChats();
+    List<ChatPair> chats = Provider.of<MessageProvider>(context).getAllChats();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
@@ -35,10 +36,32 @@ class _MessagesState extends State<Messages> {
               image: AssetImage("assets/avatar.png"),
             ),
             title: Text(chats[index].username),
-            subtitle: Text("hey"),
+            subtitle: Text(chats[index].messageHistory[chats[index].messageHistory.length - 1].messageContent),
+            trailing: chats[index].unreadMessages == 0
+                ? Text("")
+                : Container(
+                    padding: EdgeInsets.all(1),
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(100),
+                    ),
+                    constraints: BoxConstraints(
+                      minWidth: 30,
+                      minHeight: 30,
+                    ),
+                    child: Text(
+                      chats[index].unreadMessages.toString(),
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
             onTap: () {
               var name = chats[index].username;
-              Provider.of<MessageProvider>(context, listen: false).messagesRead(name);
+              Provider.of<MessageProvider>(context, listen: false)
+                  .messagesRead(name);
               Navigator.push(
                 context,
                 MaterialPageRoute(
