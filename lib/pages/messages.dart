@@ -37,10 +37,12 @@ class _MessagesState extends State<Messages> {
             title: Text(chats[index].username),
             subtitle: Text("hey"),
             onTap: () {
+              var name = chats[index].username;
+              Provider.of<MessageProvider>(context, listen: false).messagesRead(name);
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DM(otherUsername: chats[index].username),
+                  builder: (context) => DM(otherUsername: name),
                 ),
               );
             },

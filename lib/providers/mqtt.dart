@@ -7,14 +7,16 @@ import '/constants/app_url.dart';
 
 var client;
 var username;
+var provider;
 
 Future<MqttServerClient> connect(String _username, MessageProvider msgProvider) async {
   username = _username;
+  provider = msgProvider;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);
   client = _client;
   _client.logging(on: true);
-  _client.keepAlivePeriod = 60;
+  //_client.keepAlivePeriod = 60;
   _client.onConnected = onConnected;
   _client.onDisconnected = onDisconnected;
   _client.onUnsubscribed = onUnsubscribed;
@@ -77,6 +79,7 @@ void onConnected() {
 /// unconnected
 void onDisconnected() {
   print('Disconnected');
+  //connect(username, provider);
 }
 
 /// subscribe to topic succeeded

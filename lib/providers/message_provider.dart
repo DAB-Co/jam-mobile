@@ -14,6 +14,7 @@ class MessageProvider extends ChangeNotifier {
     var other = message.otherUser;
     _chats.putIfAbsent(other, () => ChatPair(username: other));
     _chats[other]!.messageHistory.add(message);
+    _chats[other]!.unreadMessages++;
     nofUnread++;
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
@@ -25,5 +26,14 @@ class MessageProvider extends ChangeNotifier {
 
   getChat(String username) {
     return _chats[username]!.messageHistory;
+  }
+
+  messagesRead(String other) {
+    print(other);
+    if (!_chats.containsKey(other)) return;
+    nofUnread -= _chats[other]!.unreadMessages;
+    print(_chats[other]!.unreadMessages.toString() + "okundu");
+    _chats[other]?.unreadMessages = 0;
+    notifyListeners();
   }
 }
