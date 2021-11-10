@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jam/models/chat_message_model.dart';
+import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
+import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
   // Constructor
@@ -25,31 +27,10 @@ class _DMState extends State<DM> {
     super.dispose();
   }
 
-  List<ChatMessage> messages = [
-    ChatMessage(
-      messageContent: "Hello, World",
-      isIncomingMessage: true,
-      otherUser: "Bill",
-    ),
-    ChatMessage(
-      messageContent: "Hello, World",
-      isIncomingMessage: false,
-      otherUser: "Bill",
-    ),
-    ChatMessage(
-      messageContent: "Hello, World",
-      isIncomingMessage: true,
-      otherUser: "Bill",
-    ),
-    ChatMessage(
-      messageContent: "Hello, World",
-      isIncomingMessage: false,
-      otherUser: "Bill",
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    List<ChatMessage> messages =
+        Provider.of<MessageProvider>(context).getChat(other);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -161,6 +142,11 @@ class _DMState extends State<DM> {
                       String message = chatTextController.text;
                       if (message != "") {
                         chatTextController.clear();
+                        Provider.of<MessageProvider>(context).add(ChatMessage(
+                            messageContent: message,
+                            isIncomingMessage: false,
+                            otherUser: other,
+                          ));
                         sendMessage(other, message);
                       }
                     },

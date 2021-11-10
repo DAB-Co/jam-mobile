@@ -19,7 +19,11 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getChats() {
+  getAllChats() {
     return _chats.values.toList();
+  }
+
+  getChat(String username) {
+    return _chats[username]!.messageHistory;
   }
 }

@@ -12,7 +12,7 @@ class Messages extends StatefulWidget {
 class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
-    var chats = Provider.of<MessageProvider>(context).getChats();
+    var chats = Provider.of<MessageProvider>(context).getAllChats();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
