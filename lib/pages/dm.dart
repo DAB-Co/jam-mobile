@@ -142,7 +142,7 @@ class _DMState extends State<DM> {
                       String message = chatTextController.text;
                       if (message != "") {
                         chatTextController.clear();
-                        Provider.of<MessageProvider>(context).add(ChatMessage(
+                        Provider.of<MessageProvider>(context, listen: false).add(ChatMessage(
                             messageContent: message,
                             isIncomingMessage: false,
                             otherUser: other,
