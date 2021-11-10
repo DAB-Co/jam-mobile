@@ -1,8 +1,11 @@
 class AppUrl {
-  static const String liveBaseURL = "http://rocketdodgegame.com:41370/api";
+  static const String baseURL = "http://rocketdodgegame.com";
+  static const String apiUrl = baseURL + ":41370/api";
 
-  static const String baseURL = liveBaseURL;
-  static const String login = baseURL + "/auth";
-  static const String register = baseURL + "/signup";
-  static const String forgotPassword = baseURL + "/forgot-password";
+  static const String login = apiUrl + "/auth";
+  static const String register = apiUrl + "/signup";
+  static const String forgotPassword = apiUrl + "/forgot-password";
+
+  static const String mqttURL = "rocketdodgegame.com";
+  static const int mqttPort = 41371;
 }
