@@ -16,6 +16,15 @@ class _DMState extends State<DM> {
   _DMState({required this.other}) : super();
   final String other;
 
+  final chatTextController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    chatTextController.dispose();
+    super.dispose();
+  }
+
   List<ChatMessage> messages = [
     ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
     ChatMessage(messageContent: "How have you been?", messageType: "receiver"),
@@ -29,15 +38,6 @@ class _DMState extends State<DM> {
 
   @override
   Widget build(BuildContext context) {
-    final chatTextController = TextEditingController();
-
-    @override
-    void dispose() {
-      // Clean up the controller when the widget is disposed.
-      chatTextController.dispose();
-      super.dispose();
-    }
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
