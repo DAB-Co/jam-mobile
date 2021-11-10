@@ -28,8 +28,9 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
           title: 'Jam',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity,
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
+                .copyWith(secondary: Colors.pinkAccent),
           ),
           home: FutureBuilder(
               future: getUserData(),
@@ -47,8 +48,7 @@ class MyApp extends StatelessWidget {
                     else if ((snapshot.data as User).email == null)
                       return Login();
                     var user = snapshot.data as User;
-                    Provider.of<UserProvider>(context)
-                        .setUser(user);
+                    Provider.of<UserProvider>(context).setUser(user);
                     return Homepage();
                 }
               }),
