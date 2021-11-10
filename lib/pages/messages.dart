@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '/config/routes.dart' as routes;
+
 class Messages extends StatefulWidget {
   @override
   _MessagesState createState() => _MessagesState();
@@ -31,7 +33,9 @@ class _MessagesState extends State<Messages> {
             ),
             title: Text('User $index'),
             subtitle: Text("hey"),
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, routes.dm);
+            },
           ),
         ),
         separatorBuilder: (context, index) => Divider(
