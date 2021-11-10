@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jam/pages/messages.dart';
+import 'package:jam/providers/message_provider.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => MessageProvider()),
       ],
       child: MaterialApp(
           title: 'Jam',
@@ -57,6 +59,7 @@ class MyApp extends StatelessWidget {
             routes.login: (context) => Login(),
             routes.register: (context) => Register(),
             routes.messages: (context) => Messages(),
+            // routes.dm: (context) => DM(),
           }),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:jam/providers/message_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'dm.dart';
 
@@ -10,6 +12,7 @@ class Messages extends StatefulWidget {
 class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
+    var chats = Provider.of<MessageProvider>(context).getChats();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
@@ -31,13 +34,13 @@ class _MessagesState extends State<Messages> {
             leading: Image(
               image: AssetImage("assets/avatar.png"),
             ),
-            title: Text('User $index'),
+            title: Text(chats[index].username),
             subtitle: Text("hey"),
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => DM(otherUsername: 'User $index'),
+                  builder: (context) => DM(otherUsername: chats[index].username),
                 ),
               );
             },
@@ -46,7 +49,7 @@ class _MessagesState extends State<Messages> {
         separatorBuilder: (context, index) => Divider(
           color: Colors.grey,
         ),
-        itemCount: 20,
+        itemCount: chats.length,
       ),
     );
   }
