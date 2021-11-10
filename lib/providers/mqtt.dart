@@ -1,3 +1,5 @@
+import 'package:jam/models/chat_message_model.dart';
+import 'package:jam/providers/message_provider.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
@@ -6,7 +8,7 @@ import '/constants/app_url.dart';
 var client;
 var username;
 
-Future<MqttServerClient> connect(String _username) async {
+Future<MqttServerClient> connect(String _username, MessageProvider msgProvider) async {
   username = _username;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, _username, AppUrl.mqttPort);
@@ -34,12 +36,24 @@ Future<MqttServerClient> connect(String _username) async {
     _client.disconnect();
   }
 
+  RegExp messageRegex = new RegExp(r'(.+): (.+)');
+
   _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
-    final MqttPublishMessage message = c[0].payload as MqttPublishMessage;
+    final MqttPublishMessage byteMessage = c[0].payload as MqttPublishMessage;
     final payload =
-        MqttPublishPayload.bytesToStringAsString(message.payload.message);
+        MqttPublishPayload.bytesToStringAsString(byteMessage.payload.message);
 
     print('Received message:$payload from topic: ${c[0].topic}>');
+
+    var match = messageRegex.firstMatch(payload);
+    if (match == null) return;
+    var username = match.group(1);
+    var messageContent = match.group(2);
+    msgProvider.add(ChatMessage(
+      messageContent: messageContent!,
+      isIncomingMessage: true,
+      otherUser: username!,
+    ));
   });
 
   client = _client;

@@ -6,6 +6,8 @@ String? validateEmail(String? value) {
     _msg = "Your email is required";
   } else if (!regex.hasMatch(value)) {
     _msg = "Please provide a valid email address";
+  } else if(value.contains(':')) {
+    _msg = "Can not use ':' in username";
   }
   return _msg;
 }

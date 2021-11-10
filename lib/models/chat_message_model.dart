@@ -1,5 +1,6 @@
 class ChatMessage{
   String messageContent;
-  String messageType;
-  ChatMessage({required this.messageContent, required this.messageType});
+  bool isIncomingMessage;
+  String otherUser;
+  ChatMessage({required this.messageContent, required this.isIncomingMessage, required this.otherUser});
 }
