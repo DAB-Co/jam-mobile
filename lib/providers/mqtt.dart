@@ -10,8 +10,9 @@ Future<MqttServerClient> connect(String _username) async {
   username = _username;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, _username, AppUrl.mqttPort);
+  client = _client;
   _client.logging(on: true);
-  //_client.keepAlivePeriod = 60;
+  _client.keepAlivePeriod = 60;
   _client.onConnected = onConnected;
   _client.onDisconnected = onDisconnected;
   _client.onUnsubscribed = onUnsubscribed;
