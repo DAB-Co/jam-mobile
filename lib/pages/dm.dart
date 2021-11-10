@@ -2,11 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:jam/models/chat_message_model.dart';
 
 class DM extends StatefulWidget {
+  // Constructor
+  const DM({required this.otherUsername}) : super();
+  final String otherUsername;
+
   @override
-  _DMState createState() => _DMState();
+  _DMState createState() => _DMState(other: otherUsername);
 }
 
 class _DMState extends State<DM> {
+  // Constructor
+  _DMState({required this.other}) : super();
+  final String other;
+
   List<ChatMessage> messages = [
     ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
     ChatMessage(messageContent: "How have you been?", messageType: "receiver"),
@@ -38,7 +46,7 @@ class _DMState extends State<DM> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    "Kriss Benwat",
+                    other,
                     style: TextStyle(
                       fontSize: 16,
                     ),

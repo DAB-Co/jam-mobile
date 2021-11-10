@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '/config/routes.dart' as routes;
+import 'dm.dart';
 
 class Messages extends StatefulWidget {
   @override
@@ -34,7 +34,12 @@ class _MessagesState extends State<Messages> {
             title: Text('User $index'),
             subtitle: Text("hey"),
             onTap: () {
-              Navigator.pushNamed(context, routes.dm);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DM(otherUsername: 'User $index'),
+                ),
+              );
             },
           ),
         ),

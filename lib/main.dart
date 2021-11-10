@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:jam/pages/dm.dart';
 import 'package:jam/pages/messages.dart';
 import 'package:provider/provider.dart';
 
@@ -58,7 +57,6 @@ class MyApp extends StatelessWidget {
             routes.login: (context) => Login(),
             routes.register: (context) => Register(),
             routes.messages: (context) => Messages(),
-            routes.dm: (context) => DM(),
           }),
     );
   }
