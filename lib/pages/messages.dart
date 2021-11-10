@@ -36,7 +36,9 @@ class _MessagesState extends State<Messages> {
               image: AssetImage("assets/avatar.png"),
             ),
             title: Text(chats[index].username),
-            subtitle: Text(chats[index].messageHistory[chats[index].messageHistory.length - 1].messageContent),
+            subtitle: Text(chats[index]
+                .messageHistory[chats[index].messageHistory.length - 1]
+                .messageContent),
             trailing: chats[index].unreadMessages == 0
                 ? Text("")
                 : Container(

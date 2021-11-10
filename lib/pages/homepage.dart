@@ -36,7 +36,8 @@ class _HomepageState extends State<Homepage> {
                 Icon(Icons.message),
                 Consumer<MessageProvider>(
                   builder: (context, provider, child) {
-                    int nofUnread = Provider.of<MessageProvider>(context).nofUnread;
+                    int nofUnread =
+                        Provider.of<MessageProvider>(context).nofUnread;
                     if (nofUnread == 0) {
                       return Text("");
                     } else {

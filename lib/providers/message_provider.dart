@@ -9,13 +9,18 @@ class MessageProvider extends ChangeNotifier {
   /// Number of unread messages
   int nofUnread = 0;
 
+  /// Do not increment unread if in DM page
+  String inDmOf = "";
+
   /// adds message to the list
   void add(ChatMessage message) {
     var other = message.otherUser;
     _chats.putIfAbsent(other, () => ChatPair(username: other));
     _chats[other]!.messageHistory.add(message);
-    _chats[other]!.unreadMessages++;
-    nofUnread++;
+    if (inDmOf != other) {
+      _chats[other]!.unreadMessages++;
+      nofUnread++;
+    }
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
@@ -35,5 +40,15 @@ class MessageProvider extends ChangeNotifier {
     print(_chats[other]!.unreadMessages.toString() + "okundu");
     _chats[other]?.unreadMessages = 0;
     notifyListeners();
+  }
+
+  enterDM(username) {
+    print("enter DM");
+    inDmOf = username;
+  }
+
+  exitDM() {
+    print("exit DM");
+    inDmOf = "";
   }
 }

@@ -27,8 +27,16 @@ class _DMState extends State<DM> {
     super.dispose();
   }
 
+
+  @override
+  void deactivate() {
+    Provider.of<MessageProvider>(context).exitDM();
+    super.deactivate();
+  }
+
   @override
   Widget build(BuildContext context) {
+    Provider.of<MessageProvider>(context).enterDM(other);
     List<ChatMessage> messages =
         Provider.of<MessageProvider>(context).getChat(other);
     return Scaffold(
@@ -142,11 +150,12 @@ class _DMState extends State<DM> {
                       String message = chatTextController.text;
                       if (message != "") {
                         chatTextController.clear();
-                        Provider.of<MessageProvider>(context, listen: false).add(ChatMessage(
-                            messageContent: message,
-                            isIncomingMessage: false,
-                            otherUser: other,
-                          ));
+                        Provider.of<MessageProvider>(context, listen: false)
+                            .add(ChatMessage(
+                          messageContent: message,
+                          isIncomingMessage: false,
+                          otherUser: other,
+                        ));
                         sendMessage(other, message);
                       }
                     },

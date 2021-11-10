@@ -9,7 +9,8 @@ var client;
 var username;
 var provider;
 
-Future<MqttServerClient> connect(String _username, MessageProvider msgProvider) async {
+Future<MqttServerClient> connect(
+    String _username, MessageProvider msgProvider) async {
   username = _username;
   provider = msgProvider;
   MqttServerClient _client =
