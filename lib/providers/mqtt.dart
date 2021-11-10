@@ -48,7 +48,7 @@ Future<MqttServerClient> connect(String _username) async {
 
 void sendMessage(String receiver, String message) {
   final builder = MqttClientPayloadBuilder();
-  builder.addString("$username: message");
+  builder.addString("$username: $message");
   client.publishMessage(receiver, MqttQos.atLeastOnce, builder.payload);
 }
 
@@ -57,7 +57,6 @@ void onConnected() {
   print('Connected');
   // every user subscribes to topic named after them
   client.subscribe(username, MqttQos.atLeastOnce);
-  sendMessage("user2", "hello");
 }
 
 /// unconnected

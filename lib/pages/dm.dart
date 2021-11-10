@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jam/models/chat_message_model.dart';
+import 'package:jam/providers/mqtt.dart';
 
 class DM extends StatefulWidget {
   // Constructor
@@ -28,6 +29,15 @@ class _DMState extends State<DM> {
 
   @override
   Widget build(BuildContext context) {
+    final chatTextController = TextEditingController();
+
+    @override
+    void dispose() {
+      // Clean up the controller when the widget is disposed.
+      chatTextController.dispose();
+      super.dispose();
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -123,17 +133,25 @@ class _DMState extends State<DM> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      controller: chatTextController,
                       decoration: InputDecoration(
-                          hintText: "Write message...",
-                          hintStyle: TextStyle(color: Colors.black54),
-                          border: InputBorder.none),
+                        hintText: "Write message...",
+                        hintStyle: TextStyle(color: Colors.black54),
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                   SizedBox(
                     width: 15,
                   ),
                   FloatingActionButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      String message = chatTextController.text;
+                      if (message != "") {
+                        chatTextController.clear();
+                        sendMessage(other, message);
+                      }
+                    },
                     child: Icon(
                       Icons.send,
                       color: Colors.white,
