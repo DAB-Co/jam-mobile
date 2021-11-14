@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:jam/providers/message_provider.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/shared_preference.dart';
 import 'package:provider/provider.dart';
 
@@ -32,10 +32,10 @@ class _HomepageState extends State<Homepage> {
             icon: Stack(
               children: <Widget>[
                 Icon(Icons.message),
-                Consumer<MessageProvider>(
+                Consumer<UnreadMessageProvider>(
                   builder: (context, provider, child) {
                     int nofUnread =
-                        Provider.of<MessageProvider>(context).nofUnread;
+                        Provider.of<UnreadMessageProvider>(context).nofUnread;
                     if (nofUnread == 0) {
                       return Text("");
                     } else {

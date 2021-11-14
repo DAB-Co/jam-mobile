@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jam/pages/messages.dart';
 import 'package:jam/providers/message_provider.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => MessageProvider()),
+        ChangeNotifierProvider(create: (_) => UnreadMessageProvider()),
       ],
       child: MaterialApp(
           title: 'Jam',

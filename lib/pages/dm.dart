@@ -3,21 +3,24 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
   // Constructor
-  const DM({required this.otherUsername}) : super();
+  const DM({required this.otherUsername, required this.unRead}) : super();
   final String otherUsername;
+  final int unRead;
 
   @override
-  _DMState createState() => _DMState(other: otherUsername);
+  _DMState createState() => _DMState(other: otherUsername, unRead: unRead);
 }
 
 class _DMState extends State<DM> {
   // Constructor
-  _DMState({required this.other}) : super();
+  _DMState({required this.other, required this.unRead}) : super();
   final String other;
+  final int unRead;
 
   final chatTextController = TextEditingController();
 
@@ -28,12 +31,11 @@ class _DMState extends State<DM> {
     super.dispose();
   }
 
-
   @override
-  void activate() {
+  void initState() {
     Provider.of<MessageProvider>(context, listen: false).messagesRead(other);
-    Provider.of<MessageProvider>(context).enterDM(other);
-    super.activate();
+    Provider.of<MessageProvider>(context, listen: false).enterDM(other);
+    super.initState();
   }
 
   @override
@@ -44,6 +46,9 @@ class _DMState extends State<DM> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) => {
+      Provider.of<UnreadMessageProvider>(context, listen: false).decUnreadCount(unRead)
+    });
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -103,8 +108,8 @@ class _DMState extends State<DM> {
                   //physics: BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
                     return Container(
-                      padding:
-                      EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
+                      padding: EdgeInsets.only(
+                          left: 14, right: 14, top: 10, bottom: 10),
                       child: Align(
                         alignment: (messages[index].isIncomingMessage
                             ? Alignment.topLeft
@@ -126,8 +131,7 @@ class _DMState extends State<DM> {
                     );
                   },
                 );
-              }
-          ),
+              }),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
@@ -162,11 +166,17 @@ class _DMState extends State<DM> {
                       if (message != "") {
                         chatTextController.clear();
                         Provider.of<MessageProvider>(context, listen: false)
-                            .add(other, ChatMessage(
-                          messageContent: message,
-                          isIncomingMessage: false,
-                          timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
-                        ));
+                            .add(
+                                other,
+                                ChatMessage(
+                                  messageContent: message,
+                                  isIncomingMessage: false,
+                                  timestamp: DateTime.now()
+                                      .toUtc()
+                                      .millisecondsSinceEpoch,
+                                ),
+                                Provider.of<UnreadMessageProvider>(context,
+                                    listen: false));
                         sendMessage(other, message);
                       }
                     },

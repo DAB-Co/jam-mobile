@@ -2,28 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 
 class MessageProvider extends ChangeNotifier {
 
   var messages;
-
-  /// Number of unread messages
-  int nofUnread = 0;
 
   /// Do not increment unread if in DM page
   String inDmOf = "";
 
   Box<ChatMessage>? currentBox;
 
-  Future init() async {
+  Future init(UnreadMessageProvider unread) async {
     await Hive.initFlutter();
     Hive.registerAdapter(ChatPairAdapter());
     Hive.registerAdapter(ChatMessageAdapter());
     messages = await Hive.openBox<ChatPair>('messages');
+    unread.initUnreadCount();
   }
 
   /// adds message to the list
-  void add(String other, ChatMessage message) async {
+  void add(String other, ChatMessage message, UnreadMessageProvider unread) async {
     var chat = await Hive.openBox<ChatMessage>(other);
     await chat.add(message);
     ChatPair? chatPair = messages.get(other);
@@ -43,7 +42,7 @@ class MessageProvider extends ChangeNotifier {
     }
     messages.put(other, chatPair);
     if (inDmOf != other) {
-      nofUnread++;
+      unread.incUnreadCount();
     }
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
@@ -53,10 +52,9 @@ class MessageProvider extends ChangeNotifier {
     print(other);
     ChatPair? chat = messages.get(other);
     if (chat == null) return;
-    nofUnread -= chat.unreadMessages;
-    print(chat.unreadMessages.toString() + "okundu");
+    print(chat.unreadMessages.toString() + " okundu");
     chat.unreadMessages = 0;
-    notifyListeners();
+    messages.put(other, chat);
   }
 
   enterDM(username) async {

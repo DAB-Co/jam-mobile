@@ -1,5 +1,6 @@
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/providers/message_provider.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
@@ -9,10 +10,10 @@ var client;
 var username;
 var provider;
 
-Future<MqttServerClient> connect(
-    String _username, MessageProvider msgProvider) async {
+Future<MqttServerClient> connect(String _username, MessageProvider msgProvider,
+    UnreadMessageProvider unreadProvider) async {
   username = _username;
-  await msgProvider.init();
+  await msgProvider.init(unreadProvider);
   provider = msgProvider;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);
@@ -56,11 +57,14 @@ Future<MqttServerClient> connect(
     int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
     var username = match.group(2)!;
     var messageContent = match.group(3)!;
-    msgProvider.add(username, ChatMessage(
-      messageContent: messageContent,
-      isIncomingMessage: true,
-      timestamp: timestamp,
-    ));
+    msgProvider.add(
+        username,
+        ChatMessage(
+          messageContent: messageContent,
+          isIncomingMessage: true,
+          timestamp: timestamp,
+        ),
+        unreadProvider);
   });
 
   client = _client;
