@@ -12,6 +12,7 @@ var provider;
 Future<MqttServerClient> connect(
     String _username, MessageProvider msgProvider) async {
   username = _username;
+  await msgProvider.init();
   provider = msgProvider;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);
@@ -40,7 +41,7 @@ Future<MqttServerClient> connect(
     _client.disconnect();
   }
 
-  RegExp messageRegex = new RegExp(r'(.+): (.+)');
+  RegExp messageRegex = new RegExp(r'(.+), (.+): (.+)');
 
   _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final MqttPublishMessage byteMessage = c[0].payload as MqttPublishMessage;
@@ -51,12 +52,14 @@ Future<MqttServerClient> connect(
 
     var match = messageRegex.firstMatch(payload);
     if (match == null) return;
-    var username = match.group(1);
-    var messageContent = match.group(2);
-    msgProvider.add(ChatMessage(
-      messageContent: messageContent!,
+    String date = match.group(1)!;
+    int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
+    var username = match.group(2)!;
+    var messageContent = match.group(3)!;
+    msgProvider.add(username, ChatMessage(
+      messageContent: messageContent,
       isIncomingMessage: true,
-      otherUser: username!,
+      timestamp: timestamp,
     ));
   });
 
@@ -66,7 +69,8 @@ Future<MqttServerClient> connect(
 
 void sendMessage(String receiver, String message) {
   final builder = MqttClientPayloadBuilder();
-  builder.addString("$username: $message");
+  String timestamp = DateTime.now().toUtc().toString();
+  builder.addString("$timestamp, $username: $message");
   client.publishMessage(receiver, MqttQos.atLeastOnce, builder.payload);
 }
 

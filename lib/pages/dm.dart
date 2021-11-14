@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
@@ -37,8 +38,6 @@ class _DMState extends State<DM> {
   @override
   Widget build(BuildContext context) {
     Provider.of<MessageProvider>(context).enterDM(other);
-    List<ChatMessage> messages =
-        Provider.of<MessageProvider>(context).getChat(other);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -87,35 +86,41 @@ class _DMState extends State<DM> {
       ),
       body: Stack(
         children: <Widget>[
-          ListView.builder(
-            itemCount: messages.length,
-            //shrinkWrap: true,
-            padding: EdgeInsets.only(top: 10, bottom: 70),
-            //physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Container(
-                padding:
-                    EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-                child: Align(
-                  alignment: (messages[index].isIncomingMessage
-                      ? Alignment.topLeft
-                      : Alignment.topRight),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: (messages[index].isIncomingMessage
-                          ? Colors.grey.shade200
-                          : Colors.blue[200]),
-                    ),
-                    padding: EdgeInsets.all(16),
-                    child: Text(
-                      messages[index].messageContent,
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ),
-                ),
-              );
-            },
+          ValueListenableBuilder(
+              valueListenable: Hive.box<ChatMessage>(other).listenable(),
+              builder: (context, Box<ChatMessage> box, widget) {
+                List<ChatMessage> messages = box.values.toList().cast();
+                return ListView.builder(
+                  itemCount: messages.length,
+                  //shrinkWrap: true,
+                  padding: EdgeInsets.only(top: 10, bottom: 70),
+                  //physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Container(
+                      padding:
+                      EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
+                      child: Align(
+                        alignment: (messages[index].isIncomingMessage
+                            ? Alignment.topLeft
+                            : Alignment.topRight),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: (messages[index].isIncomingMessage
+                                ? Colors.grey.shade200
+                                : Colors.blue[200]),
+                          ),
+                          padding: EdgeInsets.all(16),
+                          child: Text(
+                            messages[index].messageContent,
+                            style: TextStyle(fontSize: 15),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
           ),
           Align(
             alignment: Alignment.bottomLeft,
@@ -151,10 +156,10 @@ class _DMState extends State<DM> {
                       if (message != "") {
                         chatTextController.clear();
                         Provider.of<MessageProvider>(context, listen: false)
-                            .add(ChatMessage(
+                            .add(other, ChatMessage(
                           messageContent: message,
                           isIncomingMessage: false,
-                          otherUser: other,
+                          timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
                         ));
                         sendMessage(other, message);
                       }

@@ -1,8 +1,8 @@
-import 'package:jam/models/chat_message_model.dart';
-
-class ChatPair{
+class ChatPair {
   String username;
-  List<ChatMessage> messageHistory = [];
   int unreadMessages = 0;
+  String lastMessage = "";
+  int lastMessageTimeStamp = -1;
+
   ChatPair({required this.username});
 }

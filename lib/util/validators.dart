@@ -8,6 +8,10 @@ String? validateEmail(String? value) {
     _msg = "Please provide a valid email address";
   } else if(value.contains(':')) {
     _msg = "Can not use ':' in username";
+  } else if(value.contains(',')) {
+    _msg = "Can not use ',' in username";
+  } else if(value.contains(' ')) {
+    _msg = "Username can not have spaces";
   }
   return _msg;
 }
