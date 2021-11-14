@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/shared_preference.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +29,42 @@ class _HomepageState extends State<Homepage> {
             onPressed: () {
               Navigator.pushNamed(context, routes.messages);
             },
-            icon: Icon(
-              Icons.message,
-              color: Colors.white,
+            icon: Stack(
+              children: <Widget>[
+                Icon(Icons.message),
+                Consumer<UnreadMessageProvider>(
+                  builder: (context, provider, child) {
+                    int nofUnread =
+                        Provider.of<UnreadMessageProvider>(context).nofUnread;
+                    if (nofUnread == 0) {
+                      return Text("");
+                    } else {
+                      return Positioned(
+                        right: 0,
+                        child: Container(
+                          padding: EdgeInsets.all(1),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 12,
+                            minHeight: 12,
+                          ),
+                          child: Text(
+                            nofUnread.toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 8,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
             ),
           )
         ],

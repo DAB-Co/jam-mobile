@@ -65,7 +65,7 @@ class _RegisterState extends State<Register> {
         auth.register(_username, _password).then((response) {
           if (response['status']) {
             User? user = response['data'];
-            Provider.of<UserProvider>(context, listen: false).setUser(user);
+            Provider.of<UserProvider>(context, listen: false).setUser(user, context);
             Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
             showSnackBar(context, response['message']);

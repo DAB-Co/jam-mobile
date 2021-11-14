@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jam/pages/messages.dart';
+import 'package:jam/providers/message_provider.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -24,12 +26,15 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => MessageProvider()),
+        ChangeNotifierProvider(create: (_) => UnreadMessageProvider()),
       ],
       child: MaterialApp(
           title: 'Jam',
           theme: ThemeData(
-            primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity,
+            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
+                .copyWith(secondary: Colors.pinkAccent),
           ),
           home: FutureBuilder(
               future: getUserData(),
@@ -46,8 +51,8 @@ class MyApp extends StatelessWidget {
                       return Text('Error: ${snapshot.error}');
                     else if ((snapshot.data as User).email == null)
                       return Login();
-                    Provider.of<UserProvider>(context)
-                        .setUser(snapshot.data as User);
+                    var user = snapshot.data as User;
+                    Provider.of<UserProvider>(context).setUser(user, context);
                     return Homepage();
                 }
               }),
@@ -56,6 +61,7 @@ class MyApp extends StatelessWidget {
             routes.login: (context) => Login(),
             routes.register: (context) => Register(),
             routes.messages: (context) => Messages(),
+            // routes.dm: (context) => DM(),
           }),
     );
   }
