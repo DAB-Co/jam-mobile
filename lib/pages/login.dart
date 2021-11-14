@@ -88,7 +88,7 @@ class _LoginState extends State<Login> {
         successfulMessage.then((response) {
           if (response['status']) {
             User? user = response['user'];
-            Provider.of<UserProvider>(context, listen: false).setUser(user);
+            Provider.of<UserProvider>(context, listen: false).setUser(user, context);
             Navigator.pushReplacementNamed(context, routes.homepage);
           } else {
             showSnackBar(context, response["message"]);

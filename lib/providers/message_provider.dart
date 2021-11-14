@@ -15,13 +15,15 @@ class MessageProvider extends ChangeNotifier {
 
   Future init() async {
     await Hive.initFlutter();
+    Hive.registerAdapter(ChatPairAdapter());
+    Hive.registerAdapter(ChatMessageAdapter());
     messages = await Hive.openBox<ChatPair>('messages');
   }
 
   /// adds message to the list
   void add(String other, ChatMessage message) async {
     var chat = await Hive.openBox<ChatMessage>(other);
-    chat.add(message);
+    await chat.add(message);
     chat.close();
     ChatPair? chatPair = messages.get(other);
     if (chatPair != null) {

@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
                     else if ((snapshot.data as User).email == null)
                       return Login();
                     var user = snapshot.data as User;
-                    Provider.of<UserProvider>(context).setUser(user);
+                    Provider.of<UserProvider>(context).setUser(user, context);
                     return Homepage();
                 }
               }),
