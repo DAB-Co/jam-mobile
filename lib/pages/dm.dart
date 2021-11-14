@@ -30,14 +30,20 @@ class _DMState extends State<DM> {
 
 
   @override
+  void activate() {
+    Provider.of<MessageProvider>(context, listen: false).messagesRead(other);
+    Provider.of<MessageProvider>(context).enterDM(other);
+    super.activate();
+  }
+
+  @override
   void deactivate() {
-    Provider.of<MessageProvider>(context).exitDM();
+    Provider.of<MessageProvider>(context).exitDM(other);
     super.deactivate();
   }
 
   @override
   Widget build(BuildContext context) {
-    Provider.of<MessageProvider>(context).enterDM(other);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,

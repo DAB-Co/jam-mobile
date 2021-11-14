@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_pair_model.dart';
-import 'package:jam/providers/message_provider.dart';
-import 'package:provider/provider.dart';
 
 import 'dm.dart';
 
@@ -64,8 +62,6 @@ class _MessagesState extends State<Messages> {
                 ),
                 onTap: () {
                   var name = chats[index].username;
-                  Provider.of<MessageProvider>(context, listen: false)
-                      .messagesRead(name);
                   Navigator.push(
                     context,
                     MaterialPageRoute(

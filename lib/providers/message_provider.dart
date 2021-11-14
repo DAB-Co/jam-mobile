@@ -13,6 +13,8 @@ class MessageProvider extends ChangeNotifier {
   /// Do not increment unread if in DM page
   String inDmOf = "";
 
+  Box<ChatMessage>? currentBox;
+
   Future init() async {
     await Hive.initFlutter();
     Hive.registerAdapter(ChatPairAdapter());
@@ -24,15 +26,22 @@ class MessageProvider extends ChangeNotifier {
   void add(String other, ChatMessage message) async {
     var chat = await Hive.openBox<ChatMessage>(other);
     await chat.add(message);
-    chat.close();
     ChatPair? chatPair = messages.get(other);
     if (chatPair != null) {
+      print("not first message");
       chatPair.lastMessage = message.messageContent;
       chatPair.lastMessageTimeStamp = message.timestamp;
       if (inDmOf != other) {
         chatPair.unreadMessages++;
       }
+      messages.put(other, chatPair);
+    } else {
+      print("first message");
+      chatPair = ChatPair(username: other);
+      chatPair.lastMessage = message.messageContent;
+      chatPair.lastMessageTimeStamp = message.timestamp;
     }
+    messages.put(other, chatPair);
     if (inDmOf != other) {
       nofUnread++;
     }
@@ -42,7 +51,7 @@ class MessageProvider extends ChangeNotifier {
 
   messagesRead(String other) {
     print(other);
-    ChatPair? chat = messages.get<ChatMessage>(other);
+    ChatPair? chat = messages.get(other);
     if (chat == null) return;
     nofUnread -= chat.unreadMessages;
     print(chat.unreadMessages.toString() + "okundu");
@@ -50,13 +59,16 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  enterDM(username) {
+  enterDM(username) async {
     print("enter DM");
+    //currentBox = await Hive.openBox<ChatMessage>(username);
     inDmOf = username;
   }
 
-  exitDM() {
+  exitDM(username) {
     print("exit DM");
+    currentBox?.close();
+    currentBox = null;
     inDmOf = "";
   }
 }

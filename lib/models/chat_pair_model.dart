@@ -7,7 +7,7 @@ class ChatPair {
   @HiveField(0)
   String username;
   @HiveField(1)
-  int unreadMessages = 0;
+  int unreadMessages = 1;
   @HiveField(2)
   String lastMessage = "";
   @HiveField(3)
