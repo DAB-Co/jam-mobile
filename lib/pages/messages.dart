@@ -32,6 +32,7 @@ class _MessagesState extends State<Messages> {
           valueListenable: Hive.box<ChatPair>("messages").listenable(),
           builder: (context, Box<ChatPair> box, widget) {
             List<ChatPair> chats = box.values.toList().cast();
+            chats.sort();
             return ListView.separated(
               itemBuilder: (context, index) => Padding(
                 padding: EdgeInsets.only(top: 5, bottom: 5),

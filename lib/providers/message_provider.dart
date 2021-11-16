@@ -25,25 +25,20 @@ class MessageProvider extends ChangeNotifier {
   void add(String other, ChatMessage message, UnreadMessageProvider unread) async {
     var chat = await Hive.openBox<ChatMessage>(other);
     await chat.add(message);
+    print("incoming message adding");
     ChatPair? chatPair = messages.get(other);
-    if (chatPair != null) {
-      print("not first message");
-      chatPair.lastMessage = message.messageContent;
-      chatPair.lastMessageTimeStamp = message.timestamp;
-      if (inDmOf != other) {
-        chatPair.unreadMessages++;
-      }
-      messages.put(other, chatPair);
-    } else {
-      print("first message");
+    if (chatPair == null) {
       chatPair = ChatPair(username: other);
-      chatPair.lastMessage = message.messageContent;
-      chatPair.lastMessageTimeStamp = message.timestamp;
+      print("first message");
     }
-    messages.put(other, chatPair);
+    chatPair.lastMessage = message.messageContent;
+    chatPair.lastMessageTimeStamp = message.timestamp;
+    // increase unread if not in current dm
     if (inDmOf != other) {
+      chatPair.unreadMessages++;
       unread.incUnreadCount();
     }
+    messages.put(other, chatPair);
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
