@@ -67,6 +67,27 @@ class _DMState extends State<DM> {
       );
     }
 
+    void send() {
+      String message = chatTextController.text;
+      String noSpaces = message.replaceAll(" ", "");
+      chatTextController.clear();
+      if (noSpaces == "") return;
+      Provider.of<MessageProvider>(context, listen: false)
+          .add(
+          other,
+          ChatMessage(
+            messageContent: message,
+            isIncomingMessage: false,
+            timestamp: DateTime
+                .now()
+                .toUtc()
+                .millisecondsSinceEpoch,
+          ),
+          Provider.of<UnreadMessageProvider>(context,
+              listen: false));
+      sendMessage(other, message);
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -171,6 +192,7 @@ class _DMState extends State<DM> {
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      onEditingComplete: () => send(),
                       controller: chatTextController,
                       decoration: InputDecoration(
                         hintText: "Write message...",
@@ -183,25 +205,7 @@ class _DMState extends State<DM> {
                     width: 15,
                   ),
                   FloatingActionButton(
-                    onPressed: () {
-                      String message = chatTextController.text;
-                      if (message != "") {
-                        chatTextController.clear();
-                        Provider.of<MessageProvider>(context, listen: false)
-                            .add(
-                                other,
-                                ChatMessage(
-                                  messageContent: message,
-                                  isIncomingMessage: false,
-                                  timestamp: DateTime.now()
-                                      .toUtc()
-                                      .millisecondsSinceEpoch,
-                                ),
-                                Provider.of<UnreadMessageProvider>(context,
-                                    listen: false));
-                        sendMessage(other, message);
-                      }
-                    },
+                    onPressed: () => send(),
                     child: Icon(
                       Icons.send,
                       color: Colors.white,
