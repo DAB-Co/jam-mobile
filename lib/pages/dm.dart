@@ -46,9 +46,27 @@ class _DMState extends State<DM> {
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance?.addPostFrameCallback((_) => {
-      Provider.of<UnreadMessageProvider>(context, listen: false).decUnreadCount(unRead)
+    // for scrolling to bottom when new message arrives
+    ScrollController _controller = ScrollController();
+    bool firstBuild = true;
+
+    // Decrement unread messages with this user and scroll to bottom
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      Provider.of<UnreadMessageProvider>(context, listen: false)
+          .decUnreadCount(unRead);
+      _controller.jumpTo(_controller.position.maxScrollExtent);
+      firstBuild = false;
     });
+
+    Future<void> animateToBottom() async {
+      print("animate to bottom");
+      _controller.animateTo(
+        _controller.position.maxScrollExtent + 100,
+        duration: Duration(milliseconds: 200),
+        curve: Curves.linear,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -101,7 +119,11 @@ class _DMState extends State<DM> {
               valueListenable: Hive.box<ChatMessage>(other).listenable(),
               builder: (context, Box<ChatMessage> box, widget) {
                 List<ChatMessage> messages = box.values.toList().cast();
+                if (!firstBuild) {
+                  animateToBottom();
+                }
                 return ListView.builder(
+                  controller: _controller,
                   itemCount: messages.length,
                   //shrinkWrap: true,
                   padding: EdgeInsets.only(top: 10, bottom: 70),
