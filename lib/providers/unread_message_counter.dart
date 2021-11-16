@@ -21,7 +21,7 @@ class UnreadMessageProvider extends ChangeNotifier {
   }
 
   void decUnreadCount(int read) async {
-    print("okunuyor provider içinde");
+    print("dec unread count içinde");
     nofUnread -= read;
     UserPreferences().decrementUnreadMessageCount(read);
     notifyListeners();

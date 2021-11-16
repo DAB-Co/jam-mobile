@@ -43,6 +43,10 @@ class MessageProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future openBox(String other) {
+    return Hive.openBox<ChatMessage>(other);
+  }
+
   messagesRead(String other) {
     print(other);
     ChatPair? chat = messages.get(other);
