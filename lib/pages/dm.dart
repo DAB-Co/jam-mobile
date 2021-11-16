@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
@@ -64,23 +66,19 @@ class _DMState extends State<DM> {
       String noSpaces = message.replaceAll(" ", "");
       chatTextController.clear();
       if (noSpaces == "") return;
-      Provider.of<MessageProvider>(context, listen: false)
-          .add(
+      Provider.of<MessageProvider>(context, listen: false).add(
           other,
           ChatMessage(
             messageContent: message,
             isIncomingMessage: false,
-            timestamp: DateTime
-                .now()
-                .toUtc()
-                .millisecondsSinceEpoch,
+            timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
           ),
-          Provider.of<UnreadMessageProvider>(context,
-              listen: false));
+          Provider.of<UnreadMessageProvider>(context, listen: false));
       sendMessage(other, message);
     }
 
-    Future boxOpening = Provider.of<MessageProvider>(context, listen: false).openBox(other);
+    Future boxOpening =
+        Provider.of<MessageProvider>(context, listen: false).openBox(other);
 
     return Scaffold(
       appBar: AppBar(
@@ -130,66 +128,69 @@ class _DMState extends State<DM> {
       ),
       body: Stack(
         children: <Widget>[
-          FutureBuilder(future: boxOpening,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.waiting:
-                print("dm future builder waiting");
-                return Center(child: CircularProgressIndicator());
-              default:
-                if (snapshot.hasError)
-                  return Text('Error: ${snapshot.error}');
-                // Decrement unread messages with this user and scroll to bottom
-                WidgetsBinding.instance?.addPostFrameCallback((_) {
-                  print("post frame callback");
-                  _controller.jumpTo(_controller.position.maxScrollExtent);
-                  Provider.of<UnreadMessageProvider>(context, listen: false)
-                      .decUnreadCount(unRead);
-                });
-                return ValueListenableBuilder(
-                    valueListenable: Hive.box<ChatMessage>(other).listenable(),
-                    builder: (context, Box<ChatMessage> box, widget) {
-                      List<ChatMessage> messages = box.values.toList().cast();
-                      if (!firstBuild) {
-                        // new message incoming or sent
-                        animateToBottom();
-                      }
-                      firstBuild = false;
-                      return ListView.builder(
-                        controller: _controller,
-                        itemCount: messages.length,
-                        //shrinkWrap: true,
-                        padding: EdgeInsets.only(top: 10, bottom: 70),
-                        //physics: BouncingScrollPhysics(),
-                        itemBuilder: (context, index) {
-                          return Container(
-                            padding: EdgeInsets.only(
-                                left: 14, right: 14, top: 10, bottom: 10),
-                            child: Align(
-                              alignment: (messages[index].isIncomingMessage
-                                  ? Alignment.topLeft
-                                  : Alignment.topRight),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: (messages[index].isIncomingMessage
-                                      ? Colors.grey.shade200
-                                      : Colors.blue[200]),
-                                ),
-                                padding: EdgeInsets.all(16),
-                                child: Text(
-                                  messages[index].messageContent,
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      );
+          FutureBuilder(
+              future: boxOpening,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    print("dm future builder waiting");
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    if (snapshot.hasError)
+                      return Text('Error: ${snapshot.error}');
+                    // Decrement unread messages with this user and scroll to bottom
+                    WidgetsBinding.instance?.addPostFrameCallback((_) {
+                      print("post frame callback");
+                      _controller.jumpTo(_controller.position.maxScrollExtent);
+                      Provider.of<UnreadMessageProvider>(context, listen: false)
+                          .decUnreadCount(unRead);
                     });
-            }
-          }),
+                    return ValueListenableBuilder(
+                        valueListenable:
+                            Hive.box<ChatMessage>(other).listenable(),
+                        builder: (context, Box<ChatMessage> box, widget) {
+                          List<ChatMessage> messages =
+                              box.values.toList().cast();
+                          if (!firstBuild) {
+                            // new message incoming or sent
+                            animateToBottom();
+                          }
+                          firstBuild = false;
+                          return ListView.builder(
+                            controller: _controller,
+                            itemCount: messages.length,
+                            //shrinkWrap: true,
+                            padding: EdgeInsets.only(top: 10, bottom: 70),
+                            //physics: BouncingScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              return Container(
+                                padding: EdgeInsets.only(
+                                    left: 14, right: 14, top: 10, bottom: 10),
+                                child: Align(
+                                  alignment: (messages[index].isIncomingMessage
+                                      ? Alignment.topLeft
+                                      : Alignment.topRight),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color: (messages[index].isIncomingMessage
+                                          ? Colors.grey.shade200
+                                          : Colors.blue[200]),
+                                    ),
+                                    padding: EdgeInsets.all(16),
+                                    child: Text(
+                                      messages[index].messageContent,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        });
+                }
+              }),
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
@@ -214,6 +215,12 @@ class _DMState extends State<DM> {
                         hintStyle: TextStyle(color: Colors.black54),
                         border: InputBorder.none,
                       ),
+                      onTap: () {
+                        Timer(
+                            Duration(milliseconds: 200),
+                            () => _controller
+                                .jumpTo(_controller.position.maxScrollExtent));
+                      },
                     ),
                   ),
                   SizedBox(
