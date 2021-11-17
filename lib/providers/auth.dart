@@ -82,6 +82,9 @@ class AuthProvider with ChangeNotifier {
       'password': password,
     };
 
+    _loggedInStatus = Status.Authenticating;
+    notifyListeners();
+
     try {
       response = await post(
         Uri.parse(AppUrl.register),
@@ -90,6 +93,9 @@ class AuthProvider with ChangeNotifier {
       );
     } catch (err) {
       print(err);
+
+      _loggedInStatus = Status.NotLoggedIn;
+      notifyListeners();
 
       return {
         'status': false,
@@ -101,12 +107,18 @@ class AuthProvider with ChangeNotifier {
       User authUser = User.fromJson(registrationData);
 
       UserPreferences().saveUser(authUser);
+
+      _loggedInStatus = Status.LoggedIn;
+      notifyListeners();
+
       result = {
         'status': true,
         'message': 'Successfully registered',
         'data': authUser
       };
     } else {
+      _loggedInStatus = Status.NotLoggedIn;
+      notifyListeners();
       result = {'status': false, 'message': response.body};
     }
     return result;
