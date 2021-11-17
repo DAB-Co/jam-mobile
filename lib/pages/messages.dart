@@ -33,6 +33,16 @@ class _MessagesState extends State<Messages> {
           builder: (context, Box<ChatPair> box, widget) {
             List<ChatPair> chats = box.values.toList().cast();
             chats.sort();
+            if (chats.length == 0) {
+              return Center(child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.messenger_outlined),
+                  SizedBox(height: 10),
+                  Text("No messages yet"),
+                ],
+              ));
+            }
             return ListView.separated(
               itemBuilder: (context, index) => Padding(
                 padding: EdgeInsets.only(top: 5, bottom: 5),
