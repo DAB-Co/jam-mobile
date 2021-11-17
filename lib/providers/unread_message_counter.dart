@@ -11,8 +11,11 @@ class UnreadMessageProvider extends ChangeNotifier {
     print("init unread");
     this.username = username;
     var oldUnread = await UserPreferences().getUnreadMessageCount(username);
+    print("old unread: $oldUnread");
     if (oldUnread != null) {
       nofUnread = oldUnread;
+    } else {
+      nofUnread = 0; // important for logout
     }
     notifyListeners();
   }
