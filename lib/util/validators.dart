@@ -23,9 +23,9 @@ String? validatePassword(String? value) {
   if (value == null) {
     _msg = "Your password is required";
   } else if (value.length < minLength) {
-    _msg = 'Password must be at least $minLength characters!';
+    _msg = 'Password must be at least $minLength characters';
   } else if (value.length > maxLength) {
-    _msg = "Password can't be longer than $maxLength characters!";
+    _msg = "Password can't be longer than $maxLength characters";
   }
   return _msg;
 }

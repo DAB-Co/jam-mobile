@@ -15,6 +15,15 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+
+  final passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    super.dispose();
+  }
+
   final formKey = new GlobalKey<FormState>();
 
   String? _username, _password, _confirmPassword;
@@ -23,7 +32,12 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
 
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      formKey.currentState!.validate();
+    });
+
     final usernameField = TextFormField(
+      onChanged: (_) => formKey.currentState!.validate(),
       autofocus: false,
       validator: validateEmail,
       onSaved: (value) => _username = value,
@@ -31,6 +45,8 @@ class _RegisterState extends State<Register> {
     );
 
     final passwordField = TextFormField(
+      controller: passwordController,
+      onChanged: (_) => formKey.currentState!.validate(),
       autofocus: false,
       obscureText: true,
       validator: (value) => validatePassword(value),
@@ -39,9 +55,10 @@ class _RegisterState extends State<Register> {
     );
 
     final confirmPassword = TextFormField(
+      onChanged: (_) => formKey.currentState!.validate(),
       autofocus: false,
       obscureText: true,
-      validator: (value) => value!.isEmpty ? "Your password is required" : null,
+      validator: (value) => (value != passwordController.text) ? "Passwords don't match" : null,
       onSaved: (value) => _confirmPassword = value,
       decoration: buildInputDecoration("Confirm password", Icons.lock),
     );
