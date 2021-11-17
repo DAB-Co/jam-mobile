@@ -8,22 +8,30 @@ class MessageProvider extends ChangeNotifier {
 
   var messages;
 
+  String thisUser = "";
+
   /// Do not increment unread if in DM page
   String inDmOf = "";
 
   Box<ChatMessage>? currentBox;
 
-  Future init(UnreadMessageProvider unread) async {
-    await Hive.initFlutter();
-    Hive.registerAdapter(ChatPairAdapter());
-    Hive.registerAdapter(ChatMessageAdapter());
-    messages = await Hive.openBox<ChatPair>('messages');
-    unread.initUnreadCount();
+  bool firstTime = true;
+
+  Future init(UnreadMessageProvider unread, String thisUser) async {
+    if (firstTime) {
+      await Hive.initFlutter();
+      Hive.registerAdapter(ChatPairAdapter());
+      Hive.registerAdapter(ChatMessageAdapter());
+    }
+    this.thisUser = thisUser;
+    messages = await Hive.openBox<ChatPair>('$thisUser: messages');
+    unread.initUnreadCount(thisUser);
+    firstTime = false;
   }
 
   /// adds message to the list
   void add(String other, ChatMessage message, UnreadMessageProvider unread) async {
-    var chat = await Hive.openBox<ChatMessage>(other);
+    var chat = await Hive.openBox<ChatMessage>('$thisUser:$other');
     await chat.add(message);
     print("incoming message adding");
     ChatPair? chatPair = messages.get(other);
@@ -44,7 +52,7 @@ class MessageProvider extends ChangeNotifier {
   }
 
   Future openBox(String other) {
-    return Hive.openBox<ChatMessage>(other);
+    return Hive.openBox<ChatMessage>('$thisUser:$other');
   }
 
   messagesRead(String other) {

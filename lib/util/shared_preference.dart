@@ -23,28 +23,28 @@ class UserPreferences {
     prefs.remove("email");
   }
 
-  Future<int?> getUnreadMessageCount() async {
+  Future<int?> getUnreadMessageCount(String username) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.getInt("unread");
+    return prefs.getInt("$username: unread");
   }
 
-  Future incrementUnreadMessageCount() async {
+  Future incrementUnreadMessageCount(String username) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? unread = prefs.getInt("unread");
+    int? unread = prefs.getInt("$username: unread");
     if (unread == null) {
-      prefs.setInt("unread", 0);
+      prefs.setInt("$username: unread", 0);
     } else {
-      prefs.setInt("unread", unread + 1);
+      prefs.setInt("$username: unread", unread + 1);
     }
   }
 
-  Future decrementUnreadMessageCount(int read) async {
+  Future decrementUnreadMessageCount(String username, int read) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? unread = prefs.getInt("unread");
+    int? unread = prefs.getInt("$username: unread");
     if (unread == null || (unread - read) < 0) {
-      prefs.setInt("unread", 0);
+      prefs.setInt("$username: unread", 0);
     } else {
-      prefs.setInt("unread", unread - read);
+      prefs.setInt("$username: unread", unread - read);
     }
   }
 }

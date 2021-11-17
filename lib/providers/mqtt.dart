@@ -13,7 +13,7 @@ var provider;
 Future<MqttServerClient> connect(String _username, MessageProvider msgProvider,
     UnreadMessageProvider unreadProvider) async {
   username = _username;
-  await msgProvider.init(unreadProvider);
+  await msgProvider.init(unreadProvider, username);
   provider = msgProvider;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);

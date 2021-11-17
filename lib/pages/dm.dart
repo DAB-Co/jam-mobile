@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/domain/user.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
@@ -80,6 +82,9 @@ class _DMState extends State<DM> {
     Future boxOpening =
         Provider.of<MessageProvider>(context, listen: false).openBox(other);
 
+    User user = Provider.of<UserProvider>(context).user!;
+    String userName = user.email!;
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -148,7 +153,7 @@ class _DMState extends State<DM> {
                     });
                     return ValueListenableBuilder(
                         valueListenable:
-                            Hive.box<ChatMessage>(other).listenable(),
+                            Hive.box<ChatMessage>('$userName:$other').listenable(),
                         builder: (context, Box<ChatMessage> box, widget) {
                           List<ChatMessage> messages =
                               box.values.toList().cast();

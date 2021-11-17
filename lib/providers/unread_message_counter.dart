@@ -5,8 +5,12 @@ class UnreadMessageProvider extends ChangeNotifier {
   /// Number of unread messages
   int nofUnread = 0;
 
-  void initUnreadCount() async {
-    var oldUnread = await UserPreferences().getUnreadMessageCount();
+  String username = "";
+
+  void initUnreadCount(String username) async {
+    print("init unread");
+    this.username = username;
+    var oldUnread = await UserPreferences().getUnreadMessageCount(username);
     if (oldUnread != null) {
       nofUnread = oldUnread;
     }
@@ -16,14 +20,14 @@ class UnreadMessageProvider extends ChangeNotifier {
   void incUnreadCount() async {
     print("bir okunmadık var");
     nofUnread++;
-    UserPreferences().incrementUnreadMessageCount();
+    UserPreferences().incrementUnreadMessageCount(username);
     notifyListeners();
   }
 
   void decUnreadCount(int read) async {
     print("dec unread count içinde");
     nofUnread -= read;
-    UserPreferences().decrementUnreadMessageCount(read);
+    UserPreferences().decrementUnreadMessageCount(username, read);
     notifyListeners();
   }
 }

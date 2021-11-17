@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/domain/user.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/providers/message_provider.dart';
+import 'package:jam/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'dm.dart';
@@ -14,6 +16,10 @@ class Messages extends StatefulWidget {
 class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
+
+    User user = Provider.of<UserProvider>(context).user!;
+    String userName = user.email!;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
@@ -29,7 +35,7 @@ class _MessagesState extends State<Messages> {
         ],
       ),
       body: ValueListenableBuilder(
-          valueListenable: Hive.box<ChatPair>("messages").listenable(),
+          valueListenable: Hive.box<ChatPair>('$userName: messages').listenable(),
           builder: (context, Box<ChatPair> box, widget) {
             List<ChatPair> chats = box.values.toList().cast();
             chats.sort();
