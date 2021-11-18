@@ -74,7 +74,7 @@ Future<MqttServerClient> connect(String _username, MessageProvider msgProvider,
 void sendMessage(String receiver, String message) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
-  builder.addString("$timestamp, $username: $message");
+  builder.addUTF8String("$timestamp, $username: $message");
   client.publishMessage(receiver, MqttQos.atLeastOnce, builder.payload);
 }
 
