@@ -76,14 +76,14 @@ void sendMessage(String receiver, String message) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   builder.addUTF8String("$timestamp, $username: $message");
-  client.publishMessage("\\receiver", MqttQos.atLeastOnce, builder.payload);
+  client.publishMessage("/receiver", MqttQos.atLeastOnce, builder.payload);
 }
 
 /// connection succeeded
 void onConnected() {
   print('Connected');
   // every user subscribes to topic named after them
-  client.subscribe("\\$username", MqttQos.atLeastOnce);
+  client.subscribe("/$username", MqttQos.atLeastOnce);
 }
 
 /// unconnected
