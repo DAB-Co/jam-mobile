@@ -34,7 +34,7 @@ Future<MqttServerClient> connect(String _username, String password, MessageProvi
       .withWillMessage('Will message')
       //.startClean()
       .withClientIdentifier(username)
-      .withWillQos(MqttQos.atMostOnce);
+      .withWillQos(MqttQos.exactlyOnce);
 
   try {
     await _client.connect();
@@ -76,14 +76,14 @@ void sendMessage(String receiver, String message) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   builder.addUTF8String("$timestamp, $username: $message");
-  client.publishMessage("/$receiver", MqttQos.atMostOnce, builder.payload);
+  client.publishMessage("/$receiver", MqttQos.exactlyOnce, builder.payload);
 }
 
 /// connection succeeded
 void onConnected() {
   print('Connected');
   // every user subscribes to topic named after them
-  client.subscribe("/$username", MqttQos.atLeastOnce);
+  client.subscribe("/$username", MqttQos.exactlyOnce);
 }
 
 /// unconnected
