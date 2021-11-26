@@ -47,8 +47,7 @@ Future<MqttServerClient> connect(String _username, String password, MessageProvi
 
   _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
     final MqttPublishMessage byteMessage = c[0].payload as MqttPublishMessage;
-    final payload =
-        MqttPublishPayload.bytesToStringAsString(byteMessage.payload.message);
+    final payload = MqttEncoding().decoder.convert(byteMessage.payload.message);
 
     print('Received message:$payload from topic: ${c[0].topic}>');
 
