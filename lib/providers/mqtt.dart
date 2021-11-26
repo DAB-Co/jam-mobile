@@ -10,7 +10,7 @@ var client;
 var username;
 var provider;
 
-Future<MqttServerClient> connect(String _username, MessageProvider msgProvider,
+Future<MqttServerClient> connect(String _username, String password, MessageProvider msgProvider,
     UnreadMessageProvider unreadProvider) async {
   username = _username;
   await msgProvider.init(unreadProvider, username);
@@ -19,18 +19,19 @@ Future<MqttServerClient> connect(String _username, MessageProvider msgProvider,
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);
   client = _client;
   _client.logging(on: true);
-  //_client.keepAlivePeriod = 60;
+  _client.keepAlivePeriod = 60;
   _client.onConnected = onConnected;
   _client.onDisconnected = onDisconnected;
   _client.onUnsubscribed = onUnsubscribed;
   _client.onSubscribed = onSubscribed;
   _client.onSubscribeFail = onSubscribeFail;
   _client.pongCallback = pong;
+  _client.autoReconnect = true;
 
   _client.connectionMessage = MqttConnectMessage()
-      //.authenticateAs('username', 'password')
-      //.withWillTopic('willtopic')
-      //.withWillMessage('Will message')
+      .authenticateAs(username, password)
+      .withWillTopic('willtopic')
+      .withWillMessage('Will message')
       //.startClean()
       .withClientIdentifier(username)
       .withWillQos(MqttQos.atMostOnce);

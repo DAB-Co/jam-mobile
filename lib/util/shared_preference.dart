@@ -8,19 +8,23 @@ class UserPreferences {
   void saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("email", user.email!);
+    prefs.setString("token", user.token!);
   }
 
   Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? email = prefs.getString("email");
+    String? token = prefs.getString("token");
     return User(
       email: email,
+      token: token,
     );
   }
 
   void removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("email");
+    prefs.remove("token");
   }
 
   Future<int?> getUnreadMessageCount(String username) async {

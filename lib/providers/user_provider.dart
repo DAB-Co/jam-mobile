@@ -15,6 +15,7 @@ class UserProvider with ChangeNotifier {
     print("set user içinde ${user?.email!}");
     mqttWrapper.connect(
         user!.email!,
+        user.token!,
         Provider.of<MessageProvider>(context, listen: false),
         Provider.of<UnreadMessageProvider>(context, listen: false));
     _user = user;
