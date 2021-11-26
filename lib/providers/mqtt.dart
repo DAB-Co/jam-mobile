@@ -76,7 +76,7 @@ void sendMessage(String receiver, String message) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   builder.addUTF8String("$timestamp, $username: $message");
-  client.publishMessage("/receiver", MqttQos.atLeastOnce, builder.payload);
+  client.publishMessage("/$receiver", MqttQos.atMostOnce, builder.payload);
 }
 
 /// connection succeeded
