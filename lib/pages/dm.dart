@@ -83,7 +83,7 @@ class _DMState extends State<DM> {
         Provider.of<MessageProvider>(context, listen: false).openBox(other);
 
     User user = Provider.of<UserProvider>(context).user!;
-    String userName = user.email!;
+    String userName = user.username!;
 
     return Scaffold(
       appBar: AppBar(

@@ -26,11 +26,27 @@ String? validatePassword(String? value) {
   var maxLength = 37;
   var minLength = 8;
   if (value == null) {
-    _msg = "Your password is required";
+    _msg = "Password can't be empty";
   } else if (value.length < minLength) {
     _msg = 'Password must be at least $minLength characters';
   } else if (value.length > maxLength) {
     _msg = "Password can't be longer than $maxLength characters";
+  }
+  return _msg;
+}
+
+String? validateUsername(String? value) {
+  String? _msg;
+  var maxLength = 31;
+  var minLength = 6;
+  if (value == null) {
+    _msg = "Username can't be empty";
+  }
+  else if (value.length < minLength) {
+    _msg = 'Username must be at least $minLength characters';
+  }
+  else if (value.length > maxLength) {
+    _msg = "Username can't be longer than $maxLength characters";
   }
   return _msg;
 }

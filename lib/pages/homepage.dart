@@ -94,7 +94,7 @@ class _HomepageState extends State<Homepage> {
                   Padding(
                     padding: EdgeInsets.all(50.0),
                     child: Text(
-                      user.email!,
+                      user.username!,
                       style: TextStyle(
                         color: Colors.white,
                       ),
@@ -142,7 +142,7 @@ class _HomepageState extends State<Homepage> {
         children: [
           SizedBox(height: 100),
           Center(
-            child: Text("${greetingsText()} ${user.email!}"),
+            child: Text("${greetingsText()} ${user.username!}"),
           ),
           Expanded(
             child: Padding(

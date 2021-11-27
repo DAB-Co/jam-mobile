@@ -31,7 +31,7 @@ class AuthProvider with ChangeNotifier {
     var response;
 
     final Map<String, dynamic> loginData = {
-      'username': email,
+      'email': email,
       'password': password,
     };
 
@@ -59,7 +59,7 @@ class AuthProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       // TODO token will come from server
       User authUser = User();
-      authUser.email = email;
+      authUser.username = jsonDecode(response.body)["username"];
       authUser.token = password;
 
       UserPreferences().saveUser(authUser);
@@ -80,12 +80,13 @@ class AuthProvider with ChangeNotifier {
     return result;
   }
 
-  Future<dynamic> register(String? email, String? password) async {
+  Future<dynamic> register(String? email, String? username, String? password) async {
     var result;
     var response;
 
     final Map<String, String?> registrationData = {
-      'username': email,
+      'username': username,
+      'email': email,
       'password': password,
     };
 
@@ -113,7 +114,7 @@ class AuthProvider with ChangeNotifier {
     if (response.statusCode == 200) {
       // TODO token will come from server
       User authUser = User();
-      authUser.email = email;
+      authUser.username = username;
       authUser.token = password;
 
       UserPreferences().saveUser(authUser);

@@ -26,7 +26,7 @@ class _RegisterState extends State<Register> {
 
   final formKey = new GlobalKey<FormState>();
 
-  String? _username, _password, _confirmPassword;
+  String? _username, _email, _password, _confirmPassword;
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +39,16 @@ class _RegisterState extends State<Register> {
     final usernameField = TextFormField(
       onChanged: (_) => formKey.currentState!.validate(),
       autofocus: false,
-      validator: validateEmail,
+      validator: validateUsername,
       onSaved: (value) => _username = value,
+      decoration: buildInputDecoration("Enter username", Icons.email),
+    );
+
+    final emailField = TextFormField(
+      onChanged: (_) => formKey.currentState!.validate(),
+      autofocus: false,
+      validator: validateEmail,
+      onSaved: (value) => _email = value,
       decoration: buildInputDecoration("Enter email address", Icons.email),
     );
 
@@ -79,7 +87,7 @@ class _RegisterState extends State<Register> {
           showSnackBar(context, "Passwords don't match.");
           return;
         }
-        auth.register(_username, _password).then((response) {
+        auth.register(_username, _email, _password).then((response) {
           if (response['status']) {
             User? user = response['user'];
             Provider.of<UserProvider>(context, listen: false).setUser(user, context);
@@ -105,6 +113,10 @@ class _RegisterState extends State<Register> {
                 children: [
                   SizedBox(height: 15.0),
                   Text("Email"),
+                  SizedBox(height: 5.0),
+                  emailField,
+                  SizedBox(height: 15.0),
+                  Text("Username"),
                   SizedBox(height: 5.0),
                   usernameField,
                   SizedBox(height: 15.0),

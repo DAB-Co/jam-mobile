@@ -18,7 +18,7 @@ class _MessagesState extends State<Messages> {
   Widget build(BuildContext context) {
 
     User user = Provider.of<UserProvider>(context).user!;
-    String userName = user.email!;
+    String userName = user.username!;
 
     return Scaffold(
       appBar: AppBar(
