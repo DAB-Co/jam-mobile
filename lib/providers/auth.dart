@@ -57,14 +57,21 @@ class AuthProvider with ChangeNotifier {
     }
 
     if (response.statusCode == 200) {
-      User authUser = User.fromJson(loginData);
+      // TODO token will come from server
+      User authUser = User();
+      authUser.email = email;
+      authUser.token = password;
 
       UserPreferences().saveUser(authUser);
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
 
-      result = {'status': true, 'message': 'Successful', 'user': authUser};
+      result = {
+        'status': true,
+        'message': 'Successful',
+        'user': authUser,
+      };
     } else {
       _loggedInStatus = Status.NotLoggedIn;
       notifyListeners();
@@ -104,7 +111,10 @@ class AuthProvider with ChangeNotifier {
     }
 
     if (response.statusCode == 200) {
-      User authUser = User.fromJson(registrationData);
+      // TODO token will come from server
+      User authUser = User();
+      authUser.email = email;
+      authUser.token = password;
 
       UserPreferences().saveUser(authUser);
 
@@ -114,7 +124,7 @@ class AuthProvider with ChangeNotifier {
       result = {
         'status': true,
         'message': 'Successfully registered',
-        'data': authUser
+        'user': authUser,
       };
     } else {
       _loggedInStatus = Status.NotLoggedIn;
