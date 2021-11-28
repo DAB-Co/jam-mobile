@@ -17,16 +17,16 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final formKey = new GlobalKey<FormState>();
 
-  String? _username, _password;
+  String? _email, _password;
 
   @override
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
 
-    final usernameField = TextFormField(
+    final emailField = TextFormField(
       autofocus: false,
       validator: validateEmail,
-      onSaved: (value) => _username = value,
+      onSaved: (value) => _email = value,
       decoration: buildInputDecoration("Enter email address", Icons.email),
     );
 
@@ -83,7 +83,7 @@ class _LoginState extends State<Login> {
         form.save();
 
         final Future<Map<String, dynamic>> successfulMessage =
-            auth.login(_username, _password);
+            auth.login(_email, _password);
 
         successfulMessage.then((response) {
           if (response['status']) {
@@ -113,7 +113,7 @@ class _LoginState extends State<Login> {
                   SizedBox(height: 15.0),
                   Text("Email"),
                   SizedBox(height: 5.0),
-                  usernameField,
+                  emailField,
                   SizedBox(height: 20.0),
                   Text("Password"),
                   SizedBox(height: 5.0),
