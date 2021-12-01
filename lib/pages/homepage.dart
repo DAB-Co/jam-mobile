@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jam/providers/unread_message_counter.dart';
-import 'package:jam/util/shared_preference.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -92,11 +91,19 @@ class _HomepageState extends State<Homepage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(50.0),
-                    child: Text(
-                      user.email!,
-                      style: TextStyle(
-                        color: Colors.white,
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Container(
+                      width: 162,
+                      height: 20,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        alignment: Alignment.center,
+                        child: Text(
+                          user.username!,
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -131,8 +138,8 @@ class _HomepageState extends State<Homepage> {
               title: const Text('Logout'),
               onTap: () {
                 Navigator.pop(context);
-                UserPreferences().removeUser();
                 Navigator.pushReplacementNamed(context, routes.login);
+                Provider.of<UserProvider>(context, listen: false).logout();
               },
             ),
           ],
@@ -142,7 +149,7 @@ class _HomepageState extends State<Homepage> {
         children: [
           SizedBox(height: 100),
           Center(
-            child: Text("${greetingsText()} ${user.email!}"),
+            child: Text("${greetingsText()} ${user.username!}"),
           ),
           Expanded(
             child: Padding(

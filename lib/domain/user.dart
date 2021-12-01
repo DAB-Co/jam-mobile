@@ -1,12 +1,12 @@
 class User {
-  String? email;
+  String? username;
   String? token;
 
-  User({this.email, this.token});
+  User({this.username, this.token});
 
   factory User.fromJson(Map<String, dynamic> responseData) {
     return User(
-      email: responseData['username'],
+      username: responseData["username"],
       token: responseData['token'],
     );
   }

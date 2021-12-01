@@ -11,7 +11,7 @@ import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
 import '/constants/app_url.dart';
 
-var client;
+MqttServerClient? client;
 var username;
 var provider;
 
@@ -110,14 +110,18 @@ void sendMessage(String receiver, String content) {
     "content": content
   };
   builder.addUTF8String(jsonEncode(message));
-  client.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload);
+  client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
+}
+
+Future disconnect() async {
+  client?.disconnect();
 }
 
 /// connection succeeded
 void onConnected() {
   print('Connected');
   // every user subscribes to topic named after them
-  client.subscribe("/$username/inbox", MqttQos.exactlyOnce);
+  client?.subscribe("/$username/inbox", MqttQos.exactlyOnce);
 }
 
 /// unconnected

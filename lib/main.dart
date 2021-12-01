@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
               future: getUserData(),
               builder: (context, snapshot) {
                 if (snapshot.data != null) {
-                  print((snapshot.data as User).email);
+                  print((snapshot.data as User).username);
                 }
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
@@ -49,7 +49,7 @@ class MyApp extends StatelessWidget {
                   default:
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
-                    else if ((snapshot.data as User).email == null)
+                    else if ((snapshot.data as User).username == null)
                       return Login();
                     var user = snapshot.data as User;
                     Provider.of<UserProvider>(context).setUser(user, context);
