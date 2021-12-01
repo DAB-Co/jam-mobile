@@ -23,7 +23,7 @@ class UserPreferences {
 
   void removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove("email");
+    prefs.remove("username");
     prefs.remove("token");
   }
 
