@@ -91,11 +91,19 @@ class _HomepageState extends State<Homepage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(50.0),
-                    child: Text(
-                      user.username!,
-                      style: TextStyle(
-                        color: Colors.white,
+                    padding: EdgeInsets.only(left: 10.0),
+                    child: Container(
+                      width: 162,
+                      height: 20,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        alignment: Alignment.center,
+                        child: Text(
+                          user.username!,
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
                   ),
