@@ -26,6 +26,6 @@ class UserProvider with ChangeNotifier {
   void logout() {
     _user = new User();
     UserPreferences().removeUser();
-    mqttWrapper.client.disconnect();
+    mqttWrapper.disconnect();
   }
 }
