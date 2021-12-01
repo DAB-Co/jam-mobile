@@ -1,6 +1,5 @@
 String? validateEmail(String? value) {
   String? _msg;
-  var notValid = [":", ",", " "];
   RegExp regex = new RegExp(
       r'^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
   if (value!.isEmpty) {
@@ -8,14 +7,7 @@ String? validateEmail(String? value) {
   } else if (!regex.hasMatch(value)) {
     _msg = "Please provide a valid email address";
   } else if (value.contains(" ")) {
-    _msg = "Username cannot have spaces"; // different prompt for space
-  }
-
-  for (String char in notValid) {
-    if (value.contains(char)) {
-      _msg = "Can not use '$char' in username";
-      break;
-    }
+    _msg = "Email cannot have spaces"; // different prompt for space
   }
 
   return _msg;
@@ -36,6 +28,7 @@ String? validatePassword(String? value) {
 }
 
 String? validateUsername(String? value) {
+  var notValid = [":", ",", " "];
   String? _msg;
   var maxLength = 31;
   var minLength = 6;
@@ -48,5 +41,13 @@ String? validateUsername(String? value) {
   else if (value.length > maxLength) {
     _msg = "Username can't be longer than $maxLength characters";
   }
+
+  for (String char in notValid) {
+    if (value != null && value.contains(char)) {
+      _msg = "Can not use '$char' in username";
+      break;
+    }
+  }
+
   return _msg;
 }

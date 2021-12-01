@@ -87,7 +87,7 @@ class _RegisterState extends State<Register> {
           showSnackBar(context, "Passwords don't match.");
           return;
         }
-        auth.register(_username, _email, _password).then((response) {
+        auth.register(_email, _username, _password).then((response) {
           if (response['status']) {
             User? user = response['user'];
             Provider.of<UserProvider>(context, listen: false).setUser(user, context);
