@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:jam/providers/mqtt.dart' as mqttWrapper;
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/util/shared_preference.dart';
 import 'package:provider/provider.dart';
 
 import '/domain/user.dart';
@@ -20,5 +21,11 @@ class UserProvider with ChangeNotifier {
         Provider.of<UnreadMessageProvider>(context, listen: false));
     _user = user;
     // notifyListeners();
+  }
+
+  void logout() {
+    _user = new User();
+    UserPreferences().removeUser();
+    mqttWrapper.client.disconnect();
   }
 }
