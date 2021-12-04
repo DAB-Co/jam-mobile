@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:jam/util/firebase.dart' as notification;
 
 import '/constants/app_url.dart';
 import '/domain/user.dart';
@@ -33,6 +34,7 @@ class AuthProvider with ChangeNotifier {
     final Map<String, dynamic> loginData = {
       'email': email,
       'password': password,
+      'token': notification.token,
     };
 
     _loggedInStatus = Status.Authenticating;
@@ -88,6 +90,7 @@ class AuthProvider with ChangeNotifier {
       'username': username,
       'email': email,
       'password': password,
+      'token': notification.token,
     };
 
     _loggedInStatus = Status.Authenticating;

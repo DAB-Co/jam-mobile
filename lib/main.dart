@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jam/pages/messages.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/util/firebase.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -13,7 +14,8 @@ import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/shared_preference.dart';
 
-void main() {
+void main() async {
+  await initNotifications();
   runApp(MyApp());
 }
 
