@@ -4,6 +4,7 @@ import 'package:jam/domain/user.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
 
 import 'dm.dart';
@@ -35,7 +36,7 @@ class _MessagesState extends State<Messages> {
         ],
       ),
       body: ValueListenableBuilder(
-          valueListenable: Hive.box<ChatPair>('$userName: messages').listenable(),
+          valueListenable: Hive.box<ChatPair>('${onlyASCII(userName)}: messages').listenable(),
           builder: (context, Box<ChatPair> box, widget) {
             List<ChatPair> chats = box.values.toList().cast();
             chats.sort();

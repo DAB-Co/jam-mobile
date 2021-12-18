@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/util/util_functions.dart';
 
 class MessageProvider extends ChangeNotifier {
 
@@ -23,6 +24,7 @@ class MessageProvider extends ChangeNotifier {
       Hive.registerAdapter(ChatPairAdapter());
       Hive.registerAdapter(ChatMessageAdapter());
     }
+    thisUser = onlyASCII(thisUser);
     this.thisUser = thisUser;
     messages = await Hive.openBox<ChatPair>('$thisUser: messages');
     unread.initUnreadCount(thisUser);

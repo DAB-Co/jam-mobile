@@ -8,6 +8,7 @@ import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
@@ -153,7 +154,7 @@ class _DMState extends State<DM> {
                     });
                     return ValueListenableBuilder(
                         valueListenable:
-                            Hive.box<ChatMessage>('$userName:$other').listenable(),
+                            Hive.box<ChatMessage>('${onlyASCII(userName)}:$other').listenable(),
                         builder: (context, Box<ChatMessage> box, widget) {
                           List<ChatMessage> messages =
                               box.values.toList().cast();
