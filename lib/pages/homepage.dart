@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/widgets/alert_dialog.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -137,9 +138,7 @@ class _HomepageState extends State<Homepage> {
               ),
               title: const Text('Logout'),
               onTap: () {
-                Navigator.pop(context);
-                Navigator.pushReplacementNamed(context, routes.login);
-                Provider.of<UserProvider>(context, listen: false).logout();
+                showLogoutAlertDialog(context);
               },
             ),
           ],
