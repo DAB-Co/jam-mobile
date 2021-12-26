@@ -1,5 +1,5 @@
 class AppUrl {
-  static const String baseURL = "http://rocketdodgegame.com";
+  static const String baseURL = "https://rocketdodgegame.com";
   static const String apiUrl = baseURL + ":41370/api";
 
   static const String login = apiUrl + "/auth";

@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
-import '/constants/app_url.dart';
+import '../config/app_url.dart';
 
 MqttServerClient? client;
 var username;

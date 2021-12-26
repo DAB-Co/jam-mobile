@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:jam/util/firebase.dart' as notification;
 
-import '/constants/app_url.dart';
+import '../config/app_url.dart';
 import '/domain/user.dart';
 import '/util/shared_preference.dart';
 

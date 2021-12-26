@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/config/ssl.dart';
 import 'package:jam/pages/messages.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
@@ -15,7 +16,9 @@ import '/providers/user_provider.dart';
 import '/util/shared_preference.dart';
 
 void main() async {
-  await initNotifications();
+  WidgetsFlutterBinding.ensureInitialized(); // Important!
+  await loadCertificate();                   // SSL certificate
+  await initNotifications();                 // Connect to firebase for notifications
   runApp(MyApp());
 }
 
