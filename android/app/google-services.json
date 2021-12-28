@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1077372393582",
+    "project_id": "jam-app-45465",
+    "storage_bucket": "jam-app-45465.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077372393582:android:843621538d520dabdfae7f",
+        "android_client_info": {
+          "package_name": "com.dabco.jam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1077372393582-h0bb50tct2ffi840jb7hvep4fugrskut.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkvKnpt1OYoEXcJDbp9MrgiQW2K5lQROw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1077372393582-h0bb50tct2ffi840jb7hvep4fugrskut.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
