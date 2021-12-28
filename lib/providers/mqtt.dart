@@ -53,6 +53,7 @@ Future<MqttServerClient> connect(String _username, String password, MessageProvi
   _client.onSubscribeFail = onSubscribeFail;
   _client.pongCallback = pong;
   _client.autoReconnect = true;
+  _client.secure = true;
 
   var deviceId = await getDeviceIdentifier();
   print("deviceId: " + deviceId);
