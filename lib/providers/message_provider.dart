@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
+import 'package:jam/network/get_friends.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/util_functions.dart';
 
 class MessageProvider extends ChangeNotifier {
-
   var messages;
 
   String thisUser = "";
@@ -26,13 +26,18 @@ class MessageProvider extends ChangeNotifier {
     }
     thisUser = onlyASCII(thisUser);
     this.thisUser = thisUser;
+    // boxes can be opened once
     messages = await Hive.openBox<ChatPair>('$thisUser: messages');
     unread.initUnreadCount(thisUser);
+    if (firstTime) {
+      initFriends(thisUser);
+    }
     firstTime = false;
   }
 
   /// adds message to the list
-  void add(String other, ChatMessage message, UnreadMessageProvider unread) async {
+  void add(
+      String other, ChatMessage message, UnreadMessageProvider unread) async {
     var chat = await Hive.openBox<ChatMessage>('$thisUser:$other');
     await chat.add(message);
     print("incoming message adding");
@@ -77,5 +82,18 @@ class MessageProvider extends ChangeNotifier {
     currentBox?.close();
     currentBox = null;
     inDmOf = "";
+  }
+
+  /// Take friends from server and save them to local storage
+  Future initFriends(String username) async {
+    var friendsList = await getFriends(username);
+    print("friendsList: ");
+    print(friendsList);
+    for (String friend in friendsList) {
+      if (messages.get(friend) == null) {
+        var chatPair = ChatPair(username: friend);
+        messages.put(friend, chatPair);
+      }
+    }
   }
 }
