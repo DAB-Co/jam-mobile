@@ -109,6 +109,7 @@ class _DMState extends State<DM> {
                       fontSize: 16,
                     ),
                   ),
+                  /* TODO online offline text
                   SizedBox(height: 6),
                   Text(
                     "Online",
@@ -117,6 +118,7 @@ class _DMState extends State<DM> {
                       fontSize: 13,
                     ),
                   ),
+                   */
                 ],
               ),
             ),
