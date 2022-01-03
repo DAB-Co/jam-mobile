@@ -90,6 +90,19 @@ class _DMState extends State<DM> {
           Provider.of<UnreadMessageProvider>(context, listen: false));
     }
 
+    Set<ChatMessage> trying = Set();
+    void resend(List<ChatMessage> messages, int index) {
+      ChatMessage failedMessage = messages[index];
+      if (trying.contains(failedMessage)) return;
+      trying.add(failedMessage);
+      bool sent = sendMessage(otherId, failedMessage.messageContent);
+      if (sent) {
+        failedMessage.successful = true;
+        messages[index] = failedMessage;
+      }
+      trying.remove(failedMessage);
+    }
+
     Future boxOpening =
         Provider.of<MessageProvider>(context, listen: false).openBox(other);
 
@@ -190,23 +203,63 @@ class _DMState extends State<DM> {
                                   alignment: (messages[index].isIncomingMessage
                                       ? Alignment.topLeft
                                       : Alignment.topRight),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (messages[index].isIncomingMessage
-                                          ? Colors.grey.shade200
-                                          : Colors.blue[200]),
-                                    ),
-                                    padding: EdgeInsets.all(16),
-                                    child: Text(
-                                      messages[index].messageContent,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: messages[index].successful
-                                            ? Colors.black
-                                            : Colors.red,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          if (!messages[index].successful)
+                                            IconButton(
+                                              icon: Icon(
+                                                Icons.replay,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () => {
+                                                setState(() {
+                                                  resend(messages, index);
+                                                })
+                                              },
+                                            ),
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20),
+                                              color: (messages[index]
+                                                      .isIncomingMessage
+                                                  ? Colors.grey.shade200
+                                                  : Colors.blue[200]),
+                                            ),
+                                            padding: EdgeInsets.all(16),
+                                            child: Text(
+                                              messages[index].messageContent,
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color:
+                                                    messages[index].successful
+                                                        ? Colors.black
+                                                        : Colors.red,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
+                                      if (!messages[index].successful)
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 5.0),
+                                          child: Text(
+                                            "Couldn't send this message.",
+                                            style: TextStyle(
+                                              color: Colors.black45,
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
                                   ),
                                 ),
                               );
