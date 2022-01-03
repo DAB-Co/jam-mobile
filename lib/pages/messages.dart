@@ -82,11 +82,13 @@ class _MessagesState extends State<Messages> {
                         ),
                   onTap: () {
                     var name = chats[index].username;
+                    var id = chats[index].userId;
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => DM(
                             otherUsername: name,
+                            otherId: id,
                             unRead: Provider.of<MessageProvider>(context,
                                     listen: false)
                                 .messages

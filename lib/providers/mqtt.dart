@@ -1,3 +1,4 @@
+import 'package:jam/domain/user.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
@@ -12,7 +13,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import '../config/app_url.dart';
 
 MqttServerClient? client;
-var username;
+late User user;
 var provider;
 
 Future<String> getDeviceIdentifier() async {
@@ -36,10 +37,12 @@ Future<String> getDeviceIdentifier() async {
   return deviceIdentifier;
 }
 
-Future<MqttServerClient> connect(String _username, String password, MessageProvider msgProvider,
+Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
     UnreadMessageProvider unreadProvider) async {
-  username = _username;
-  await msgProvider.init(unreadProvider, username);
+  user = _user;
+  var username = user.username!;
+  var password = user.token;
+  await msgProvider.init(unreadProvider, user);
   provider = msgProvider;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);
@@ -59,11 +62,11 @@ Future<MqttServerClient> connect(String _username, String password, MessageProvi
   print("deviceId: " + deviceId);
 
   _client.connectionMessage = MqttConnectMessage()
-      .authenticateAs(username, password)
+      .authenticateAs(user.id, password)
       .withWillTopic('willtopic')
       .withWillMessage('Will message')
       //.startClean()
-      .withClientIdentifier('$username:$deviceId')
+      .withClientIdentifier('${user.id}:$deviceId')
       .withWillQos(MqttQos.exactlyOnce)
       .withProtocolVersion(4);
 
@@ -87,9 +90,11 @@ Future<MqttServerClient> connect(String _username, String password, MessageProvi
     String date = message["timestamp"];
     int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
     var username = message["from"];
+    var id = message["fromId"];
     var messageContent = message["content"];
     msgProvider.add(
         username,
+        id,
         ChatMessage(
           messageContent: messageContent,
           isIncomingMessage: true,
@@ -106,12 +111,15 @@ void sendMessage(String receiver, String content) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   var message = {
-    "from": username,
+    "from": user.username,
+    "fromId": user.id,
     "timestamp": timestamp,
     "content": content
   };
   builder.addUTF8String(jsonEncode(message));
-  client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
+  int? publishMessage = client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
+  print("publish code:");
+  print(publishMessage);
 }
 
 Future disconnect() async {
@@ -121,8 +129,8 @@ Future disconnect() async {
 /// connection succeeded
 void onConnected() {
   print('Connected');
-  // every user subscribes to topic named after them
-  client?.subscribe("/$username/inbox", MqttQos.exactlyOnce);
+  // every user subscribes to topic for their id
+  client?.subscribe("/${user.id}/inbox", MqttQos.exactlyOnce);
 }
 
 /// unconnected

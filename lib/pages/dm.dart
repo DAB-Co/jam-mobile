@@ -13,18 +13,20 @@ import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
   // Constructor
-  const DM({required this.otherUsername, required this.unRead}) : super();
+  const DM({required this.otherUsername, required this.unRead, required this.otherId}) : super();
   final String otherUsername;
+  final String otherId;
   final int unRead;
 
   @override
-  _DMState createState() => _DMState(other: otherUsername, unRead: unRead);
+  _DMState createState() => _DMState(other: otherUsername, unRead: unRead, otherId: otherId);
 }
 
 class _DMState extends State<DM> {
   // Constructor
-  _DMState({required this.other, required this.unRead}) : super();
+  _DMState({required this.other, required this.unRead, required this.otherId}) : super();
   final String other;
+  final String otherId;
   final int unRead;
 
   final chatTextController = TextEditingController();
@@ -71,13 +73,14 @@ class _DMState extends State<DM> {
       if (noSpaces == "") return;
       Provider.of<MessageProvider>(context, listen: false).add(
           other,
+          otherId,
           ChatMessage(
             messageContent: message,
             isIncomingMessage: false,
             timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
           ),
           Provider.of<UnreadMessageProvider>(context, listen: false));
-      sendMessage(other, message);
+      sendMessage(otherId, message);
     }
 
     Future boxOpening =

@@ -9,15 +9,18 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("username", user.username!);
     prefs.setString("token", user.token!);
+    prefs.setString("user_id", user.id!);
   }
 
   Future<User> getUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String? username = prefs.getString("username");
     String? token = prefs.getString("token");
+    String? id = prefs.getString("user_id");
     return User(
       username: username,
       token: token,
+      id: id,
     );
   }
 
@@ -25,6 +28,7 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove("username");
     prefs.remove("token");
+    prefs.remove("user_id");
   }
 
   Future<int?> getUnreadMessageCount(String username) async {

@@ -18,6 +18,7 @@ class ChatPairAdapter extends TypeAdapter<ChatPair> {
     };
     return ChatPair(
       username: fields[0] as String,
+      userId: fields[4] as String,
     )
       ..unreadMessages = fields[1] as int
       ..lastMessage = fields[2] as String
@@ -27,7 +28,7 @@ class ChatPairAdapter extends TypeAdapter<ChatPair> {
   @override
   void write(BinaryWriter writer, ChatPair obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.username)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class ChatPairAdapter extends TypeAdapter<ChatPair> {
       ..writeByte(2)
       ..write(obj.lastMessage)
       ..writeByte(3)
-      ..write(obj.lastMessageTimeStamp);
+      ..write(obj.lastMessageTimeStamp)
+      ..writeByte(4)
+      ..write(obj.userId);
   }
 
   @override

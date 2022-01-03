@@ -12,8 +12,10 @@ class ChatPair implements Comparable {
   String lastMessage = "";
   @HiveField(3)
   int lastMessageTimeStamp = -1;
+  @HiveField(4)
+  String userId;
 
-  ChatPair({required this.username});
+  ChatPair({required this.username, required this.userId});
 
   @override
   int compareTo(other) {

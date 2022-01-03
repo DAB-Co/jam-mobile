@@ -2,13 +2,14 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
+import 'package:jam/domain/otherUser.dart';
 
 /// Returns friend list from server
-Future<List<String>> getFriends(String username) async {
+Future<List<OtherUser>> getFriends(String userId) async {
   final Map<String, String> usernameData = {
-    "username": username,
+    "user_id": userId,
   };
-  List<String> friendsList = [];
+  List<OtherUser> friendsList = [];
   var response;
   try {
     response = await post(
@@ -16,8 +17,13 @@ Future<List<String>> getFriends(String username) async {
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: json.encode(usernameData),
     );
-    friendsList =
-    List<String>.from(jsonDecode(response.body)); // cast dynamic to string
+    Map<String, dynamic> rawFriends = jsonDecode(response.body);
+    for (String userId in rawFriends.keys) {
+      if (!rawFriends[userId]["blocked"]) {
+        friendsList.add(
+            OtherUser(username: rawFriends[userId]["username"], id: userId));
+      }
+    }
   } catch (err) {
     print(err);
   }
