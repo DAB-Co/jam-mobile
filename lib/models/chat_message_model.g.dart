@@ -20,19 +20,22 @@ class ChatMessageAdapter extends TypeAdapter<ChatMessage> {
       messageContent: fields[0] as String,
       isIncomingMessage: fields[1] as bool,
       timestamp: fields[2] as int,
+      successful: fields[3] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, ChatMessage obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.messageContent)
       ..writeByte(1)
       ..write(obj.isIncomingMessage)
       ..writeByte(2)
-      ..write(obj.timestamp);
+      ..write(obj.timestamp)
+      ..writeByte(3)
+      ..write(obj.successful);
   }
 
   @override

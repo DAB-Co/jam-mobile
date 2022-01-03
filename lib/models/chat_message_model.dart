@@ -10,9 +10,12 @@ class ChatMessage {
   bool isIncomingMessage;
   @HiveField(2)
   int timestamp;
+  @HiveField(3)
+  bool successful;
 
   ChatMessage(
       {required this.messageContent,
       required this.isIncomingMessage,
-      required this.timestamp});
+      required this.timestamp,
+      required this.successful});
 }

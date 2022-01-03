@@ -13,18 +13,24 @@ import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
   // Constructor
-  const DM({required this.otherUsername, required this.unRead, required this.otherId}) : super();
+  const DM(
+      {required this.otherUsername,
+      required this.unRead,
+      required this.otherId})
+      : super();
   final String otherUsername;
   final String otherId;
   final int unRead;
 
   @override
-  _DMState createState() => _DMState(other: otherUsername, unRead: unRead, otherId: otherId);
+  _DMState createState() =>
+      _DMState(other: otherUsername, unRead: unRead, otherId: otherId);
 }
 
 class _DMState extends State<DM> {
   // Constructor
-  _DMState({required this.other, required this.unRead, required this.otherId}) : super();
+  _DMState({required this.other, required this.unRead, required this.otherId})
+      : super();
   final String other;
   final String otherId;
   final int unRead;
@@ -71,6 +77,7 @@ class _DMState extends State<DM> {
       String noSpaces = message.replaceAll(" ", "");
       chatTextController.clear();
       if (noSpaces == "") return;
+      bool sent = sendMessage(otherId, message);
       Provider.of<MessageProvider>(context, listen: false).add(
           other,
           otherId,
@@ -78,9 +85,9 @@ class _DMState extends State<DM> {
             messageContent: message,
             isIncomingMessage: false,
             timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
+            successful: sent,
           ),
           Provider.of<UnreadMessageProvider>(context, listen: false));
-      sendMessage(otherId, message);
     }
 
     Future boxOpening =
@@ -158,8 +165,9 @@ class _DMState extends State<DM> {
                           .decUnreadCount(unRead);
                     });
                     return ValueListenableBuilder(
-                        valueListenable:
-                            Hive.box<ChatMessage>('${onlyASCII(userName)}:$other').listenable(),
+                        valueListenable: Hive.box<ChatMessage>(
+                                '${onlyASCII(userName)}:$other')
+                            .listenable(),
                         builder: (context, Box<ChatMessage> box, widget) {
                           List<ChatMessage> messages =
                               box.values.toList().cast();
@@ -192,7 +200,12 @@ class _DMState extends State<DM> {
                                     padding: EdgeInsets.all(16),
                                     child: Text(
                                       messages[index].messageContent,
-                                      style: TextStyle(fontSize: 15),
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: messages[index].successful
+                                            ? Colors.black
+                                            : Colors.red,
+                                      ),
                                     ),
                                   ),
                                 ),

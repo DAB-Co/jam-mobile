@@ -99,6 +99,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
           messageContent: messageContent,
           isIncomingMessage: true,
           timestamp: timestamp,
+          successful: true,
         ),
         unreadProvider);
   });
@@ -107,7 +108,8 @@ Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
   return _client;
 }
 
-void sendMessage(String receiver, String content) {
+/// Returns true if message is sent successfully
+bool sendMessage(String receiver, String content) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   var message = {
@@ -117,9 +119,13 @@ void sendMessage(String receiver, String content) {
     "content": content
   };
   builder.addUTF8String(jsonEncode(message));
-  int? publishMessage = client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
-  print("publish code:");
-  print(publishMessage);
+  try {
+    client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
+  } catch (e) {
+    print(e);
+    return false;
+  }
+  return true;
 }
 
 Future disconnect() async {
