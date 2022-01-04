@@ -33,7 +33,7 @@ class MessageProvider extends ChangeNotifier {
     // boxes can be opened once
     messages = await Hive.openBox<ChatPair>('$thisUsername: messages');
     unread.initUnreadCount(thisUsername);
-    initFriends(thisUser.id!);
+    initFriends(thisUser);
     firstTime = false;
   }
 
@@ -86,8 +86,8 @@ class MessageProvider extends ChangeNotifier {
   }
 
   /// Take friends from server and save them to local storage
-  Future initFriends(String userId) async {
-    var friendsList = await getFriends(userId);
+  Future initFriends(User user) async {
+    var friendsList = await getFriends(user.id!, user.token!);
     print("friendsList length: ${friendsList.length}");
     for (OtherUser friend in friendsList) {
       if (messages.get(friend.username) == null) {

@@ -5,9 +5,10 @@ import 'package:jam/config/app_url.dart';
 import 'package:jam/domain/otherUser.dart';
 
 /// Returns friend list from server
-Future<List<OtherUser>> getFriends(String userId) async {
+Future<List<OtherUser>> getFriends(String userId, String apiToken) async {
   final Map<String, String> usernameData = {
     "user_id": userId,
+    "api_token": apiToken,
   };
   List<OtherUser> friendsList = [];
   var response;
