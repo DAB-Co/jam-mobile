@@ -59,11 +59,10 @@ class AuthProvider with ChangeNotifier {
     }
 
     if (response.statusCode == 200) {
-      // TODO token will come from server
       var userData = jsonDecode(response.body);
       User authUser = User();
       authUser.username = userData["username"];
-      authUser.token = password;
+      authUser.token = userData["api_token"];
       authUser.id = userData["user_id"].toString();
 
       UserPreferences().saveUser(authUser);
@@ -117,11 +116,10 @@ class AuthProvider with ChangeNotifier {
     }
 
     if (response.statusCode == 200) {
-      // TODO token will come from server
       var userData = jsonDecode(response.body);
       User authUser = User();
       authUser.username = username;
-      authUser.token = password;
+      authUser.token = userData["api_token"];
       authUser.id = userData["user_id"].toString();
 
       UserPreferences().saveUser(authUser);
