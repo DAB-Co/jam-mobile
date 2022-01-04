@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:jam/providers/auth.dart';
 import 'package:jam/providers/unread_message_counter.dart';
-import 'package:jam/widgets/alert_dialog.dart';
+import 'package:jam/widgets/loading.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -17,6 +19,39 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
+    AuthProvider auth = Provider.of<AuthProvider>(context);
+
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Go back"),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Log out"),
+      onPressed: () {
+        auth.logout(user.id!, user.token!).then((response) {
+          if (response['status']) {
+            //Navigator.pop(context);
+            Navigator.pushReplacementNamed(context, routes.login);
+            Provider.of<UserProvider>(context, listen: false).logout();
+          } else {
+            showSnackBar(context, response['message']);
+          }
+        });
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Attention!"),
+      content: Text("Are you sure you want to log out?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
 
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +135,7 @@ class _HomepageState extends State<Homepage> {
                         fit: BoxFit.contain,
                         alignment: Alignment.center,
                         child: Text(
-                          user.username!,
+                          user.username == null ? "" : user.username!,
                           style: TextStyle(
                             color: Colors.white,
                           ),
@@ -138,7 +173,16 @@ class _HomepageState extends State<Homepage> {
               ),
               title: const Text('Logout'),
               onTap: () {
-                showLogoutAlertDialog(context);
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    if (auth.loggingOutStatus == Status.LoggingOut) {
+                      return loading("Logging out ... Please wait");
+                    } else {
+                      return alert;
+                    }
+                  },
+                );
               },
             ),
           ],
@@ -148,7 +192,9 @@ class _HomepageState extends State<Homepage> {
         children: [
           SizedBox(height: 100),
           Center(
-            child: Text("${greetingsText()} ${user.username!}"),
+            child: Text(user.username == null
+                ? ""
+                : "${greetingsText()} ${user.username!}"),
           ),
           Expanded(
             child: Padding(

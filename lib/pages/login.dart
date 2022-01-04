@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/widgets/loading.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -36,14 +37,6 @@ class _LoginState extends State<Login> {
       validator: (value) => value!.isEmpty ? "Please enter password" : null,
       onSaved: (value) => _password = value,
       decoration: buildInputDecoration("Enter your password", Icons.lock),
-    );
-
-    var loading = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        CircularProgressIndicator(),
-        Text(" Authenticating ... Please wait")
-      ],
     );
 
     final forgotLabel = Row(
@@ -120,7 +113,7 @@ class _LoginState extends State<Login> {
                   passwordField,
                   SizedBox(height: 20.0),
                   auth.loggedInStatus == Status.Authenticating
-                      ? loading
+                      ? loading("Authenticating ... Please wait")
                       : longButtons("Login", doLogin),
                   SizedBox(height: 5.0),
                   forgotLabel

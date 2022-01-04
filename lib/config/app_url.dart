@@ -6,6 +6,7 @@ class AppUrl {
   static const String register = apiUrl + "/signup";
   static const String forgotPassword = apiUrl + "/forgot-password";
   static const String friends = apiUrl + "/friends";
+  static const String logout = apiUrl + "/logout";
 
   static const String mqttURL = "rocketdodgegame.com";
   static const int mqttPort = 41371;

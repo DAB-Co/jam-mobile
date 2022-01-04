@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/widgets/loading.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -71,14 +72,6 @@ class _RegisterState extends State<Register> {
       decoration: buildInputDecoration("Confirm password", Icons.lock),
     );
 
-    var loading = Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        CircularProgressIndicator(),
-        Text(" Registering ... Please wait")
-      ],
-    );
-
     var doRegister = () {
       final form = formKey.currentState!;
       if (form.validate()) {
@@ -129,7 +122,7 @@ class _RegisterState extends State<Register> {
                   confirmPassword,
                   SizedBox(height: 20.0),
                   auth.loggedInStatus == Status.Authenticating
-                      ? loading
+                      ? loading("Registering ... Please wait")
                       : longButtons("Register", doRegister),
                 ],
               ),
