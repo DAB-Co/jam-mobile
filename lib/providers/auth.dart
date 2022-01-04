@@ -96,7 +96,7 @@ class AuthProvider with ChangeNotifier {
       'username': username,
       'email': email,
       'password': password,
-      'token': notification.token,
+      'notification_token': notification.token,
     };
 
     _loggedInStatus = Status.Authenticating;
