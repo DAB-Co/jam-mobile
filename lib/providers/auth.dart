@@ -147,11 +147,6 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<dynamic> logout(String userId, String apiToken) async {
-    final Map<String, String> logoutData = {
-      "user_id": userId,
-      "api_token": apiToken,
-    };
-
     _loggingOutStatus = Status.LoggingOut;
     notifyListeners();
 
