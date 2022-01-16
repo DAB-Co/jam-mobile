@@ -24,14 +24,14 @@ class DM extends StatefulWidget {
 
   @override
   _DMState createState() =>
-      _DMState(other: otherUsername, unRead: unRead, otherId: otherId);
+      _DMState(otherUsername: otherUsername, unRead: unRead, otherId: otherId);
 }
 
 class _DMState extends State<DM> {
   // Constructor
-  _DMState({required this.other, required this.unRead, required this.otherId})
+  _DMState({required this.otherUsername, required this.unRead, required this.otherId})
       : super();
-  final String other;
+  final String otherUsername;
   final String otherId;
   final int unRead;
 
@@ -46,14 +46,14 @@ class _DMState extends State<DM> {
 
   @override
   void initState() {
-    Provider.of<MessageProvider>(context, listen: false).messagesRead(other);
-    Provider.of<MessageProvider>(context, listen: false).enterDM(other);
+    Provider.of<MessageProvider>(context, listen: false).messagesRead(otherId);
+    Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();
   }
 
   @override
   void deactivate() {
-    Provider.of<MessageProvider>(context).exitDM(other);
+    Provider.of<MessageProvider>(context).exitDM(otherId);
     super.deactivate();
   }
 
@@ -79,7 +79,6 @@ class _DMState extends State<DM> {
       if (noSpaces == "") return;
       bool sent = sendMessage(otherId, message);
       Provider.of<MessageProvider>(context, listen: false).add(
-          other,
           otherId,
           ChatMessage(
             messageContent: message,
@@ -91,10 +90,10 @@ class _DMState extends State<DM> {
     }
 
     Future boxOpening =
-        Provider.of<MessageProvider>(context, listen: false).openBox(other);
+        Provider.of<MessageProvider>(context, listen: false).openBox(onlyASCII(otherId));
 
     User user = Provider.of<UserProvider>(context).user!;
-    String userName = user.username!;
+    String userId = user.id!;
 
     return Scaffold(
       appBar: AppBar(
@@ -114,7 +113,7 @@ class _DMState extends State<DM> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Text(
-                    other,
+                    otherUsername,
                     style: TextStyle(
                       fontSize: 16,
                     ),
@@ -165,9 +164,9 @@ class _DMState extends State<DM> {
                           .decUnreadCount(unRead);
                     });
                     return ValueListenableBuilder(
-                        valueListenable: Hive.box<ChatMessage>(
-                                '${onlyASCII(userName)}:$other')
-                            .listenable(),
+                        valueListenable:
+                            Hive.box<ChatMessage>('${onlyASCII(userId)}:$otherId')
+                                .listenable(),
                         builder: (context, Box<ChatMessage> box, widget) {
                           List<ChatMessage> messages =
                               box.values.toList().cast();

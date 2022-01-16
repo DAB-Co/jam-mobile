@@ -8,11 +8,17 @@ import 'package:jam/network/get_friends.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/util_functions.dart';
 
+/* Hive functions are usually here
+  Hive boxes:
+  - for every user ($thisUserId:messages)<ChatPair> (this is assigned to messages variable)
+  - for every user and their friend ($thisUserId:$friendId)<ChatMessage>
+ */
+
 class MessageProvider extends ChangeNotifier {
   var messages;
 
   late User thisUser;
-  String thisUsername = "";
+  String thisUserId = "";
 
   /// Do not increment unread if in DM page
   String inDmOf = "";
@@ -28,40 +34,38 @@ class MessageProvider extends ChangeNotifier {
       Hive.registerAdapter(ChatMessageAdapter());
     }
     thisUser = _thisUser;
-    thisUsername = onlyASCII(thisUser.username!);
-    this.thisUsername = thisUsername;
+    this.thisUserId = onlyASCII(thisUser.id!);
     // boxes can be opened once
-    messages = await Hive.openBox<ChatPair>('$thisUsername: messages');
-    unread.initUnreadCount(thisUsername);
+    messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
+    unread.initUnreadCount(thisUserId);
     initFriends(thisUser);
     firstTime = false;
   }
 
   /// adds message to the list
-  void add(
-      String other, String otherId, ChatMessage message, UnreadMessageProvider unread) async {
-    var chat = await Hive.openBox<ChatMessage>('$thisUsername:$other');
-    await chat.add(message);
-    print("incoming message adding");
-    ChatPair? chatPair = messages.get(other);
+  void add(String otherId, ChatMessage message, UnreadMessageProvider unread) async {
+    ChatPair? chatPair = messages.get(otherId);
     if (chatPair == null) {
-      chatPair = ChatPair(username: other, userId: otherId);
-      print("first message");
+      print("illegal message");
+      return;
     }
+    var chat = await Hive.openBox<ChatMessage>('$thisUserId:$otherId');
+    await chat.add(message);
+    print("adding message");
     chatPair.lastMessage = message.messageContent;
     chatPair.lastMessageTimeStamp = message.timestamp;
     // increase unread if not in current dm
-    if (inDmOf != other) {
+    if (inDmOf != otherId) {
       chatPair.unreadMessages++;
       unread.incUnreadCount();
     }
-    messages.put(other, chatPair);
+    messages.put(otherId, chatPair);
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
 
   Future openBox(String other) {
-    return Hive.openBox<ChatMessage>('$thisUsername:$other');
+    return Hive.openBox<ChatMessage>('$thisUserId:$other');
   }
 
   messagesRead(String other) {
@@ -90,9 +94,9 @@ class MessageProvider extends ChangeNotifier {
     var friendsList = await getFriends(user.id!, user.token!);
     print("friendsList length: ${friendsList.length}");
     for (OtherUser friend in friendsList) {
-      if (messages.get(friend.username) == null) {
+      if (messages.get(friend.id) == null) {
         var chatPair = ChatPair(username: friend.username, userId: friend.id);
-        messages.put(friend.username, chatPair);
+        messages.put(friend.id, chatPair);
       }
     }
   }

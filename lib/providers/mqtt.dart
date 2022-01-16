@@ -89,11 +89,9 @@ Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
     }
     String date = message["timestamp"];
     int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
-    var username = message["from"];
-    var id = message["fromId"];
+    var id = message["from"];
     var messageContent = message["content"];
     msgProvider.add(
-        username,
         id,
         ChatMessage(
           messageContent: messageContent,
@@ -113,10 +111,9 @@ bool sendMessage(String receiver, String content) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   var message = {
-    "from": user.username,
-    "fromId": user.id,
+    "from": user.id,
     "timestamp": timestamp,
-    "content": content
+    "content": content,
   };
   builder.addUTF8String(jsonEncode(message));
   try {

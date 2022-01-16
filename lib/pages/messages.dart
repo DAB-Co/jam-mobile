@@ -17,9 +17,8 @@ class Messages extends StatefulWidget {
 class _MessagesState extends State<Messages> {
   @override
   Widget build(BuildContext context) {
-
     User user = Provider.of<UserProvider>(context).user!;
-    String userName = user.username!;
+    String userId = user.id!;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,12 +35,14 @@ class _MessagesState extends State<Messages> {
         ],
       ),
       body: ValueListenableBuilder(
-          valueListenable: Hive.box<ChatPair>('${onlyASCII(userName)}: messages').listenable(),
+          valueListenable:
+              Hive.box<ChatPair>('${onlyASCII(userId)}:messages').listenable(),
           builder: (context, Box<ChatPair> box, widget) {
             List<ChatPair> chats = box.values.toList().cast();
             chats.sort();
             if (chats.length == 0) {
-              return Center(child: Column(
+              return Center(
+                  child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(Icons.messenger_outlined),
@@ -92,7 +93,7 @@ class _MessagesState extends State<Messages> {
                             unRead: Provider.of<MessageProvider>(context,
                                     listen: false)
                                 .messages
-                                .get(name)
+                                .get(id)
                                 .unreadMessages),
                       ),
                     );
