@@ -149,6 +149,6 @@ class AuthProvider with ChangeNotifier {
     _loggingOutStatus = Status.LoggingOut;
     notifyListeners();
 
-    FirebaseMessaging.instance.deleteToken();
+    await FirebaseMessaging.instance.deleteToken();
   }
 }
