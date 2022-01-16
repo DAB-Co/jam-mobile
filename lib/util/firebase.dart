@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
-String? token;
-
 Future initNotifications() async {
   await Firebase.initializeApp();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
@@ -25,9 +23,6 @@ Future initNotifications() async {
     }
   });
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  token = await messaging.getToken();
-  print("token: ");
-  print(token);
   // Any time the token refreshes, print it
   FirebaseMessaging.instance.onTokenRefresh.listen(print);
 }

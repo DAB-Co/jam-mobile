@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:jam/util/firebase.dart' as notification;
 
 import '/domain/user.dart';
 import '/util/shared_preference.dart';
@@ -39,7 +38,7 @@ class AuthProvider with ChangeNotifier {
     final Map<String, dynamic> loginData = {
       'email': email,
       'password': password,
-      'notification_token': notification.token,
+      'notification_token': await FirebaseMessaging.instance.getToken(),
     };
 
     _loggedInStatus = Status.Authenticating;
@@ -97,7 +96,7 @@ class AuthProvider with ChangeNotifier {
       'username': username,
       'email': email,
       'password': password,
-      'notification_token': notification.token,
+      'notification_token': await FirebaseMessaging.instance.getToken(),
     };
 
     _loggedInStatus = Status.Authenticating;
