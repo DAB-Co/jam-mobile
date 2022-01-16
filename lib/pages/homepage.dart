@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:jam/providers/auth.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/util/firebase.dart';
 import 'package:jam/widgets/loading.dart';
-import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -31,15 +31,9 @@ class _HomepageState extends State<Homepage> {
     Widget continueButton = TextButton(
       child: Text("Log out"),
       onPressed: () {
-        auth.logout(user.id!, user.token!).then((response) {
-          if (response['status']) {
-            //Navigator.pop(context);
-            Navigator.pushReplacementNamed(context, routes.login);
-            Provider.of<UserProvider>(context, listen: false).logout();
-          } else {
-            showSnackBar(context, response['message']);
-          }
-        });
+        deleteToken();
+        Navigator.pushReplacementNamed(context, routes.login);
+        Provider.of<UserProvider>(context, listen: false).logout();
       },
     );
 

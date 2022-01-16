@@ -20,6 +20,7 @@ enum Status {
   LoggingOut,
 }
 
+/// API calls regarding auth
 class AuthProvider with ChangeNotifier {
   Status _loggedInStatus = Status.NotLoggedIn;
   Status _registeredInStatus = Status.NotRegistered;
@@ -143,12 +144,5 @@ class AuthProvider with ChangeNotifier {
       result = {'status': false, 'message': response.body};
     }
     return result;
-  }
-
-  Future<dynamic> logout(String userId, String apiToken) async {
-    _loggingOutStatus = Status.LoggingOut;
-    notifyListeners();
-
-    await FirebaseMessaging.instance.deleteToken();
   }
 }
