@@ -8,6 +8,7 @@ import 'package:jam/util/firebase.dart' as notification;
 import '/domain/user.dart';
 import '/util/shared_preference.dart';
 import '../config/app_url.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 enum Status {
   NotLoggedIn,
@@ -154,41 +155,6 @@ class AuthProvider with ChangeNotifier {
     _loggingOutStatus = Status.LoggingOut;
     notifyListeners();
 
-    var response;
-    try {
-      response = await post(
-        Uri.parse(AppUrl.logout),
-        body: json.encode(logoutData),
-        headers: {'Content-Type': 'application/json'},
-      );
-    } catch (err) {
-      print(err);
-
-      _loggingOutStatus = Status.LoggedIn;
-      notifyListeners();
-
-      return {
-        'status': false,
-        'message': "Error when connecting server",
-      };
-    }
-
-    var result;
-    if (response.statusCode == 200) {
-      _loggingOutStatus = Status.LoggedOut;
-      notifyListeners();
-      result = {
-        'status': true,
-        'message': response.body,
-      };
-    } else {
-      _loggingOutStatus = Status.LoggedIn;
-      notifyListeners();
-      result = {
-        'status': false,
-        'message': response.body,
-      };
-    }
-    return result;
+    FirebaseMessaging.instance.deleteToken();
   }
 }
