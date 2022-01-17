@@ -28,7 +28,7 @@ Future initNotifications() async {
   );
 }
 
-void showNotification(String title, String body) async {
+void showNotification(String? title, String? body) async {
   await flutterLocalNotificationsPlugin.show(
     1,
     title,

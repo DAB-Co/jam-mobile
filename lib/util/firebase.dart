@@ -37,14 +37,15 @@ Future initFirebase() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  await Firebase.initializeApp();
+  // await Firebase.initializeApp();
+  await initNotifications();
 
   print("Handling a background message: ${message.data}");
 
   String from = message.data["fromName"];
   String title = "You have messages from $from";
 
-  showNotification(title, "body");
+  showNotification(title, null);
 }
 
 Future deleteToken() async {
