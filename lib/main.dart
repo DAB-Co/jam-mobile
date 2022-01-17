@@ -18,7 +18,7 @@ import '/util/shared_preference.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Important!
   await loadCertificate();                   // SSL certificate
-  await initNotifications();                 // Connect to firebase for notifications
+  await initFirebase();                      // Connect to firebase for notifications
   runApp(MyApp());
 }
 
