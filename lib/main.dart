@@ -17,10 +17,12 @@ import '/util/shared_preference.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Important!
-  await loadCertificate();                   // SSL certificate
-  await initFirebase();                      // Connect to firebase for notifications
+  await loadCertificate(); // SSL certificate
+  await initFirebase(); // Connect to firebase for notifications
   runApp(MyApp());
 }
+
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
 
 class MyApp extends StatelessWidget {
   @override
@@ -35,39 +37,41 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => UnreadMessageProvider()),
       ],
       child: MaterialApp(
-          title: 'Jam',
-          theme: ThemeData(
-            visualDensity: VisualDensity.adaptivePlatformDensity,
-            colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
-                .copyWith(secondary: Colors.pinkAccent),
-          ),
-          home: FutureBuilder(
-              future: getUserData(),
-              builder: (context, snapshot) {
-                if (snapshot.data != null) {
-                  print((snapshot.data as User).username);
-                }
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    return CircularProgressIndicator();
-                  default:
-                    if (snapshot.hasError)
-                      return Text('Error: ${snapshot.error}');
-                    else if ((snapshot.data as User).username == null)
-                      return Login();
-                    var user = snapshot.data as User;
-                    Provider.of<UserProvider>(context).setUser(user, context);
-                    return Homepage();
-                }
-              }),
-          routes: {
-            routes.homepage: (context) => Homepage(),
-            routes.login: (context) => Login(),
-            routes.register: (context) => Register(),
-            routes.messages: (context) => Messages(),
-            // routes.dm: (context) => DM(),
-          }),
+        title: 'Jam',
+        theme: ThemeData(
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
+              .copyWith(secondary: Colors.pinkAccent),
+        ),
+        home: FutureBuilder(
+            future: getUserData(),
+            builder: (context, snapshot) {
+              if (snapshot.data != null) {
+                print((snapshot.data as User).username);
+              }
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return CircularProgressIndicator();
+                default:
+                  if (snapshot.hasError)
+                    return Text('Error: ${snapshot.error}');
+                  else if ((snapshot.data as User).username == null)
+                    return Login();
+                  var user = snapshot.data as User;
+                  Provider.of<UserProvider>(context).setUser(user, context);
+                  return Homepage();
+              }
+            }),
+        routes: {
+          routes.homepage: (context) => Homepage(),
+          routes.login: (context) => Login(),
+          routes.register: (context) => Register(),
+          routes.messages: (context) => Messages(),
+          // routes.dm: (context) => DM(),
+        },
+        navigatorKey: navigatorKey,
+      ),
     );
   }
 }

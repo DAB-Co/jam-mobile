@@ -6,7 +6,9 @@ import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/network/get_friends.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
+import 'package:provider/provider.dart';
 
 /* Hive functions are usually here
   Hive boxes:
@@ -27,7 +29,7 @@ class MessageProvider extends ChangeNotifier {
 
   bool firstTime = true;
 
-  Future init(UnreadMessageProvider unread, User _thisUser) async {
+  Future init(UnreadMessageProvider unread, User _thisUser, context) async {
     if (firstTime) {
       await Hive.initFlutter();
       Hive.registerAdapter(ChatPairAdapter());
@@ -38,7 +40,7 @@ class MessageProvider extends ChangeNotifier {
     // boxes can be opened once
     messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
     unread.initUnreadCount(thisUserId);
-    initFriends(thisUser);
+    initFriends(thisUser, context);
     firstTime = false;
   }
 
@@ -90,8 +92,13 @@ class MessageProvider extends ChangeNotifier {
   }
 
   /// Take friends from server and save them to local storage
-  Future initFriends(User user) async {
-    var friendsList = await getFriends(user.id!, user.token!);
+  Future initFriends(User user, context) async {
+    List<OtherUser>? friendsList = await getFriends(user.id!, user.token!);
+    if (friendsList == null) {
+      // logout, wrong api token
+      Provider.of<UserProvider>(context, listen: false).logout();
+      return;
+    }
     print("friendsList length: ${friendsList.length}");
     for (OtherUser friend in friendsList) {
       if (messages.get(friend.id) == null) {

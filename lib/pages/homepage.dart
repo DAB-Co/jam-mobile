@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jam/providers/auth.dart';
 import 'package:jam/providers/unread_message_counter.dart';
-import 'package:jam/util/firebase.dart';
 import 'package:jam/widgets/loading.dart';
 import 'package:provider/provider.dart';
 
@@ -31,8 +30,6 @@ class _HomepageState extends State<Homepage> {
     Widget continueButton = TextButton(
       child: Text("Log out"),
       onPressed: () {
-        deleteToken();
-        Navigator.pushReplacementNamed(context, routes.login);
         Provider.of<UserProvider>(context, listen: false).logout();
       },
     );

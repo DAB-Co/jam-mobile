@@ -38,11 +38,11 @@ Future<String> getDeviceIdentifier() async {
 }
 
 Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
-    UnreadMessageProvider unreadProvider) async {
+    UnreadMessageProvider unreadProvider, context) async {
   user = _user;
   var username = user.username!;
   var password = user.token;
-  await msgProvider.init(unreadProvider, user);
+  await msgProvider.init(unreadProvider, user, context);
   provider = msgProvider;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);

@@ -1,5 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/domain/user.dart';
+import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/util/local_notification.dart';
 import 'package:jam/util/shared_preference.dart';
 
@@ -25,12 +28,10 @@ Future initFirebase() async {
     }
   });
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  /*
   // Print token
   String? token = await FirebaseMessaging.instance.getToken();
   print("token:");
   print(token);
-  */
   // Any time the token refreshes, print it
   FirebaseMessaging.instance.onTokenRefresh.listen(print);
 }
@@ -43,15 +44,28 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   print("Handling a background message: ${message.data}");
 
-
-  UserPreferences userPreferences = new UserPreferences();
-  var currentUser = await userPreferences.getUser();
+  User currentUser = await UserPreferences().getUser();
   if (currentUser.username == null || currentUser.id == null || currentUser.token == null) {
     print("User data missing in shared preferences, deleting notification token");
-    await deleteToken();
+    deleteToken();
   }
   else {
-    String from = message.data["from"];
+    String fromId = message.data["fromId"];
+    await Hive.initFlutter();
+    Hive.registerAdapter(ChatPairAdapter());
+    if (!Hive.isBoxOpen("${currentUser.id}:messages")) {
+      await Hive.openBox<ChatPair>("${currentUser.id}:messages");
+    }
+    var messages = Hive.box<ChatPair>('${currentUser.id}:messages');
+    print(messages);
+    var person = messages.get(fromId);
+    print(person);
+    if (person == null) {
+      print("incoming background message not in friends");
+      return;
+    }
+    String title = "You have messages from ${person.username}";
+    showNotification(title, null);
   }
 }
 
