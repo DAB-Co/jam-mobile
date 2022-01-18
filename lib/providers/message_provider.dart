@@ -27,21 +27,13 @@ class MessageProvider extends ChangeNotifier {
 
   Box<ChatMessage>? currentBox;
 
-  bool firstTime = true;
-
   Future init(UnreadMessageProvider unread, User _thisUser, context) async {
-    if (firstTime) {
-      await Hive.initFlutter();
-      Hive.registerAdapter(ChatPairAdapter());
-      Hive.registerAdapter(ChatMessageAdapter());
-    }
     thisUser = _thisUser;
     this.thisUserId = onlyASCII(thisUser.id!);
     // boxes can be opened once
     messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
     unread.initUnreadCount(thisUserId);
     initFriends(thisUser, context);
-    firstTime = false;
   }
 
   /// adds message to the list
