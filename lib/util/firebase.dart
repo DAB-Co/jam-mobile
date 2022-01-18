@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:jam/util/local_notification.dart';
+import 'package:jam/util/shared_preference.dart';
 
 Future initFirebase() async {
   await Firebase.initializeApp();
@@ -42,10 +43,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
   print("Handling a background message: ${message.data}");
 
-  String from = message.data["fromName"];
-  String title = "You have messages from $from";
 
-  showNotification(title, null);
+  UserPreferences userPreferences = new UserPreferences();
+  var currentUser = await userPreferences.getUser();
+  if (currentUser.username == null || currentUser.id == null || currentUser.token == null) {
+    print("User data missing in shared preferences, deleting notification token");
+    await deleteToken();
+  }
+  else {
+    String from = message.data["from"];
+  }
 }
 
 Future deleteToken() async {
