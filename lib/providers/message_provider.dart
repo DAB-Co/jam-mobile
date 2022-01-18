@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:jam/domain/otherUser.dart';
-import 'package:jam/domain/user.dart';
+import 'package:jam/models/otherUser.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/network/get_friends.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
+import 'package:provider/provider.dart';
 
 /* Hive functions are usually here
   Hive boxes:
@@ -25,21 +27,29 @@ class MessageProvider extends ChangeNotifier {
 
   Box<ChatMessage>? currentBox;
 
-  bool firstTime = true;
-
-  Future init(UnreadMessageProvider unread, User _thisUser) async {
-    if (firstTime) {
-      await Hive.initFlutter();
-      Hive.registerAdapter(ChatPairAdapter());
-      Hive.registerAdapter(ChatMessageAdapter());
-    }
+  Future init(UnreadMessageProvider unread, User _thisUser, context) async {
     thisUser = _thisUser;
     this.thisUserId = onlyASCII(thisUser.id!);
     // boxes can be opened once
-    messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
+    await Hive.initFlutter();
+
+    ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter();
+    ChatPairAdapter chatPairAdapter = new ChatPairAdapter();
+    if (!Hive.isAdapterRegistered(chatMessageAdapter.typeId)) {
+      Hive.registerAdapter(chatMessageAdapter);
+    }
+    if (!Hive.isAdapterRegistered(chatPairAdapter.typeId)) {
+      Hive.registerAdapter(chatPairAdapter);
+    }
+
+    if (!Hive.isBoxOpen('$thisUserId:messages')) {
+      messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
+    }
+    else {
+      messages = Hive.box<ChatPair>('$thisUserId:messages');
+    }
     unread.initUnreadCount(thisUserId);
-    initFriends(thisUser);
-    firstTime = false;
+    initFriends(thisUser, context);
   }
 
   /// adds message to the list
@@ -90,8 +100,13 @@ class MessageProvider extends ChangeNotifier {
   }
 
   /// Take friends from server and save them to local storage
-  Future initFriends(User user) async {
-    var friendsList = await getFriends(user.id!, user.token!);
+  Future initFriends(User user, context) async {
+    List<OtherUser>? friendsList = await getFriends(user.id!, user.token!);
+    if (friendsList == null) {
+      // logout, wrong api token
+      Provider.of<UserProvider>(context, listen: false).logout();
+      return;
+    }
     print("friendsList length: ${friendsList.length}");
     for (OtherUser friend in friendsList) {
       if (messages.get(friend.id) == null) {
