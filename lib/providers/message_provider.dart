@@ -31,7 +31,23 @@ class MessageProvider extends ChangeNotifier {
     thisUser = _thisUser;
     this.thisUserId = onlyASCII(thisUser.id!);
     // boxes can be opened once
-    messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
+    await Hive.initFlutter();
+
+    ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter();
+    ChatPairAdapter chatPairAdapter = new ChatPairAdapter();
+    if (!Hive.isAdapterRegistered(chatMessageAdapter.typeId)) {
+      Hive.registerAdapter(chatMessageAdapter);
+    }
+    if (!Hive.isAdapterRegistered(chatPairAdapter.typeId)) {
+      Hive.registerAdapter(chatPairAdapter);
+    }
+
+    if (!Hive.isBoxOpen('$thisUserId:messages')) {
+      messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
+    }
+    else {
+      messages = Hive.box<ChatPair>('$thisUserId:messages');
+    }
     unread.initUnreadCount(thisUserId);
     initFriends(thisUser, context);
   }

@@ -40,9 +40,9 @@ void showNotification(String? title, String? body) async {
 
 /// Runs when tapped on notification
 void _selectNotification(String? payload) async {
-  var details = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+  //var details = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   print("selected notification");
-  if (details != null) {
-    print(details.payload);
-  }
+  //if (details != null) {
+  //  print(details.payload);
+  //}
 }

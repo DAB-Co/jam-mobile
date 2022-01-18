@@ -9,10 +9,6 @@ import 'package:jam/util/shared_preference.dart';
 
 Future initFirebase() async {
   await Firebase.initializeApp();
-  // init Hive
-  await Hive.initFlutter();
-  Hive.registerAdapter(ChatPairAdapter());
-  Hive.registerAdapter(ChatMessageAdapter());
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   NotificationSettings settings = await messaging.requestPermission(
@@ -47,6 +43,17 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // make sure you call `initializeApp` before using other Firebase services.
   // await Firebase.initializeApp();
   await initNotifications();
+  await Hive.initFlutter();
+
+  ChatPairAdapter chatPairAdapter = new ChatPairAdapter();
+  ChatMessageAdapter chatMessageAdapter = new ChatMessageAdapter();
+  if (!Hive.isAdapterRegistered(chatPairAdapter.typeId)) {
+    Hive.registerAdapter(chatPairAdapter);
+  }
+
+  if (!Hive.isAdapterRegistered(chatMessageAdapter.typeId)) {
+    Hive.registerAdapter(chatMessageAdapter);
+  }
 
   print("Handling a background message: ${message.data}");
 
