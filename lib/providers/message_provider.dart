@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:jam/domain/otherUser.dart';
-import 'package:jam/domain/user.dart';
+import 'package:jam/models/otherUser.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/network/get_friends.dart';

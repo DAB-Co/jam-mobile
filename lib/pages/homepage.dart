@@ -5,7 +5,7 @@ import 'package:jam/widgets/loading.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
-import '/domain/user.dart';
+import '../models/user.dart';
 import '/providers/user_provider.dart';
 import "/util/greetings.dart";
 

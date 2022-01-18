@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
-import '/domain/user.dart';
+import '../models/user.dart';
 import '/util/shared_preference.dart';
 import '../config/app_url.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
-import 'package:jam/domain/otherUser.dart';
+import 'package:jam/models/otherUser.dart';
 
 /// Returns friend list from server
 Future<List<OtherUser>?> getFriends(String userId, String apiToken) async {

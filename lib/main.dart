@@ -7,7 +7,7 @@ import 'package:jam/util/firebase.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
-import '/domain/user.dart';
+import 'models/user.dart';
 import '/pages/homepage.dart';
 import '/pages/login.dart';
 import '/pages/register.dart';

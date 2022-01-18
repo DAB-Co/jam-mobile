@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '/domain/user.dart';
+import '../models/user.dart';
 
 class UserPreferences {
   void saveUser(User user) async {

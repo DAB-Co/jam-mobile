@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import '../main.dart';
 import '/config/routes.dart' as routes;
 
-import '/domain/user.dart';
+import '../models/user.dart';
 import 'message_provider.dart';
 
 class UserProvider with ChangeNotifier {

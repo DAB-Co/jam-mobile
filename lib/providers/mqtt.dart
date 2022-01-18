@@ -1,4 +1,4 @@
-import 'package:jam/domain/user.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
