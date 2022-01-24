@@ -23,6 +23,8 @@ Future<List<OtherUser>?> getFriends(String userId, String apiToken) async {
       return null;
     }
     Map<String, dynamic> rawFriends = jsonDecode(response.body);
+    print("raw friends length:");
+    print(rawFriends.length);
     for (String userId in rawFriends.keys) {
       if (!rawFriends[userId]["blocked"]) {
         friendsList.add(

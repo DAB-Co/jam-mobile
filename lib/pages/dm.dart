@@ -77,16 +77,7 @@ class _DMState extends State<DM> {
       String noSpaces = message.replaceAll(" ", "");
       chatTextController.clear();
       if (noSpaces == "") return;
-      bool sent = sendMessage(otherId, message);
-      Provider.of<MessageProvider>(context, listen: false).add(
-          otherId,
-          ChatMessage(
-            messageContent: message,
-            isIncomingMessage: false,
-            timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
-            successful: sent,
-          ),
-          Provider.of<UnreadMessageProvider>(context, listen: false));
+      sendMessage(otherId, message);
     }
 
     Future boxOpening =
