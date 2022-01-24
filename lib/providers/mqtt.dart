@@ -7,10 +7,13 @@ import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/providers/user_provider.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
 import '../config/app_url.dart';
+import '../main.dart';
 
 MqttServerClient? client;
 late User user;
@@ -102,15 +105,24 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 
     if (topic == "/${user.id}/devices/$clientId") {
       // see mqtt error documentation for handling these errors.
-      var type = message["type"];
+      // var type = message["type"];
+      // var category = message["category"];
       var handler = message["handler"];
-      var category = message["category"];
-      var message_descriptor = message["message"];
+      var messageDescriptor = message["message"];
       var messageId = message["messageId"];
-      // if the messageId is some other value than null
-      // there was an error sending that message, turn it to red.
-      if (messageId == null) return;
-      msgProvider.unsuccessfulMessage(messageId);
+      // check authorization
+      if (handler == "authorizePublish") {
+        // if the messageId is some other value than null
+        // there was an error sending that message, turn it to red.
+        if (messageId != null) {
+          msgProvider.unsuccessfulMessage(messageId);
+        }
+      }
+      // authorization error
+      else {
+        logout();
+        showSnackBar(navigatorKey.currentContext!, messageDescriptor);
+      }
     } else {
       String date = message["timestamp"];
       int timestamp = DateTime.parse(date).millisecondsSinceEpoch;

@@ -35,3 +35,10 @@ class UserProvider with ChangeNotifier {
     navigatorKey.currentState?.pushReplacementNamed(routes.login);
   }
 }
+
+void logout() {
+  UserPreferences().removeUser();
+  mqttWrapper.disconnect();
+  deleteToken();
+  navigatorKey.currentState?.pushReplacementNamed(routes.login);
+}
