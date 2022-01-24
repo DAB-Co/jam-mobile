@@ -16,6 +16,8 @@ MqttServerClient? client;
 late User user;
 var provider;
 
+var clientId;
+
 Future<String> getDeviceIdentifier() async {
   String deviceIdentifier = "unknown";
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -61,12 +63,14 @@ Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
   var deviceId = await getDeviceIdentifier();
   print("deviceId: " + deviceId);
 
+  clientId = '${user.id}:$deviceId';
+
   _client.connectionMessage = MqttConnectMessage()
       .authenticateAs(user.id, password)
       .withWillTopic('willtopic')
       .withWillMessage('Will message')
       //.startClean()
-      .withClientIdentifier('${user.id}:$deviceId')
+      .withClientIdentifier(clientId)
       .withWillQos(MqttQos.exactlyOnce)
       .withProtocolVersion(4);
 
@@ -81,25 +85,40 @@ Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
     final MqttPublishMessage byteMessage = c[0].payload as MqttPublishMessage;
     final payload = MqttEncoding().decoder.convert(byteMessage.payload.message);
 
-    print('Received message:$payload from topic: ${c[0].topic}>');
+    var topic = c[0].topic;
+
+    print('Received message:$payload from topic: $topic>');
 
     var message = jsonDecode(payload);
     if (message == null) {
       return;
     }
-    String date = message["timestamp"];
-    int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
-    var id = message["from"];
-    var messageContent = message["content"];
-    msgProvider.add(
-        id,
-        ChatMessage(
-          messageContent: messageContent,
-          isIncomingMessage: true,
-          timestamp: timestamp,
-          successful: true,
-        ),
-        unreadProvider);
+
+    if (topic == "/${user.id}/devices/$clientId") {
+      // see mqtt error documentation for handling these errors.
+      var type = message["type"];
+      var handler = message["handler"];
+      var category = message["category"];
+      var message_descriptor = message["message"];
+      var messageId = message["messageId"];
+      // see line 139, if the messageId is some other value than null
+      // there was an error sending that message, turn it to red.
+    }
+    else {
+      String date = message["timestamp"];
+      int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
+      var id = message["from"];
+      var messageContent = message["content"];
+      msgProvider.add(
+          id,
+          ChatMessage(
+            messageContent: messageContent,
+            isIncomingMessage: true,
+            timestamp: timestamp,
+            successful: true,
+          ),
+          unreadProvider);
+    }
   });
 
   client = _client;
@@ -117,7 +136,8 @@ bool sendMessage(String receiver, String content) {
   };
   builder.addUTF8String(jsonEncode(message));
   try {
-    client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
+    var messageId = client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
+    // this message id should be stored for further error checks
   } catch (e) {
     print(e);
     return false;
@@ -134,6 +154,7 @@ void onConnected() {
   print('Connected');
   // every user subscribes to topic for their id
   client?.subscribe("/${user.id}/inbox", MqttQos.exactlyOnce);
+  client?.subscribe("/${user.id}/devices/$clientId", MqttQos.atMostOnce);
 }
 
 /// unconnected
