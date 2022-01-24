@@ -107,9 +107,10 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       var category = message["category"];
       var message_descriptor = message["message"];
       var messageId = message["messageId"];
-      // TODO
-      // see line 139, if the messageId is some other value than null
+      // if the messageId is some other value than null
       // there was an error sending that message, turn it to red.
+      if (messageId == null) return;
+      msgProvider.unsuccessfulMessage(messageId);
     } else {
       String date = message["timestamp"];
       int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
@@ -133,6 +134,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 
 /// Sends message from this user to receiver
 void sendMessage(String receiver, String content) {
+  if (client == null) return;
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   var message = {
@@ -142,13 +144,13 @@ void sendMessage(String receiver, String content) {
   };
   builder.addUTF8String(jsonEncode(message));
   bool sent = true;
+  int? messageId;
   try {
-    var messageId = client?.publishMessage(
+    messageId = client!.publishMessage(
       "/$receiver/inbox",
       MqttQos.exactlyOnce,
       builder.payload!,
     );
-    // TODO this message id should be stored for further error checks
   } catch (e) {
     print(e);
     sent = false;
@@ -162,6 +164,7 @@ void sendMessage(String receiver, String content) {
       successful: sent,
     ),
     unreadProvider,
+    msgId: messageId,
   );
 }
 

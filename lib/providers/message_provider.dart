@@ -16,9 +16,16 @@ import 'package:provider/provider.dart';
   - for every user and their friend ($thisUserId:$friendId)<ChatMessage>
  */
 
-class MessageProvider extends ChangeNotifier {
-  var messages;
+class SentMessage {
+  String to;
+  int index;
+  SentMessage({required this.to, required this.index});
+}
 
+class MessageProvider extends ChangeNotifier {
+  Map<int, SentMessage> unConfirmedMessages = Map<int, SentMessage>(); // messageId: to, index
+
+  var messages;
   late User thisUser;
   String thisUserId = "";
 
@@ -53,13 +60,16 @@ class MessageProvider extends ChangeNotifier {
   }
 
   /// adds message to the list
-  void add(String otherId, ChatMessage message, UnreadMessageProvider unread) async {
+  void add(String otherId, ChatMessage message, UnreadMessageProvider unread, {int? msgId}) async {
     ChatPair? chatPair = messages.get(otherId);
     if (chatPair == null) {
       print("illegal message");
       return;
     }
     var chat = await Hive.openBox<ChatMessage>('$thisUserId:$otherId');
+    if (msgId != null) {
+      unConfirmedMessages[msgId] = SentMessage(to: otherId, index: chat.length);
+    }
     await chat.add(message);
     print("adding message");
     chatPair.lastMessage = message.messageContent;
@@ -114,5 +124,16 @@ class MessageProvider extends ChangeNotifier {
         messages.put(friend.id, chatPair);
       }
     }
+  }
+
+  /// Make message with given id red
+  Future unsuccessfulMessage(int id) async {
+    SentMessage? failure = unConfirmedMessages[id];
+    if (failure == null) return;
+    var chat = await Hive.openBox<ChatMessage>('$thisUserId:${failure.to}');
+    ChatMessage? failedMessage = chat.getAt(failure.index);
+    if (failedMessage == null) return;
+    failedMessage.successful = false;
+    chat.putAt(failure.index, failedMessage);
   }
 }
