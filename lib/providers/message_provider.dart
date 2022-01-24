@@ -116,7 +116,7 @@ class MessageProvider extends ChangeNotifier {
     if (friendsList == null) {
       // logout, wrong api token
       Provider.of<UserProvider>(context, listen: false).logout();
-      showSnackBar(context, "Wrong Token");
+      showSnackBar(context, "Please Log In Again");
       return;
     }
     print("friendsList length: ${friendsList.length}");
