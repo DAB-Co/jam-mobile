@@ -1,15 +1,15 @@
-import 'package:jam/models/user.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:jam/models/chat_message_model.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
 
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'dart:io';
-import 'package:device_info_plus/device_info_plus.dart';
 import '../config/app_url.dart';
 
 MqttServerClient? client;
@@ -17,6 +17,8 @@ late User user;
 var provider;
 
 var clientId;
+var msgProvider;
+var unreadProvider;
 
 Future<String> getDeviceIdentifier() async {
   String deviceIdentifier = "unknown";
@@ -31,7 +33,9 @@ Future<String> getDeviceIdentifier() async {
   } else if (kIsWeb) {
     // The web doesnt have a device UID, so use a combination fingerprint as an example
     WebBrowserInfo webInfo = await deviceInfo.webBrowserInfo;
-    deviceIdentifier = webInfo.vendor! + webInfo.userAgent! + webInfo.hardwareConcurrency.toString();
+    deviceIdentifier = webInfo.vendor! +
+        webInfo.userAgent! +
+        webInfo.hardwareConcurrency.toString();
   } else if (Platform.isLinux) {
     LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
     deviceIdentifier = linuxInfo.machineId!;
@@ -39,9 +43,11 @@ Future<String> getDeviceIdentifier() async {
   return deviceIdentifier;
 }
 
-Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
-    UnreadMessageProvider unreadProvider, context) async {
+Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
+    UnreadMessageProvider _unreadProvider, context) async {
   user = _user;
+  msgProvider = _msgProvider;
+  unreadProvider = _unreadProvider;
   var username = user.username!;
   var password = user.token;
   await msgProvider.init(unreadProvider, user, context);
@@ -101,10 +107,10 @@ Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
       var category = message["category"];
       var message_descriptor = message["message"];
       var messageId = message["messageId"];
+      // TODO
       // see line 139, if the messageId is some other value than null
       // there was an error sending that message, turn it to red.
-    }
-    else {
+    } else {
       String date = message["timestamp"];
       int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
       var id = message["from"];
@@ -125,8 +131,8 @@ Future<MqttServerClient> connect(User _user, MessageProvider msgProvider,
   return _client;
 }
 
-/// Returns true if message is sent successfully
-bool sendMessage(String receiver, String content) {
+/// Sends message from this user to receiver
+void sendMessage(String receiver, String content) {
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   var message = {
@@ -135,14 +141,28 @@ bool sendMessage(String receiver, String content) {
     "content": content,
   };
   builder.addUTF8String(jsonEncode(message));
+  bool sent = true;
   try {
-    var messageId = client?.publishMessage("/$receiver/inbox", MqttQos.exactlyOnce, builder.payload!);
-    // this message id should be stored for further error checks
+    var messageId = client?.publishMessage(
+      "/$receiver/inbox",
+      MqttQos.exactlyOnce,
+      builder.payload!,
+    );
+    // TODO this message id should be stored for further error checks
   } catch (e) {
     print(e);
-    return false;
+    sent = false;
   }
-  return true;
+  msgProvider.add(
+    receiver,
+    ChatMessage(
+      messageContent: content,
+      isIncomingMessage: false,
+      timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
+      successful: sent,
+    ),
+    unreadProvider,
+  );
 }
 
 Future disconnect() async {
