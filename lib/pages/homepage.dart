@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jam/providers/auth.dart';
-import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/widgets/loading.dart';
+import 'package:jam/widgets/messages_list.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -44,55 +44,31 @@ class _HomepageState extends State<Homepage> {
       ],
     );
 
+    void handleThreeDotClick(String value) {
+      switch (value) {
+        case 'About':
+          Navigator.pushNamed(context, routes.about);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
         title: Center(
           child: Text(""),
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              Navigator.pushNamed(context, routes.messages);
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: handleThreeDotClick,
+            itemBuilder: (BuildContext context) {
+              return {'About'}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
             },
-            icon: Stack(
-              children: <Widget>[
-                Icon(Icons.message),
-                Consumer<UnreadMessageProvider>(
-                  builder: (context, provider, child) {
-                    int nofUnread =
-                        Provider.of<UnreadMessageProvider>(context).nofUnread;
-                    if (nofUnread == 0) {
-                      return Text("");
-                    } else {
-                      return Positioned(
-                        right: 0,
-                        child: Container(
-                          padding: EdgeInsets.all(1),
-                          decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                          constraints: BoxConstraints(
-                            minWidth: 12,
-                            minHeight: 12,
-                          ),
-                          child: Text(
-                            nofUnread.toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 8,
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ],
-            ),
-          )
+          ),
         ],
         elevation: 0.1,
       ),
@@ -139,22 +115,13 @@ class _HomepageState extends State<Homepage> {
             ),
             ListTile(
               leading: Icon(
-                Icons.supervised_user_circle,
+                Icons.sentiment_satisfied_alt,
                 color: Colors.black,
               ),
-              title: const Text('Account Settings'),
+              title: const Text('Send Feedback'),
               onTap: () {
                 Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: Icon(
-                Icons.settings,
-                color: Colors.black,
-              ),
-              title: const Text('System Settings'),
-              onTap: () {
-                Navigator.pop(context);
+                Navigator.pushNamed(context, routes.contactUs);
               },
             ),
             ListTile(
@@ -181,24 +148,15 @@ class _HomepageState extends State<Homepage> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 100),
+          SizedBox(height: 30),
           Center(
             child: Text(user.username == null
                 ? ""
                 : "${greetingsText()} ${user.username!}"),
           ),
-          Expanded(
-            child: Padding(
-              padding: EdgeInsetsDirectional.only(bottom: 200.0),
-              child: Align(
-                alignment: FractionalOffset.bottomCenter,
-                child: Text(
-                  "Time until next match: 14h 29m 21s",
-                  style: TextStyle(color: Colors.red),
-                ),
-              ),
-            ),
-          ),
+          SizedBox(height: 30),
+          Divider(color: Colors.grey),
+          messagesList(user.id, context),
         ],
       ),
     );
