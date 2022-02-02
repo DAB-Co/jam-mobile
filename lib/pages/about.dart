@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
   @override
@@ -22,13 +23,25 @@ class About extends StatelessWidget {
               style: TextStyle(fontSize: 30),
             ),
             SizedBox(height: 50),
-            Text(
-              "dabco5317@gmail.com",
-              style: TextStyle(fontSize: 30),
+            GestureDetector(
+              onTap: _launchEmail,
+              child: Text(
+                "dabco5317@gmail.com",
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.blue,
+                  decoration: TextDecoration.underline,
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _launchEmail() async {
+    var _url = "mailto:dabco5317@gmail.com?subject=Jam";
+    if (!await launch(_url)) throw 'Could not launch $_url';
   }
 }
