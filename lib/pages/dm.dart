@@ -168,8 +168,19 @@ class _DMState extends State<DM> {
                             //physics: BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
                               return Container(
-                                padding: EdgeInsets.only(
-                                    left: 14, right: 14, top: 10, bottom: 10),
+                                padding: (messages[index].isIncomingMessage
+                                    ? EdgeInsets.only(
+                                        left: 14,
+                                        right: 60,
+                                        top: 10,
+                                        bottom: 10,
+                                      )
+                                    : EdgeInsets.only(
+                                        left: 60,
+                                        right: 14,
+                                        top: 10,
+                                        bottom: 10,
+                                      )),
                                 child: Align(
                                   alignment: (messages[index].isIncomingMessage
                                       ? Alignment.topLeft
