@@ -52,7 +52,7 @@ class _LoginState extends State<Login> {
             ),
           ),
           onPressed: () {
-//            Navigator.pushReplacementNamed(context, '/reset-password');
+            showSnackBar(context, "Will be implemented soon");
           },
         ),
         TextButton(
@@ -64,7 +64,7 @@ class _LoginState extends State<Login> {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamed(context, routes.register);
+            Navigator.pushNamedAndRemoveUntil(context, routes.register, (Route<dynamic> route) => false);
           },
         ),
       ],
@@ -84,7 +84,7 @@ class _LoginState extends State<Login> {
             User? user = response['user'];
             Provider.of<UserProvider>(context, listen: false)
                 .setUser(user, context);
-            Navigator.pushReplacementNamed(context, routes.homepage);
+            Navigator.pushNamedAndRemoveUntil(context, routes.homepage, (Route<dynamic> route) => false);
           } else {
             showSnackBar(context, response["message"]);
           }

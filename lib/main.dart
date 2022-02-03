@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
                   if (snapshot.hasError)
                     return Text('Error: ${snapshot.error}');
                   else if ((snapshot.data as User).username == null)
-                    return Login();
+                    return Register();
                   var user = snapshot.data as User;
                   Provider.of<UserProvider>(context).setUser(user, context);
                   return Homepage();

@@ -12,6 +12,7 @@ void handleThreeDotClick(String value) {
 
 AppBar formAppBar() {
   return AppBar(
+    automaticallyImplyLeading: false,
     backgroundColor: Colors.pinkAccent,
     title: Text("Jam"),
     actions: <Widget>[

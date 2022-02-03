@@ -5,11 +5,11 @@ import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
-import '../models/user.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/validators.dart';
 import '/widgets/form_widgets.dart';
+import '../models/user.dart';
 
 class Register extends StatefulWidget {
   @override
@@ -17,7 +17,6 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-
   final passwordController = TextEditingController();
 
   @override
@@ -38,10 +37,6 @@ class _RegisterState extends State<Register> {
   Widget build(BuildContext context) {
     AuthProvider auth = Provider.of<AuthProvider>(context);
 
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      //formKey.currentState!.validate();
-    });
-
     final emailField = TextFormField(
       key: emailFormKey,
       onChanged: (_) => emailFormKey.currentState!.validate(),
@@ -57,7 +52,8 @@ class _RegisterState extends State<Register> {
       autofocus: false,
       validator: validateUsername,
       onSaved: (value) => _username = value,
-      decoration: buildInputDecoration("Enter username", Icons.supervised_user_circle),
+      decoration:
+          buildInputDecoration("Enter username", Icons.supervised_user_circle),
     );
 
     final passwordField = TextFormField(
@@ -76,7 +72,8 @@ class _RegisterState extends State<Register> {
       onChanged: (_) => confirmPasswordFormKey.currentState!.validate(),
       autofocus: false,
       obscureText: true,
-      validator: (value) => (value != passwordController.text) ? "Passwords don't match" : null,
+      validator: (value) =>
+          (value != passwordController.text) ? "Passwords don't match" : null,
       onSaved: (value) => _confirmPassword = value,
       decoration: buildInputDecoration("Confirm password", Icons.lock),
     );
@@ -92,8 +89,9 @@ class _RegisterState extends State<Register> {
         auth.register(_email, _username, _password).then((response) {
           if (response['status']) {
             User? user = response['user'];
-            Provider.of<UserProvider>(context, listen: false).setUser(user, context);
-            Navigator.pushReplacementNamed(context, routes.homepage);
+            Provider.of<UserProvider>(context, listen: false)
+                .setUser(user, context);
+            Navigator.pushNamedAndRemoveUntil(context, routes.homepage, (Route<dynamic> route) => false);
           } else {
             showSnackBar(context, response['message']);
           }
@@ -134,6 +132,12 @@ class _RegisterState extends State<Register> {
                   auth.loggedInStatus == Status.Authenticating
                       ? loading("Registering ... Please wait")
                       : longButtons("Register", doRegister),
+                  SizedBox(height: 30.0),
+                  longButtons(
+                    "Login if you have an account",
+                    () => Navigator.pushNamed(context, routes.login),
+                    color: Colors.pink,
+                  ),
                 ],
               ),
             ),
