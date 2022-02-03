@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:jam/widgets/form_widgets.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 
 class ContactUs extends StatelessWidget {
   @override
@@ -9,21 +13,37 @@ class ContactUs extends StatelessWidget {
         title: Text(""),
         elevation: 0.1,
       ),
-      body: Center(
-        child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            "Contact Us",
-            style: TextStyle(fontSize: 50),
-          ),
-          SizedBox(height: 50),
-          Text(
-            "dabco5317@gmail.com",
+      body: Column(
+      children: [
+        SizedBox(height: 20),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(
+            "Please send us your ideas and suggestions",
             style: TextStyle(fontSize: 30),
+            textAlign: TextAlign.center,
           ),
-        ],
-      ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Container(
+            child: TextField(
+              minLines: 12,
+              maxLines: null,
+              keyboardType: TextInputType.multiline,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+              ),
+              style: TextStyle(
+              ),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: longButtons("Send", () => {showSnackBar(context, "pressed")}),
+        ),
+      ],
       ),
     );
   }
