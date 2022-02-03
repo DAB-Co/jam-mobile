@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:jam/providers/message_provider.dart';
+import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/widgets/messages_list.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
-import '../models/user.dart';
 import '/providers/user_provider.dart';
 import "/util/greetings.dart";
+import '../models/user.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -34,9 +36,7 @@ class _HomepageState extends State<Homepage> {
         title: Row(
           children: [
             GestureDetector(
-              onTap: () => {
-                Navigator.pushNamed(context, routes.avatar)
-              },
+              onTap: () => {Navigator.pushNamed(context, routes.avatar)},
               child: CircleAvatar(
                 backgroundColor: Colors.white,
                 backgroundImage: AssetImage("assets/avatar.png"),
@@ -69,7 +69,24 @@ class _HomepageState extends State<Homepage> {
           ),
           SizedBox(height: 30),
           Divider(color: Colors.grey),
-          messagesList(user.id, context),
+          SizedBox(height: 10),
+          FutureBuilder(
+            future: Provider.of<MessageProvider>(context, listen: false).init(
+                Provider.of<UnreadMessageProvider>(context, listen: false),
+                user,
+                context,
+            ),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  print("messages future builder waiting");
+                  return Center(child: CircularProgressIndicator());
+                default:
+                  return messagesList(user, context);
+              }
+            },
+          ),
         ],
       ),
     );

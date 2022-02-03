@@ -6,8 +6,8 @@ import 'package:jam/providers/message_provider.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
 
-messagesList(userId, context) {
-  String boxName = '${onlyASCII(userId)}:messages';
+messagesList(user, context) {
+  String boxName = '${onlyASCII(user.id)}:messages';
   Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
       .openBox(boxName);
 
