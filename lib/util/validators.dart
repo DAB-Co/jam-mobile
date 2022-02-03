@@ -51,3 +51,11 @@ String? validateUsername(String? value) {
 
   return _msg;
 }
+
+String? validateNotEmpty(String? value) {
+  String? _msg;
+  if (value == null || value == "") {
+    _msg = "Please fill the form";
+  }
+  return _msg;
+}
