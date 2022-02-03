@@ -182,7 +182,7 @@ class _DMState extends State<DM> {
                                           : Colors.blue[200]),
                                     ),
                                     padding: EdgeInsets.all(16),
-                                    child: Text(
+                                    child: SelectableText(
                                       messages[index].messageContent,
                                       style: TextStyle(
                                         fontSize: 15,
