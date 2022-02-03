@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/widgets/app_bar.dart';
 import 'package:jam/widgets/loading.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -104,6 +105,7 @@ class _RegisterState extends State<Register> {
 
     return SafeArea(
       child: Scaffold(
+        appBar: formAppBar(),
         body: Container(
           padding: EdgeInsets.all(40.0),
           child: Form(
