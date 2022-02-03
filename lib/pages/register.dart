@@ -26,6 +26,10 @@ class _RegisterState extends State<Register> {
   }
 
   final formKey = new GlobalKey<FormState>();
+  final emailFormKey = GlobalKey<FormFieldState>();
+  final userNameFormKey = GlobalKey<FormFieldState>();
+  final passwordFormKey = GlobalKey<FormFieldState>();
+  final confirmPasswordFormKey = GlobalKey<FormFieldState>();
 
   String? _username, _email, _password, _confirmPassword;
 
@@ -34,28 +38,31 @@ class _RegisterState extends State<Register> {
     AuthProvider auth = Provider.of<AuthProvider>(context);
 
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      formKey.currentState!.validate();
+      //formKey.currentState!.validate();
     });
 
-    final usernameField = TextFormField(
-      onChanged: (_) => formKey.currentState!.validate(),
-      autofocus: false,
-      validator: validateUsername,
-      onSaved: (value) => _username = value,
-      decoration: buildInputDecoration("Enter username", Icons.email),
-    );
-
     final emailField = TextFormField(
-      onChanged: (_) => formKey.currentState!.validate(),
+      key: emailFormKey,
+      onChanged: (_) => emailFormKey.currentState!.validate(),
       autofocus: false,
       validator: validateEmail,
       onSaved: (value) => _email = value,
       decoration: buildInputDecoration("Enter email address", Icons.email),
     );
 
+    final usernameField = TextFormField(
+      key: userNameFormKey,
+      onChanged: (_) => userNameFormKey.currentState!.validate(),
+      autofocus: false,
+      validator: validateUsername,
+      onSaved: (value) => _username = value,
+      decoration: buildInputDecoration("Enter username", Icons.supervised_user_circle),
+    );
+
     final passwordField = TextFormField(
+      key: passwordFormKey,
       controller: passwordController,
-      onChanged: (_) => formKey.currentState!.validate(),
+      onChanged: (_) => passwordFormKey.currentState!.validate(),
       autofocus: false,
       obscureText: true,
       validator: (value) => validatePassword(value),
@@ -64,7 +71,8 @@ class _RegisterState extends State<Register> {
     );
 
     final confirmPassword = TextFormField(
-      onChanged: (_) => formKey.currentState!.validate(),
+      key: confirmPasswordFormKey,
+      onChanged: (_) => confirmPasswordFormKey.currentState!.validate(),
       autofocus: false,
       obscureText: true,
       validator: (value) => (value != passwordController.text) ? "Passwords don't match" : null,
