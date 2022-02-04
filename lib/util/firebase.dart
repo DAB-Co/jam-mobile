@@ -68,16 +68,14 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       await Hive.openBox<ChatPair>("${currentUser.id}:messages");
     }
     var messages = Hive.box<ChatPair>('${currentUser.id}:messages');
-    print(messages);
     var person = messages.get(fromId);
-    print(person);
     if (person == null) {
       print("incoming background message not in friends");
       return;
     }
     String title = "You have messages from ${person.username}";
     //Hive.close();
-    showNotification(title, null);
+    showNotification(title, null, fromId);
   }
 }
 

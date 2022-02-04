@@ -28,21 +28,24 @@ Future initNotifications() async {
   );
 }
 
-void showNotification(String? title, String? body) async {
+void showNotification(String? title, String? body, String id) async {
   await flutterLocalNotificationsPlugin.show(
-    1,
+    int.parse(id),
     title,
     body,
     platformChannelSpecifics,
-    payload: 'item x',
+    payload: id,
   );
 }
 
-/// Runs when tapped on notification
-void _selectNotification(String? payload) async {
-  //var details = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+/// Runs when tapped on notification (not working)
+Future<dynamic> _selectNotification(String? payload) async {
+  var details = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   print("selected notification");
-  //if (details != null) {
-  //  print(details.payload);
-  //}
+  if (details != null) {
+    print("payload");
+    print(payload);
+  } else {
+    print("details null");
+  }
 }

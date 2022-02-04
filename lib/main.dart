@@ -7,6 +7,7 @@ import 'package:jam/pages/messages.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/firebase.dart';
+import 'package:jam/util/local_notification.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -22,6 +23,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Important!
   await loadCertificate(); // SSL certificate
   await initFirebase(); // Connect to firebase for notifications
+  await initNotifications(); // Local notifications
   runApp(MyApp());
 }
 
