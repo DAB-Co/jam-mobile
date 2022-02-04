@@ -13,30 +13,20 @@ import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
   // Constructor
-  const DM(
-      {required this.otherUsername,
-      required this.unRead,
-      required this.otherId})
-      : super();
+  const DM({required this.otherUsername, required this.otherId}) : super();
   final String otherUsername;
   final String otherId;
-  final int unRead;
 
   @override
   _DMState createState() =>
-      _DMState(otherUsername: otherUsername, unRead: unRead, otherId: otherId);
+      _DMState(otherUsername: otherUsername, otherId: otherId);
 }
 
 class _DMState extends State<DM> {
   // Constructor
-  _DMState(
-      {required this.otherUsername,
-      required this.unRead,
-      required this.otherId})
-      : super();
+  _DMState({required this.otherUsername, required this.otherId}) : super();
   final String otherUsername;
   final String otherId;
-  final int unRead;
 
   final chatTextController = TextEditingController();
 
@@ -145,6 +135,11 @@ class _DMState extends State<DM> {
                     WidgetsBinding.instance?.addPostFrameCallback((_) {
                       print("post frame callback");
                       _controller.jumpTo(_controller.position.maxScrollExtent);
+                      int unRead =
+                          Provider.of<MessageProvider>(context, listen: false)
+                              .messages
+                              .get(otherId)
+                              .unreadMessages;
                       Provider.of<UnreadMessageProvider>(context, listen: false)
                           .decUnreadCount(unRead);
                     });

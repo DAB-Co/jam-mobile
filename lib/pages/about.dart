@@ -11,30 +11,36 @@ class About extends StatelessWidget {
         elevation: 0.1,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Jam",
-              style: TextStyle(fontSize: 50),
-            ),
-            Text(
-              "1.0.0",
-              style: TextStyle(fontSize: 30),
-            ),
-            SizedBox(height: 50),
-            GestureDetector(
-              onTap: _launchEmail,
-              child: Text(
-                "dabco5317@gmail.com",
-                style: TextStyle(
-                  fontSize: 30,
-                  color: Colors.blue,
-                  decoration: TextDecoration.underline,
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Jam",
+                style: TextStyle(fontSize: 50),
+              ),
+              Text(
+                "1.0.0",
+                style: TextStyle(fontSize: 30),
+              ),
+              SizedBox(height: 50),
+              GestureDetector(
+                onTap: _launchEmail,
+                child: FittedBox(
+                  child: Text(
+                    "dabco5317@gmail.com",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.blue,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

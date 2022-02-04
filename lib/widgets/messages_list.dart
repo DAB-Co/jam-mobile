@@ -8,8 +8,8 @@ import 'package:provider/provider.dart';
 
 messagesList(user, context) {
   String boxName = '${onlyASCII(user.id)}:messages';
-  Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
-      .openBox(boxName);
+  Future boxOpening =
+      Provider.of<MessageProvider>(context, listen: false).openBox(boxName);
 
   return FutureBuilder(
     future: boxOpening,
@@ -21,21 +21,21 @@ messagesList(user, context) {
           return Center(child: CircularProgressIndicator());
         default:
           return ValueListenableBuilder(
-              valueListenable:
-              Hive.box<ChatPair>(boxName).listenable(),
+              valueListenable: Hive.box<ChatPair>(boxName).listenable(),
               builder: (context, Box<ChatPair> box, widget) {
                 List<ChatPair> chats = box.values.toList().cast();
                 chats.sort();
                 if (chats.length == 0) {
                   return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.messenger_outlined),
-                          SizedBox(height: 10),
-                          Text("No messages yet"),
-                        ],
-                      ));
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.messenger_outlined),
+                        SizedBox(height: 10),
+                        Text("No messages yet"),
+                      ],
+                    ),
+                  );
                 }
                 return ListView.separated(
                   shrinkWrap: true,
@@ -51,40 +51,35 @@ messagesList(user, context) {
                       trailing: chats[index].unreadMessages == 0
                           ? Text("")
                           : Container(
-                        padding: EdgeInsets.all(1),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(100),
-                        ),
-                        constraints: BoxConstraints(
-                          minWidth: 30,
-                          minHeight: 30,
-                        ),
-                        child: Text(
-                          chats[index].unreadMessages.toString(),
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
+                              padding: EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(100),
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 30,
+                                minHeight: 30,
+                              ),
+                              child: Text(
+                                chats[index].unreadMessages.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 25,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
                       onTap: () {
                         var name = chats[index].username;
                         var id = chats[index].userId;
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DM(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DM(
                                 otherUsername: name,
                                 otherId: id,
-                                unRead:
-                                Provider.of<MessageProvider>(context, listen: false)
-                                    .messages
-                                    .get(id)
-                                    .unreadMessages),
-                          ),
-                        );
+                              ),
+                            ));
                       },
                     ),
                   ),

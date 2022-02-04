@@ -1,4 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:jam/pages/dm.dart';
+import '/config/routes.dart' as routes;
+
+import '../main.dart';
 
 var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
@@ -28,21 +33,36 @@ Future initNotifications() async {
   );
 }
 
-void showNotification(String? title, String? body) async {
+void showNotification(String? title, String? body, String payload) async {
   await flutterLocalNotificationsPlugin.show(
-    1,
+    int.parse(payload.split(" ")[0]), // payload = id + username
     title,
     body,
     platformChannelSpecifics,
-    payload: 'item x',
+    payload: payload,
   );
 }
 
 /// Runs when tapped on notification
-void _selectNotification(String? payload) async {
-  //var details = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+Future<dynamic> _selectNotification(String? payload) async {
+  var details =
+      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   print("selected notification");
-  //if (details != null) {
-  //  print(details.payload);
-  //}
+  if (details != null && payload != null) {
+    String id = payload.split(" ")[0];
+    String username = payload.split(" ")[1];
+    print("payload");
+    print(payload);
+    navigatorKey.currentState?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
+    navigatorKey.currentState?.push(
+      MaterialPageRoute(
+        builder: (context) => DM(
+          otherUsername: username,
+          otherId: id,
+        ),
+      ),
+    );
+  } else {
+    print("details null");
+  }
 }

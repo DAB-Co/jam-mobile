@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:jam/models/user.dart';
 import 'package:jam/models/chat_pair_model.dart';
-import 'package:jam/providers/message_provider.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
@@ -42,14 +41,15 @@ class _MessagesState extends State<Messages> {
             chats.sort();
             if (chats.length == 0) {
               return Center(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.messenger_outlined),
-                  SizedBox(height: 10),
-                  Text("No messages yet"),
-                ],
-              ));
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.messenger_outlined),
+                    SizedBox(height: 10),
+                    Text("No messages yet"),
+                  ],
+                ),
+              );
             }
             return ListView.separated(
               itemBuilder: (context, index) => Padding(
@@ -88,13 +88,9 @@ class _MessagesState extends State<Messages> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => DM(
-                            otherUsername: name,
-                            otherId: id,
-                            unRead: Provider.of<MessageProvider>(context,
-                                    listen: false)
-                                .messages
-                                .get(id)
-                                .unreadMessages),
+                          otherUsername: name,
+                          otherId: id,
+                        ),
                       ),
                     );
                   },

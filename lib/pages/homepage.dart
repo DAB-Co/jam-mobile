@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
+import 'package:jam/util/local_notification.dart';
 import 'package:jam/widgets/messages_list.dart';
 import 'package:provider/provider.dart';
 
@@ -72,9 +73,9 @@ class _HomepageState extends State<Homepage> {
           SizedBox(height: 10),
           FutureBuilder(
             future: Provider.of<MessageProvider>(context, listen: false).init(
-                Provider.of<UnreadMessageProvider>(context, listen: false),
-                user,
-                context,
+              Provider.of<UnreadMessageProvider>(context, listen: false),
+              user,
+              context,
             ),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
@@ -90,5 +91,12 @@ class _HomepageState extends State<Homepage> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // discard all jam notifications
+    flutterLocalNotificationsPlugin.cancelAll();
   }
 }
