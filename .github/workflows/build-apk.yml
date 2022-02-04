@@ -26,6 +26,7 @@ jobs:
           # path: "build/app/outputs/flutter-apk/app-release.apk"
         uses: ncipollo/release-action@v1
         with:
-          tag: "Build: ${{ github.sha }}"
+          tag: "${{ github.run_id }}"
+          body: "commit: ${{ github.sha }}, build run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           artifacts: "build/app/outputs/flutter-apk/app-release.apk"
           token: ${{ secrets.REPO_TOKEN_NAME }}
