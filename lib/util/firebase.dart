@@ -75,7 +75,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     }
     String title = "You have messages from ${person.username}";
     //Hive.close();
-    showNotification(title, null, fromId);
+    showNotification(title, null, fromId + " " + person.username);
   }
 }
 
