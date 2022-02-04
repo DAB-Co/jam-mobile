@@ -1,8 +1,7 @@
 name: build-jam-apk
 
 on:
-  push: master
-
+  push
 jobs:
   build:
     name: Build APK
@@ -18,7 +17,7 @@ jobs:
           flutter-version: '2.10.0'
       - run: flutter pub get
       # - run: flutter test
-      - run: flutter build apk
+      - run: flutter build apk --split-per-abi
       - name: Create a Release APK
         uses: ncipollo/release-action@v1
         with:
