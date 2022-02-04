@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:jam/models/user.dart';
 import 'package:jam/models/chat_message_model.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
@@ -29,7 +29,10 @@ class DM extends StatefulWidget {
 
 class _DMState extends State<DM> {
   // Constructor
-  _DMState({required this.otherUsername, required this.unRead, required this.otherId})
+  _DMState(
+      {required this.otherUsername,
+      required this.unRead,
+      required this.otherId})
       : super();
   final String otherUsername;
   final String otherId;
@@ -80,8 +83,8 @@ class _DMState extends State<DM> {
       sendMessage(otherId, message);
     }
 
-    Future boxOpening =
-        Provider.of<MessageProvider>(context, listen: false).openBox(onlyASCII(otherId));
+    Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
+        .openBox(onlyASCII(otherId));
 
     User user = Provider.of<UserProvider>(context).user!;
     String userId = user.id!;
@@ -124,15 +127,6 @@ class _DMState extends State<DM> {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: Icon(
-              Icons.more_vert,
-              color: Colors.white,
-            ),
-          )
-        ],
       ),
       body: Stack(
         children: <Widget>[
@@ -155,9 +149,9 @@ class _DMState extends State<DM> {
                           .decUnreadCount(unRead);
                     });
                     return ValueListenableBuilder(
-                        valueListenable:
-                            Hive.box<ChatMessage>('${onlyASCII(userId)}:$otherId')
-                                .listenable(),
+                        valueListenable: Hive.box<ChatMessage>(
+                                '${onlyASCII(userId)}:$otherId')
+                            .listenable(),
                         builder: (context, Box<ChatMessage> box, widget) {
                           List<ChatMessage> messages =
                               box.values.toList().cast();
@@ -174,8 +168,19 @@ class _DMState extends State<DM> {
                             //physics: BouncingScrollPhysics(),
                             itemBuilder: (context, index) {
                               return Container(
-                                padding: EdgeInsets.only(
-                                    left: 14, right: 14, top: 10, bottom: 10),
+                                padding: (messages[index].isIncomingMessage
+                                    ? EdgeInsets.only(
+                                        left: 14,
+                                        right: 60,
+                                        top: 10,
+                                        bottom: 10,
+                                      )
+                                    : EdgeInsets.only(
+                                        left: 60,
+                                        right: 14,
+                                        top: 10,
+                                        bottom: 10,
+                                      )),
                                 child: Align(
                                   alignment: (messages[index].isIncomingMessage
                                       ? Alignment.topLeft
@@ -188,7 +193,7 @@ class _DMState extends State<DM> {
                                           : Colors.blue[200]),
                                     ),
                                     padding: EdgeInsets.all(16),
-                                    child: Text(
+                                    child: SelectableText(
                                       messages[index].messageContent,
                                       style: TextStyle(
                                         fontSize: 15,
