@@ -1,6 +1,8 @@
 name: build-jam-apk
 
-on: push
+on:
+  push: master
+
 jobs:
   build:
     name: Build APK
@@ -16,10 +18,10 @@ jobs:
           flutter-version: '2.10.0'
       - run: flutter pub get
       # - run: flutter test
-      - run: flutter build apk --split-per-abi
+      - run: flutter build apk
       - name: Create a Release APK
         uses: ncipollo/release-action@v1
         with:
           tag: "latest"
-          artifacts: "build/app/outputs/apk/debug/*.apk"
+          artifacts: "build/app/outputs/flutter-apk/*.apk"
           token: ${{ secrets.REPO_TOKEN_NAME }}
