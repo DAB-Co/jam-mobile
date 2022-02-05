@@ -8,6 +8,8 @@ import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class ContactUs extends StatelessWidget {
+  final chatTextController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
@@ -23,6 +25,7 @@ class ContactUs extends StatelessWidget {
         sendContactUsRequest(user, _input).then((isSuccessful) {
           if (isSuccessful) {
             showSnackBar(context, "successfully sent");
+            chatTextController.clear();
           } else {
             showSnackBar(context, "could not send");
           }
@@ -54,6 +57,7 @@ class ContactUs extends StatelessWidget {
                 child: Form(
                   key: formKey,
                   child: TextFormField(
+                    controller: chatTextController,
                     minLines: 12,
                     maxLines: null,
                     validator: validateNotEmpty,
