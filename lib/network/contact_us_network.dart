@@ -8,8 +8,8 @@ import 'package:jam/models/user.dart';
 Future<bool> sendContactUsRequest(User user, String? message) async {
   final Map<String, String?> dataToSend = {
     "user_id": user.id!,
-    "user_token": user.token!,
-    "message": message,
+    "api_token": user.token!,
+    "suggestion": message,
   };
   try {
     var response = await post(
@@ -17,7 +17,7 @@ Future<bool> sendContactUsRequest(User user, String? message) async {
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: json.encode(dataToSend),
     );
-    if (response.body == "success") {
+    if (response.body == "OK") {
       print("successfully sent suggestion to server");
       return true;
     }
