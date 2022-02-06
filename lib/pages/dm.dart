@@ -66,11 +66,8 @@ class _DMState extends State<DM> {
 
     void send() {
       String message = chatTextController.text.trim();
-      String noNewLine = message.replaceAll("\n", "");
-      String noTabs = noNewLine.replaceAll("\t", "");
-      String noSpaces = noTabs.replaceAll(" ", "");
       chatTextController.clear();
-      if (noSpaces == "") return;
+      if (message == "") return;
       sendMessage(otherId, message);
     }
 
