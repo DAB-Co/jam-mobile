@@ -8,6 +8,7 @@ import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/log_to_file.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -97,7 +98,8 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 
     var topic = c[0].topic;
 
-    print('Received message:$payload from topic: $topic>');
+    print('Received message:$payload from topic: $topic');
+    logToFile('Received message:$payload from topic: $topic\n');
 
     var message = jsonDecode(payload);
     if (message == null) {
