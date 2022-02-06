@@ -47,6 +47,7 @@ dev_dependencies:
   flutter_launcher_icons: "^0.9.2"
   hive_generator: ^1.1.1 # flutter packages pub run build_runner build
   build_runner: ^2.1.5
+  flutter_native_splash: ^2.0.1+1
 
 # flutter pub run flutter_launcher_icons:main
 flutter_icons:
@@ -55,6 +56,11 @@ flutter_icons:
   image_path: "assets/icon/icon.png"
   adaptive_icon_background: "#FF66C4"
   adaptive_icon_foreground: "assets/icon/foreground.png"
+
+# flutter pub run flutter_native_splash:create
+flutter_native_splash:
+  color: "#ff66c4"
+  image: assets/icon/icon.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
