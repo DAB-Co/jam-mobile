@@ -65,8 +65,10 @@ class _DMState extends State<DM> {
     }
 
     void send() {
-      String message = chatTextController.text;
-      String noSpaces = message.replaceAll(" ", "");
+      String message = chatTextController.text.trim();
+      String noNewLine = message.replaceAll("\n", "");
+      String noTabs = noNewLine.replaceAll("\t", "");
+      String noSpaces = noTabs.replaceAll(" ", "");
       chatTextController.clear();
       if (noSpaces == "") return;
       sendMessage(otherId, message);
@@ -210,17 +212,19 @@ class _DMState extends State<DM> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
-                  top: BorderSide(color: Colors.grey.shade200),
+                  top: BorderSide(color: Colors.grey.shade300),
                 ),
               ),
-              padding: EdgeInsets.only(left: 20, bottom: 10, top: 10),
-              height: 60,
+              padding: EdgeInsets.only(left: 20, bottom: 5, top: 5, right: 5),
+              //height: 60,
               width: double.infinity,
               //color: Colors.white,
               child: Row(
                 children: <Widget>[
                   Expanded(
                     child: TextField(
+                      textInputAction: TextInputAction.newline,
+                      maxLines: null,
                       onEditingComplete: () => send(),
                       controller: chatTextController,
                       decoration: InputDecoration(
@@ -239,15 +243,19 @@ class _DMState extends State<DM> {
                   SizedBox(
                     width: 15,
                   ),
-                  FloatingActionButton(
-                    onPressed: () => send(),
-                    child: Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: 18,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 0.0),
+                    child: FloatingActionButton(
+                      onPressed: () => send(),
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      backgroundColor: Colors.pinkAccent,
+                      elevation: 0,
+                      mini: true,
                     ),
-                    backgroundColor: Colors.pinkAccent,
-                    elevation: 0,
                   ),
                 ],
               ),
