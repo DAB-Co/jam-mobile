@@ -73,9 +73,8 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       print("incoming background message not in friends");
       return;
     }
-    String title = "You have messages from ${person.username}";
     //Hive.close();
-    showNotification(title, null, fromId + " " + person.username);
+    showNotification(person.username, int.parse(fromId));
   }
 }
 

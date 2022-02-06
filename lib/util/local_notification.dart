@@ -33,11 +33,13 @@ Future initNotifications() async {
   );
 }
 
-void showNotification(String? title, String? body, String payload) async {
+void showNotification(String username, int id) async {
+  String title = "You have messages from $username";
+  String payload = id.toString() + " " + username;
   await flutterLocalNotificationsPlugin.show(
-    int.parse(payload.split(" ")[0]), // payload = id + username
+    id,
     title,
-    body,
+    null,
     platformChannelSpecifics,
     payload: payload,
   );
@@ -49,10 +51,9 @@ Future<dynamic> _selectNotification(String? payload) async {
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   print("selected notification");
   if (details != null && payload != null) {
+    // payload = id + username
     String id = payload.split(" ")[0];
     String username = payload.split(" ")[1];
-    print("payload");
-    print(payload);
     navigatorKey.currentState?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
     navigatorKey.currentState?.push(
       MaterialPageRoute(
