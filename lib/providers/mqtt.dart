@@ -204,6 +204,7 @@ void onDisconnected() {
 /// subscribe to topic succeeded
 void onSubscribed(String topic) {
   print('Subscribed topic: $topic');
+  logToFile("Subscribed topic: $topic\n");
 }
 
 /// subscribe to topic failed
