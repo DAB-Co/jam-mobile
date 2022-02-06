@@ -217,24 +217,28 @@ class _DMState extends State<DM> {
               width: double.infinity,
               //color: Colors.white,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Expanded(
-                    child: TextField(
-                      textInputAction: TextInputAction.newline,
-                      maxLines: null,
-                      onEditingComplete: () => send(),
-                      controller: chatTextController,
-                      decoration: InputDecoration(
-                        hintText: "Write message...",
-                        hintStyle: TextStyle(color: Colors.black54),
-                        border: InputBorder.none,
+                    child: Scrollbar(
+                      child: TextField(
+                        textInputAction: TextInputAction.newline,
+                        minLines: 1,
+                        maxLines: 6,
+                        onEditingComplete: () => send(),
+                        controller: chatTextController,
+                        decoration: InputDecoration(
+                          hintText: "Write message...",
+                          hintStyle: TextStyle(color: Colors.black54),
+                          border: InputBorder.none,
+                        ),
+                        onTap: () {
+                          Timer(
+                              Duration(milliseconds: 200),
+                              () => _controller
+                                  .jumpTo(_controller.position.maxScrollExtent));
+                        },
                       ),
-                      onTap: () {
-                        Timer(
-                            Duration(milliseconds: 200),
-                            () => _controller
-                                .jumpTo(_controller.position.maxScrollExtent));
-                      },
                     ),
                   ),
                   SizedBox(
