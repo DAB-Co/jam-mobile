@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jam/pages/dm.dart';
-import '/config/routes.dart' as routes;
 
+import '/config/routes.dart' as routes;
 import '../main.dart';
 
 var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails('3131', 'Messages',
-        channelDescription: 'Messages from other jammers',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
+    AndroidNotificationDetails(
+  '3131',
+  'Messages',
+  channelDescription: 'Messages from other jammers',
+  importance: Importance.max,
+  priority: Priority.high,
+  ticker: 'ticker',
+  icon: "@mipmap/ic_launcher",
+);
 const NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
 Future initNotifications() async {
   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-  const initializationSettingsAndroid =
-      AndroidInitializationSettings('notification_icon');
+  const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher'); // this doesn't work, there is no icon in notification
   final initializationSettingsIOS = IOSInitializationSettings();
   final initializationSettingsMacOS = MacOSInitializationSettings();
   final InitializationSettings initializationSettings = InitializationSettings(
@@ -54,7 +58,8 @@ Future<dynamic> _selectNotification(String? payload) async {
     // payload = id + username
     String id = payload.split(" ")[0];
     String username = payload.split(" ")[1];
-    navigatorKey.currentState?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
+    navigatorKey.currentState
+        ?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
     navigatorKey.currentState?.push(
       MaterialPageRoute(
         builder: (context) => DM(
