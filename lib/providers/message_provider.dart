@@ -91,18 +91,18 @@ class MessageProvider extends ChangeNotifier {
     return Hive.openBox<ChatMessage>('$thisUserId:$other');
   }
 
-  messagesRead(String other) {
-    print(other);
-    ChatPair? chat = messages.get(other);
+  enterDM(username) {
+    print("enter DM");
+    print(username);
+    inDmOf = username;
+    ChatPair? chat = messages.get(username);
     if (chat == null) return;
+    // read messages
     print(chat.unreadMessages.toString() + " okundu");
     chat.unreadMessages = 0;
-    messages.put(other, chat);
-  }
-
-  enterDM(username) async {
-    print("enter DM");
-    inDmOf = username;
+    messages.put(username, chat);
+    // clear this chat's notification
+    flutterLocalNotificationsPlugin.cancel(int.parse(chat.userId));
   }
 
   exitDM(username) {

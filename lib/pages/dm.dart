@@ -39,7 +39,6 @@ class _DMState extends State<DM> {
 
   @override
   void initState() {
-    Provider.of<MessageProvider>(context, listen: false).messagesRead(otherId);
     Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();
   }
