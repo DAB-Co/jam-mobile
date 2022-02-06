@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
@@ -10,6 +11,7 @@ import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DM extends StatefulWidget {
   // Constructor
@@ -55,7 +57,7 @@ class _DMState extends State<DM> {
     ScrollController _controller = ScrollController();
     bool firstBuild = true;
 
-    Future<void> animateToBottom() async {
+    Future<void> _animateToBottom() async {
       print("animate to bottom");
       _controller.animateTo(
         _controller.position.maxScrollExtent + 100,
@@ -64,11 +66,19 @@ class _DMState extends State<DM> {
       );
     }
 
-    void send() {
+    void _send() {
       String message = chatTextController.text.trim();
       chatTextController.clear();
       if (message == "") return;
       sendMessage(otherId, message);
+    }
+
+    Future<void> _onOpen(LinkableElement link) async {
+      if (await canLaunch(link.url)) {
+        await launch(link.url);
+      } else {
+        throw 'Could not launch $link';
+      }
     }
 
     Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
@@ -150,7 +160,7 @@ class _DMState extends State<DM> {
                               box.values.toList().cast();
                           if (!firstBuild) {
                             // new message incoming or sent
-                            animateToBottom();
+                            _animateToBottom();
                           }
                           firstBuild = false;
                           return ListView.builder(
@@ -186,14 +196,15 @@ class _DMState extends State<DM> {
                                           : Colors.blue[200]),
                                     ),
                                     padding: EdgeInsets.all(16),
-                                    child: SelectableText(
-                                      messages[index].messageContent,
+                                    child: SelectableLinkify(
+                                      text: messages[index].messageContent,
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: messages[index].successful
                                             ? Colors.black
                                             : Colors.red,
                                       ),
+                                      onOpen: _onOpen,
                                     ),
                                   ),
                                 ),
@@ -225,7 +236,7 @@ class _DMState extends State<DM> {
                         textInputAction: TextInputAction.newline,
                         minLines: 1,
                         maxLines: 6,
-                        onEditingComplete: () => send(),
+                        onEditingComplete: () => _send(),
                         controller: chatTextController,
                         decoration: InputDecoration(
                           hintText: "Write message...",
@@ -235,8 +246,8 @@ class _DMState extends State<DM> {
                         onTap: () {
                           Timer(
                               Duration(milliseconds: 200),
-                              () => _controller
-                                  .jumpTo(_controller.position.maxScrollExtent));
+                              () => _controller.jumpTo(
+                                  _controller.position.maxScrollExtent));
                         },
                       ),
                     ),
@@ -247,7 +258,7 @@ class _DMState extends State<DM> {
                   Padding(
                     padding: const EdgeInsets.only(right: 0.0),
                     child: FloatingActionButton(
-                      onPressed: () => send(),
+                      onPressed: () => _send(),
                       child: Icon(
                         Icons.send,
                         color: Colors.white,
