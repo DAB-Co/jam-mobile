@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
@@ -10,6 +11,7 @@ import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class DM extends StatefulWidget {
   // Constructor
@@ -39,7 +41,6 @@ class _DMState extends State<DM> {
 
   @override
   void initState() {
-    Provider.of<MessageProvider>(context, listen: false).messagesRead(otherId);
     Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();
   }
@@ -56,7 +57,7 @@ class _DMState extends State<DM> {
     ScrollController _controller = ScrollController();
     bool firstBuild = true;
 
-    Future<void> animateToBottom() async {
+    Future<void> _animateToBottom() async {
       print("animate to bottom");
       _controller.animateTo(
         _controller.position.maxScrollExtent + 100,
@@ -65,12 +66,19 @@ class _DMState extends State<DM> {
       );
     }
 
-    void send() {
-      String message = chatTextController.text;
-      String noSpaces = message.replaceAll(" ", "");
+    void _send() {
+      String message = chatTextController.text.trim();
       chatTextController.clear();
-      if (noSpaces == "") return;
+      if (message == "") return;
       sendMessage(otherId, message);
+    }
+
+    Future<void> _onOpen(LinkableElement link) async {
+      if (await canLaunch(link.url)) {
+        await launch(link.url);
+      } else {
+        throw 'Could not launch $link';
+      }
     }
 
     Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
@@ -152,7 +160,7 @@ class _DMState extends State<DM> {
                               box.values.toList().cast();
                           if (!firstBuild) {
                             // new message incoming or sent
-                            animateToBottom();
+                            _animateToBottom();
                           }
                           firstBuild = false;
                           return ListView.builder(
@@ -188,14 +196,15 @@ class _DMState extends State<DM> {
                                           : Colors.blue[200]),
                                     ),
                                     padding: EdgeInsets.all(16),
-                                    child: SelectableText(
-                                      messages[index].messageContent,
+                                    child: SelectableLinkify(
+                                      text: messages[index].messageContent,
                                       style: TextStyle(
                                         fontSize: 15,
                                         color: messages[index].successful
                                             ? Colors.black
                                             : Colors.red,
                                       ),
+                                      onOpen: _onOpen,
                                     ),
                                   ),
                                 ),
@@ -211,44 +220,54 @@ class _DMState extends State<DM> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
-                  top: BorderSide(color: Colors.grey.shade200),
+                  top: BorderSide(color: Colors.grey.shade300),
                 ),
               ),
-              padding: EdgeInsets.only(left: 20, bottom: 10, top: 10),
-              height: 60,
+              padding: EdgeInsets.only(left: 20, bottom: 5, top: 5, right: 5),
+              //height: 60,
               width: double.infinity,
               //color: Colors.white,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   Expanded(
-                    child: TextField(
-                      onEditingComplete: () => send(),
-                      controller: chatTextController,
-                      decoration: InputDecoration(
-                        hintText: "Write message...",
-                        hintStyle: TextStyle(color: Colors.black54),
-                        border: InputBorder.none,
+                    child: Scrollbar(
+                      child: TextField(
+                        textInputAction: TextInputAction.newline,
+                        minLines: 1,
+                        maxLines: 6,
+                        onEditingComplete: () => _send(),
+                        controller: chatTextController,
+                        decoration: InputDecoration(
+                          hintText: "Write message...",
+                          hintStyle: TextStyle(color: Colors.black54),
+                          border: InputBorder.none,
+                        ),
+                        onTap: () {
+                          Timer(
+                              Duration(milliseconds: 200),
+                              () => _controller.jumpTo(
+                                  _controller.position.maxScrollExtent));
+                        },
                       ),
-                      onTap: () {
-                        Timer(
-                            Duration(milliseconds: 200),
-                            () => _controller
-                                .jumpTo(_controller.position.maxScrollExtent));
-                      },
                     ),
                   ),
                   SizedBox(
                     width: 15,
                   ),
-                  FloatingActionButton(
-                    onPressed: () => send(),
-                    child: Icon(
-                      Icons.send,
-                      color: Colors.white,
-                      size: 18,
+                  Padding(
+                    padding: const EdgeInsets.only(right: 0.0),
+                    child: FloatingActionButton(
+                      onPressed: () => _send(),
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.white,
+                        size: 18,
+                      ),
+                      backgroundColor: Colors.pinkAccent,
+                      elevation: 0,
+                      mini: true,
                     ),
-                    backgroundColor: Colors.pinkAccent,
-                    elevation: 0,
                   ),
                 ],
               ),

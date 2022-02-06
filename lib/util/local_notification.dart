@@ -1,25 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jam/pages/dm.dart';
-import '/config/routes.dart' as routes;
 
+import '/config/routes.dart' as routes;
 import '../main.dart';
 
 var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails('3131', 'Messages',
-        channelDescription: 'Messages from other jammers',
-        importance: Importance.max,
-        priority: Priority.high,
-        ticker: 'ticker');
+    AndroidNotificationDetails(
+  '3131',
+  'Messages',
+  channelDescription: 'Messages from other jammers',
+  importance: Importance.max,
+  priority: Priority.high,
+  ticker: 'ticker',
+  icon: "@mipmap/ic_launcher",
+);
 const NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
 Future initNotifications() async {
   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-  const initializationSettingsAndroid =
-      AndroidInitializationSettings('notification_icon');
+  const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher'); // this doesn't work, there is no icon in notification
   final initializationSettingsIOS = IOSInitializationSettings();
   final initializationSettingsMacOS = MacOSInitializationSettings();
   final InitializationSettings initializationSettings = InitializationSettings(
@@ -33,11 +37,13 @@ Future initNotifications() async {
   );
 }
 
-void showNotification(String? title, String? body, String payload) async {
+void showNotification(String username, int id) async {
+  String title = "You have messages from $username";
+  String payload = id.toString() + " " + username;
   await flutterLocalNotificationsPlugin.show(
-    int.parse(payload.split(" ")[0]), // payload = id + username
+    id,
     title,
-    body,
+    null,
     platformChannelSpecifics,
     payload: payload,
   );
@@ -49,11 +55,11 @@ Future<dynamic> _selectNotification(String? payload) async {
       await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
   print("selected notification");
   if (details != null && payload != null) {
+    // payload = id + username
     String id = payload.split(" ")[0];
     String username = payload.split(" ")[1];
-    print("payload");
-    print(payload);
-    navigatorKey.currentState?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
+    navigatorKey.currentState
+        ?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
     navigatorKey.currentState?.push(
       MaterialPageRoute(
         builder: (context) => DM(

@@ -7,6 +7,7 @@ import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/network/get_friends.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/local_notification.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -79,6 +80,7 @@ class MessageProvider extends ChangeNotifier {
     if (inDmOf != otherId) {
       chatPair.unreadMessages++;
       unread.incUnreadCount();
+      showNotification(chatPair.username, int.parse(otherId));
     }
     messages.put(otherId, chatPair);
     // This call tells the widgets that are listening to this model to rebuild.
@@ -89,18 +91,18 @@ class MessageProvider extends ChangeNotifier {
     return Hive.openBox<ChatMessage>('$thisUserId:$other');
   }
 
-  messagesRead(String other) {
-    print(other);
-    ChatPair? chat = messages.get(other);
+  enterDM(username) {
+    print("enter DM");
+    print(username);
+    inDmOf = username;
+    ChatPair? chat = messages.get(username);
     if (chat == null) return;
+    // read messages
     print(chat.unreadMessages.toString() + " okundu");
     chat.unreadMessages = 0;
-    messages.put(other, chat);
-  }
-
-  enterDM(username) async {
-    print("enter DM");
-    inDmOf = username;
+    messages.put(username, chat);
+    // clear this chat's notification
+    flutterLocalNotificationsPlugin.cancel(int.parse(chat.userId));
   }
 
   exitDM(username) {
