@@ -21,7 +21,12 @@ class _ReadLogState extends State<ReadLog> {
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
             default:
-              return Text(snapshot.data as String);
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(snapshot.data as String),
+                ),
+              );
           }
         },
       ),
