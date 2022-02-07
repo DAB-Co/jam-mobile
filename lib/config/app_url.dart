@@ -12,5 +12,5 @@ class AppUrl {
   static const String suggestion = baseURL + "/suggestion";
 
   static const String mqttURL = "rocketdodgegame.com";
-  static const int mqttPort = 8080;
+  static const int mqttPort = 41371;
 }
