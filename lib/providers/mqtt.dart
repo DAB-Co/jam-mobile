@@ -69,7 +69,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
   _client.onSubscribeFail = onSubscribeFail;
   _client.pongCallback = pong;
   _client.autoReconnect = true;
-  _client.secure = true;
+  _client.secure = false;
 
   var deviceId = await getDeviceIdentifier();
   print("deviceId: " + deviceId);
@@ -87,8 +87,10 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 
   try {
     await _client.connect();
+    logToFile("client.connect() await done.\n");
   } catch (e) {
     print('Exception: $e');
+    logToFile('Exception: $e\n');
     _client.disconnect();
   }
 
@@ -97,9 +99,8 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
     final payload = MqttEncoding().decoder.convert(byteMessage.payload.message);
 
     var topic = c[0].topic;
-
-    print('Received message:$payload from topic: $topic');
     logToFile('Received message:$payload from topic: $topic\n');
+    logToFile("c Length: ${c.length.toString()}\n");
 
     var message = jsonDecode(payload);
     if (message == null) {
@@ -193,9 +194,10 @@ void onConnected() {
   // every user subscribes to topic for their id
   client?.subscribe("/${user.id}/inbox", MqttQos.exactlyOnce);
   client?.subscribe("/${user.id}/devices/$clientId", MqttQos.atMostOnce);
+  logToFile("Connected, subscribe is called.\n");
 }
 
-/// unconnected
+/// disconnected
 void onDisconnected() {
   print('Disconnected');
   //connect(username, provider);

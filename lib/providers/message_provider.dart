@@ -68,7 +68,13 @@ class MessageProvider extends ChangeNotifier {
       print("illegal message");
       return;
     }
-    var chat = await Hive.openBox<ChatMessage>('$thisUserId:$otherId');
+    var chat;
+    if (Hive.isBoxOpen('$thisUserId:$otherId')) {
+      chat = Hive.box<ChatMessage>('$thisUserId:$otherId');
+    }
+    else {
+      chat = await Hive.openBox<ChatMessage>('$thisUserId:$otherId');
+    }
     if (msgId != null) {
       unConfirmedMessages[msgId] = SentMessage(to: otherId, index: chat.length);
     }
@@ -134,7 +140,13 @@ class MessageProvider extends ChangeNotifier {
   Future unsuccessfulMessage(int id) async {
     SentMessage? failure = unConfirmedMessages[id];
     if (failure == null) return;
-    var chat = await Hive.openBox<ChatMessage>('$thisUserId:${failure.to}');
+    var chat;
+    if (Hive.isBoxOpen('$thisUserId:${failure.to}')) {
+      chat = Hive.box<ChatMessage>('$thisUserId:${failure.to}');
+    }
+    else {
+      chat = await Hive.openBox<ChatMessage>('$thisUserId:${failure.to}');
+    }
     ChatMessage? failedMessage = chat.getAt(failure.index);
     if (failedMessage == null) return;
     failedMessage.successful = false;
