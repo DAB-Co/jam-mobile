@@ -164,7 +164,7 @@ void sendMessage(String receiver, String content) {
   try {
     messageId = client!.publishMessage(
       "/$receiver/inbox",
-      MqttQos.exactlyOnce,
+      MqttQos.atLeastOnce,
       builder.payload!,
     );
   } catch (e) {
@@ -192,7 +192,7 @@ Future disconnect() async {
 void onConnected() {
   print('Connected');
   // every user subscribes to topic for their id
-  client?.subscribe("/${user.id}/inbox", MqttQos.exactlyOnce);
+  client?.subscribe("/${user.id}/inbox", MqttQos.atLeastOnce);
   client?.subscribe("/${user.id}/devices/$clientId", MqttQos.atMostOnce);
   logToFile("Connected, subscribe is called.\n");
 }
