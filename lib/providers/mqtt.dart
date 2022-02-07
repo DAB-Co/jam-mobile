@@ -82,7 +82,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       .withWillMessage('Will message')
       //.startClean()
       .withClientIdentifier(clientId)
-      .withWillQos(MqttQos.exactlyOnce)
+      .withWillQos(MqttQos.atLeastOnce)
       .withProtocolVersion(4);
 
   try {
