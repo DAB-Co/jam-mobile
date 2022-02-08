@@ -205,6 +205,7 @@ class _DMState extends State<DM> {
                                             : Colors.red,
                                       ),
                                       onOpen: _onOpen,
+                                      options: LinkifyOptions(looseUrl: true),
                                     ),
                                   ),
                                 ),

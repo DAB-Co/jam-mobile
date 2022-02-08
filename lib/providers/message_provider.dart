@@ -8,6 +8,7 @@ import 'package:jam/network/get_friends.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/local_notification.dart';
+import 'package:jam/util/log_to_file.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -68,11 +69,23 @@ class MessageProvider extends ChangeNotifier {
       print("illegal message");
       return;
     }
-    var chat = await Hive.openBox<ChatMessage>('$thisUserId:$otherId');
+    var chat;
+    if (Hive.isBoxOpen('$thisUserId:$otherId')) {
+      chat = Hive.box<ChatMessage>('$thisUserId:$otherId');
+    }
+    else {
+      chat = await Hive.openBox<ChatMessage>('$thisUserId:$otherId');
+    }
     if (msgId != null) {
       unConfirmedMessages[msgId] = SentMessage(to: otherId, index: chat.length);
     }
-    await chat.add(message);
+    String key = "${message.timestamp}";
+    if (chat.get(key) != null) {
+      print("double message: ${message.messageContent}");
+      logToFile("double message: ${message.messageContent}\n");
+      return;
+    }
+    await chat.put(key, message);
     print("adding message");
     chatPair.lastMessage = message.messageContent;
     chatPair.lastMessageTimeStamp = message.timestamp;
@@ -134,7 +147,13 @@ class MessageProvider extends ChangeNotifier {
   Future unsuccessfulMessage(int id) async {
     SentMessage? failure = unConfirmedMessages[id];
     if (failure == null) return;
-    var chat = await Hive.openBox<ChatMessage>('$thisUserId:${failure.to}');
+    var chat;
+    if (Hive.isBoxOpen('$thisUserId:${failure.to}')) {
+      chat = Hive.box<ChatMessage>('$thisUserId:${failure.to}');
+    }
+    else {
+      chat = await Hive.openBox<ChatMessage>('$thisUserId:${failure.to}');
+    }
     ChatMessage? failedMessage = chat.getAt(failure.index);
     if (failedMessage == null) return;
     failedMessage.successful = false;

@@ -8,6 +8,7 @@ import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/log_to_file.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -81,13 +82,15 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       .withWillMessage('Will message')
       //.startClean()
       .withClientIdentifier(clientId)
-      .withWillQos(MqttQos.exactlyOnce)
+      .withWillQos(MqttQos.atLeastOnce)
       .withProtocolVersion(4);
 
   try {
     await _client.connect();
+    logToFile("client.connect() await done.\n");
   } catch (e) {
     print('Exception: $e');
+    logToFile('Exception: $e\n');
     _client.disconnect();
   }
 
@@ -96,8 +99,8 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
     final payload = MqttEncoding().decoder.convert(byteMessage.payload.message);
 
     var topic = c[0].topic;
-
-    print('Received message:$payload from topic: $topic>');
+    logToFile('Received message:$payload from topic: $topic\n');
+    logToFile("c Length: ${c.length.toString()}\n");
 
     var message = jsonDecode(payload);
     if (message == null) {
@@ -161,7 +164,7 @@ void sendMessage(String receiver, String content) {
   try {
     messageId = client!.publishMessage(
       "/$receiver/inbox",
-      MqttQos.exactlyOnce,
+      MqttQos.atLeastOnce,
       builder.payload!,
     );
   } catch (e) {
@@ -189,11 +192,12 @@ Future disconnect() async {
 void onConnected() {
   print('Connected');
   // every user subscribes to topic for their id
-  client?.subscribe("/${user.id}/inbox", MqttQos.exactlyOnce);
+  client?.subscribe("/${user.id}/inbox", MqttQos.atLeastOnce);
   client?.subscribe("/${user.id}/devices/$clientId", MqttQos.atMostOnce);
+  logToFile("Connected, subscribe is called.\n");
 }
 
-/// unconnected
+/// disconnected
 void onDisconnected() {
   print('Disconnected');
   //connect(username, provider);
@@ -202,6 +206,7 @@ void onDisconnected() {
 /// subscribe to topic succeeded
 void onSubscribed(String topic) {
   print('Subscribed topic: $topic');
+  logToFile("Subscribed topic: $topic\n");
 }
 
 /// subscribe to topic failed
