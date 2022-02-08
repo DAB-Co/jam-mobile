@@ -11,6 +11,9 @@ class AppUrl {
 
   static const String suggestion = baseURL + "/suggestion";
 
+  static const String spotifyUrlStart = "http://cookie.jsontest.com/";
+  static const String spotifyUrlEnd = "http://cookie.jsontest.com/";
+
   static const String mqttURL = "rocketdodgegame.com";
   static const int mqttPort = 41371;
 }

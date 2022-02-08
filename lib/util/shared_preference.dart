@@ -55,4 +55,24 @@ class UserPreferences {
       prefs.setInt("$username: unread", unread - read);
     }
   }
+
+  Future<String?> getSpotifyAccessToken(String username) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("$username:access");
+  }
+
+  Future setSpotifyAccessToken(String username, String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("$username:access", token);
+  }
+
+  Future<String?> getSpotifyRefreshToken(String username) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString("$username:refresh");
+  }
+
+  Future setSpotifyRefreshToken(String username, String token) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString("$username:refresh", token);
+  }
 }
