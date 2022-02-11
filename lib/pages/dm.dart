@@ -12,7 +12,6 @@ import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/alert.dart';
-import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -110,8 +109,8 @@ class _DMState extends State<DM> {
           break;
         case 'Unblock':
           Provider.of<MessageProvider>(context, listen: false).unblock(otherId);
+          unBlockRequest(user.id!, user.token!, otherId);
           Navigator.pop(context);
-          showSnackBar(context, "unblock feature is not complete yet");
           break;
       }
     }
