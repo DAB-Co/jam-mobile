@@ -165,12 +165,24 @@ class MessageProvider extends ChangeNotifier {
   }
 
   void block(String otherId) {
-    messages.get(otherId).isBlocked = true;
+    ChatPair? chatPair = messages.get(otherId);
+    if (chatPair == null) {
+      print("can not block");
+      return;
+    }
+    chatPair.isBlocked = true;
+    messages.put(otherId, chatPair);
     notifyListeners();
   }
 
   void unblock(String otherId) {
-    messages.get(otherId).isBlocked = false;
+    ChatPair? chatPair = messages.get(otherId);
+    if (chatPair == null) {
+      print("can not unblock");
+      return;
+    }
+    chatPair.isBlocked = false;
+    messages.put(otherId, chatPair);
     notifyListeners();
   }
 }
