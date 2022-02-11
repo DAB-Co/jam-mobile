@@ -4,12 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/models/chat_message_model.dart';
+import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -53,6 +55,8 @@ class _DMState extends State<DM> {
 
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<UserProvider>(context).user!;
+    String userId = user.id!;
     // for scrolling to bottom when new message arrives
     ScrollController _controller = ScrollController();
     bool firstBuild = true;
@@ -81,12 +85,28 @@ class _DMState extends State<DM> {
       }
     }
 
+    Future block() async {
+      var messages;
+      if (!Hive.isBoxOpen('$userId:messages')) {
+        messages = await Hive.openBox<ChatPair>('$userId:messages');
+      }
+      else {
+        messages = Hive.box<ChatPair>('$userId:messages');
+      }
+      messages.get(otherId).isBlocked = true;
+    }
+
+    void _handleThreeDotClick(String value) {
+      switch (value) {
+        case 'Block':
+          showSnackBar(context, "blocked");
+          block();
+          break;
+      }
+    }
+
     Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
         .openBox(onlyASCII(otherId));
-
-    User user = Provider.of<UserProvider>(context).user!;
-    String userId = user.id!;
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -125,6 +145,19 @@ class _DMState extends State<DM> {
             ),
           ],
         ),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: _handleThreeDotClick,
+            itemBuilder: (BuildContext context) {
+              return {"Block"}.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: <Widget>[

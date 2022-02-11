@@ -21,7 +21,7 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
 
-    void handleThreeDotClick(String value) {
+    void _handleThreeDotClick(String value) {
       switch (value) {
         case 'About':
           Navigator.pushNamed(context, routes.about);
@@ -55,7 +55,7 @@ class _HomepageState extends State<Homepage> {
         ),
         actions: <Widget>[
           PopupMenuButton<String>(
-            onSelected: handleThreeDotClick,
+            onSelected: _handleThreeDotClick,
             itemBuilder: (BuildContext context) {
               return {"Contact Us", 'About', 'Logs'}.map((String choice) {
                 return PopupMenuItem<String>(

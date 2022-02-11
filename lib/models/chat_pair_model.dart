@@ -14,6 +14,8 @@ class ChatPair implements Comparable {
   int lastMessageTimeStamp = -1;
   @HiveField(4)
   String userId;
+  @HiveField(5)
+  bool isBlocked = false;
 
   ChatPair({required this.username, required this.userId});
 

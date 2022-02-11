@@ -47,7 +47,12 @@ messagesList(user, context) {
                         image: AssetImage("assets/avatar.png"),
                       ),
                       title: Text(chats[index].username),
-                      subtitle: Text(chats[index].lastMessage),
+                      subtitle: chats[index].isBlocked
+                          ? Text(
+                              "Blocked",
+                              style: TextStyle(fontStyle: FontStyle.italic),
+                            )
+                          : Text(chats[index].lastMessage),
                       trailing: chats[index].unreadMessages == 0
                           ? Text("")
                           : Container(
