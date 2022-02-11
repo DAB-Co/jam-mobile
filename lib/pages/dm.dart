@@ -93,8 +93,9 @@ class _DMState extends State<DM> {
         Navigator.pop(context);
       },
     );
-    AlertDialog alertDialog = alert("Do you really want to block $otherUsername?", blockButton,
-        content: "$otherUsername will no longer be able to send you messages");
+    AlertDialog alertDialog = alert(
+        "Do you really want to block $otherUsername?", blockButton,
+        content: "You won't be able to receive messages from $otherUsername.");
 
     void _handleThreeDotClick(String value) {
       switch (value) {
