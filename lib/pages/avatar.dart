@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/config/routes.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:provider/provider.dart';
@@ -23,9 +24,7 @@ class _AvatarCustomizeState extends State<AvatarCustomize> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
-        title: Center(
-          child: Text(""),
-        ),
+        title: Text("Your Avatar"),
         elevation: 0.1,
       ),
       body: Column(
@@ -45,20 +44,35 @@ class _AvatarCustomizeState extends State<AvatarCustomize> {
           Divider(color: Colors.grey),
           Padding(
             padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: ListTile(
-              leading: Icon(
-                Icons.logout,
-                color: Colors.red,
-              ),
-              title: const Text('Logout'),
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return alertDialog;
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(
+                    Icons.block,
+                    color: Colors.red,
+                  ),
+                  title: const Text('Blocked users'),
+                  onTap: () {
+                    Navigator.pushNamed(context, blockedUsers);
                   },
-                );
-              },
+                ),
+                Divider(color: Colors.grey),
+                ListTile(
+                  leading: Icon(
+                    Icons.logout,
+                    color: Colors.red,
+                  ),
+                  title: const Text('Logout'),
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return alertDialog;
+                      },
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           Divider(color: Colors.grey),

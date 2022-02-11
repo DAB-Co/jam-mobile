@@ -90,7 +90,8 @@ class _DMState extends State<DM> {
       onPressed: () {
         Provider.of<MessageProvider>(context, listen: false).block(otherId);
         blockRequest(user.id!, user.token!, otherId);
-        Navigator.pop(context);
+        Navigator.pop(context); // close dialog
+        Navigator.pop(context); // return to list
       },
     );
     AlertDialog alertDialog = alert(
@@ -109,6 +110,7 @@ class _DMState extends State<DM> {
           break;
         case 'Unblock':
           Provider.of<MessageProvider>(context, listen: false).unblock(otherId);
+          Navigator.pop(context);
           showSnackBar(context, "unblock feature is not complete yet");
           break;
       }
