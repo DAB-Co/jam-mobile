@@ -6,10 +6,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/block.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -86,9 +88,11 @@ class _DMState extends State<DM> {
       switch (value) {
         case 'Block':
           Provider.of<MessageProvider>(context, listen: false).block(otherId);
+          blockRequest(user.id!, user.token!, otherId);
           break;
         case 'Unblock':
           Provider.of<MessageProvider>(context, listen: false).unblock(otherId);
+          showSnackBar(context, "unblock feature is not complete yet");
           break;
       }
     }
