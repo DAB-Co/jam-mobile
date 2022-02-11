@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:jam/models/otherUser.dart';
-import 'package:jam/models/user.dart';
+import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
+import 'package:jam/models/otherUser.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/network/get_friends.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
@@ -22,11 +23,13 @@ import 'package:provider/provider.dart';
 class SentMessage {
   String to;
   int index;
+
   SentMessage({required this.to, required this.index});
 }
 
 class MessageProvider extends ChangeNotifier {
-  Map<int, SentMessage> unConfirmedMessages = Map<int, SentMessage>(); // messageId: to, index
+  Map<int, SentMessage> unConfirmedMessages =
+      Map<int, SentMessage>(); // messageId: to, index
 
   var messages;
   late User thisUser;
@@ -52,29 +55,30 @@ class MessageProvider extends ChangeNotifier {
       Hive.registerAdapter(chatPairAdapter);
     }
 
-    if (!Hive.isBoxOpen('$thisUserId:messages')) {
-      messages = await Hive.openBox<ChatPair>('$thisUserId:messages');
-    }
-    else {
-      messages = Hive.box<ChatPair>('$thisUserId:messages');
+    String messagesName = messagesBoxName(thisUserId);
+    if (!Hive.isBoxOpen(messagesName)) {
+      messages = await Hive.openBox<ChatPair>(messagesName);
+    } else {
+      messages = Hive.box<ChatPair>(messagesName);
     }
     unread.initUnreadCount(thisUserId);
     initFriends(thisUser, context);
   }
 
   /// adds message to the list
-  void add(String otherId, ChatMessage message, UnreadMessageProvider unread, {int? msgId}) async {
+  void add(String otherId, ChatMessage message, UnreadMessageProvider unread,
+      {int? msgId}) async {
     ChatPair? chatPair = messages.get(otherId);
     if (chatPair == null) {
       print("illegal message");
       return;
     }
     var chat;
-    if (Hive.isBoxOpen('$thisUserId:$otherId')) {
-      chat = Hive.box<ChatMessage>('$thisUserId:$otherId');
-    }
-    else {
-      chat = await Hive.openBox<ChatMessage>('$thisUserId:$otherId');
+    String chatName = chatBoxName(thisUserId, otherId);
+    if (Hive.isBoxOpen(chatName)) {
+      chat = Hive.box<ChatMessage>(chatName);
+    } else {
+      chat = await Hive.openBox<ChatMessage>(chatName);
     }
     if (msgId != null) {
       unConfirmedMessages[msgId] = SentMessage(to: otherId, index: chat.length);
@@ -101,7 +105,7 @@ class MessageProvider extends ChangeNotifier {
   }
 
   Future openBox(String other) {
-    return Hive.openBox<ChatMessage>('$thisUserId:$other');
+    return Hive.openBox<ChatMessage>(chatBoxName(thisUserId, other));
   }
 
   enterDM(username) {
@@ -148,15 +152,25 @@ class MessageProvider extends ChangeNotifier {
     SentMessage? failure = unConfirmedMessages[id];
     if (failure == null) return;
     var chat;
-    if (Hive.isBoxOpen('$thisUserId:${failure.to}')) {
-      chat = Hive.box<ChatMessage>('$thisUserId:${failure.to}');
-    }
-    else {
-      chat = await Hive.openBox<ChatMessage>('$thisUserId:${failure.to}');
+    String chatName = chatBoxName(thisUserId, failure.to);
+    if (Hive.isBoxOpen(chatName)) {
+      chat = Hive.box<ChatMessage>(chatName);
+    } else {
+      chat = await Hive.openBox<ChatMessage>(chatName);
     }
     ChatMessage? failedMessage = chat.getAt(failure.index);
     if (failedMessage == null) return;
     failedMessage.successful = false;
     chat.putAt(failure.index, failedMessage);
+  }
+
+  void block(String otherId) {
+    messages.get(otherId).isBlocked = true;
+    notifyListeners();
+  }
+
+  void unblock(String otherId) {
+    messages.get(otherId).isBlocked = false;
+    notifyListeners();
   }
 }

@@ -3,15 +3,13 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
-import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/util_functions.dart';
-import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -56,7 +54,6 @@ class _DMState extends State<DM> {
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
-    String userId = user.id!;
     // for scrolling to bottom when new message arrives
     ScrollController _controller = ScrollController();
     bool firstBuild = true;
@@ -85,28 +82,19 @@ class _DMState extends State<DM> {
       }
     }
 
-    Future block() async {
-      var messages;
-      if (!Hive.isBoxOpen('$userId:messages')) {
-        messages = await Hive.openBox<ChatPair>('$userId:messages');
-      }
-      else {
-        messages = Hive.box<ChatPair>('$userId:messages');
-      }
-      messages.get(otherId).isBlocked = true;
-    }
-
     void _handleThreeDotClick(String value) {
       switch (value) {
         case 'Block':
-          showSnackBar(context, "blocked");
-          block();
+          Provider.of<MessageProvider>(context, listen: false).block(otherId);
+          break;
+        case 'Unblock':
+          Provider.of<MessageProvider>(context, listen: false).unblock(otherId);
           break;
       }
     }
 
-    Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
-        .openBox(onlyASCII(otherId));
+    Future boxOpening =
+        Provider.of<MessageProvider>(context, listen: false).openBox(otherId);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -149,7 +137,14 @@ class _DMState extends State<DM> {
           PopupMenuButton<String>(
             onSelected: _handleThreeDotClick,
             itemBuilder: (BuildContext context) {
-              return {"Block"}.map((String choice) {
+              Set<String> options =
+                  Provider.of<MessageProvider>(context, listen: false)
+                          .messages
+                          .get(otherId)
+                          .isBlocked
+                      ? {"Unblock"}
+                      : {"Block"};
+              return options.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
@@ -186,7 +181,7 @@ class _DMState extends State<DM> {
                     });
                     return ValueListenableBuilder(
                         valueListenable: Hive.box<ChatMessage>(
-                                '${onlyASCII(userId)}:$otherId')
+                                chatBoxName(user.id!, otherId))
                             .listenable(),
                         builder: (context, Box<ChatMessage> box, widget) {
                           List<ChatMessage> messages =
