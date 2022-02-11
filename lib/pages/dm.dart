@@ -11,6 +11,7 @@ import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/widgets/alert.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -84,11 +85,26 @@ class _DMState extends State<DM> {
       }
     }
 
+    TextButton blockButton = TextButton(
+      child: Text("Block"),
+      onPressed: () {
+        Provider.of<MessageProvider>(context, listen: false).block(otherId);
+        blockRequest(user.id!, user.token!, otherId);
+        Navigator.pop(context);
+      },
+    );
+    AlertDialog alertDialog = alert("Do you really want to block $otherUsername?", blockButton,
+        content: "$otherUsername will no longer be able to send you messages");
+
     void _handleThreeDotClick(String value) {
       switch (value) {
         case 'Block':
-          Provider.of<MessageProvider>(context, listen: false).block(otherId);
-          blockRequest(user.id!, user.token!, otherId);
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return alertDialog;
+            },
+          );
           break;
         case 'Unblock':
           Provider.of<MessageProvider>(context, listen: false).unblock(otherId);
