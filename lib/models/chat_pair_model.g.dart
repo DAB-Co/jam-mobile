@@ -22,13 +22,14 @@ class ChatPairAdapter extends TypeAdapter<ChatPair> {
     )
       ..unreadMessages = fields[1] as int
       ..lastMessage = fields[2] as String
-      ..lastMessageTimeStamp = fields[3] as int;
+      ..lastMessageTimeStamp = fields[3] as int
+      ..isBlocked = fields[5] as bool;
   }
 
   @override
   void write(BinaryWriter writer, ChatPair obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.username)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class ChatPairAdapter extends TypeAdapter<ChatPair> {
       ..writeByte(3)
       ..write(obj.lastMessageTimeStamp)
       ..writeByte(4)
-      ..write(obj.userId);
+      ..write(obj.userId)
+      ..writeByte(5)
+      ..write(obj.isBlocked);
   }
 
   @override
