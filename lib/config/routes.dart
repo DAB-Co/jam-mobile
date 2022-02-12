@@ -6,3 +6,4 @@ var dm = "/dm";
 var about = "/about";
 var contactUs = "/contactUs";
 var avatar = "/avatar";
+var blockedUsers = "/blocked_users";

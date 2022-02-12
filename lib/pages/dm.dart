@@ -3,13 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/block.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/util_functions.dart';
+import 'package:jam/widgets/alert.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -53,6 +55,7 @@ class _DMState extends State<DM> {
 
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<UserProvider>(context).user!;
     // for scrolling to bottom when new message arrives
     ScrollController _controller = ScrollController();
     bool firstBuild = true;
@@ -81,12 +84,39 @@ class _DMState extends State<DM> {
       }
     }
 
-    Future boxOpening = Provider.of<MessageProvider>(context, listen: false)
-        .openBox(onlyASCII(otherId));
+    TextButton blockButton = TextButton(
+      child: Text("Block"),
+      onPressed: () {
+        Provider.of<MessageProvider>(context, listen: false).block(otherId);
+        blockRequest(user.id!, user.token!, otherId);
+        Navigator.pop(context); // close dialog
+        Navigator.pop(context); // return to list
+      },
+    );
+    AlertDialog alertDialog = alert(
+        "Do you really want to block $otherUsername?", blockButton,
+        content: "You won't be able to receive messages from $otherUsername.");
 
-    User user = Provider.of<UserProvider>(context).user!;
-    String userId = user.id!;
+    void _handleThreeDotClick(String value) {
+      switch (value) {
+        case 'Block':
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return alertDialog;
+            },
+          );
+          break;
+        case 'Unblock':
+          Provider.of<MessageProvider>(context, listen: false).unblock(otherId);
+          unBlockRequest(user.id!, user.token!, otherId);
+          Navigator.pop(context);
+          break;
+      }
+    }
 
+    Future boxOpening =
+        Provider.of<MessageProvider>(context, listen: false).openBox(otherId);
     return Scaffold(
       appBar: AppBar(
         elevation: 0.1,
@@ -125,6 +155,26 @@ class _DMState extends State<DM> {
             ),
           ],
         ),
+        actions: <Widget>[
+          PopupMenuButton<String>(
+            onSelected: _handleThreeDotClick,
+            itemBuilder: (BuildContext context) {
+              Set<String> options =
+                  Provider.of<MessageProvider>(context, listen: false)
+                          .messages
+                          .get(otherId)
+                          .isBlocked
+                      ? {"Unblock"}
+                      : {"Block"};
+              return options.map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
       body: Stack(
         children: <Widget>[
@@ -153,7 +203,7 @@ class _DMState extends State<DM> {
                     });
                     return ValueListenableBuilder(
                         valueListenable: Hive.box<ChatMessage>(
-                                '${onlyASCII(userId)}:$otherId')
+                                chatBoxName(user.id!, otherId))
                             .listenable(),
                         builder: (context, Box<ChatMessage> box, widget) {
                           List<ChatMessage> messages =

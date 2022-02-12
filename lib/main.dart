@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jam/config/ssl.dart';
 import 'package:jam/pages/about.dart';
 import 'package:jam/pages/avatar.dart';
+import 'package:jam/pages/blocked_users.dart';
 import 'package:jam/pages/contact_us.dart';
 import 'package:jam/pages/messages.dart';
 import 'package:jam/providers/message_provider.dart';
@@ -77,6 +78,7 @@ class MyApp extends StatelessWidget {
           routes.about: (context) => About(),
           routes.contactUs: (context) => ContactUs(),
           routes.avatar: (context) => AvatarCustomize(),
+          routes.blockedUsers: (context) => BlockedUsers(),
         },
         navigatorKey: navigatorKey,
       ),

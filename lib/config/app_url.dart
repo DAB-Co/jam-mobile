@@ -8,6 +8,8 @@ class AppUrl {
   static const String forgotPassword = apiUrl + "/forgot-password";
   static const String friends = apiUrl + "/friends";
   static const String logout = apiUrl + "/logout";
+  static const String block = apiUrl + "/block";
+  static const String unBlock = apiUrl + "/unblock";
 
   static const String suggestion = baseURL + "/suggestion";
 
