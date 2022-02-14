@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jam/pages/read_log.dart';
-import 'package:jam/pages/web_view_spotify.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/local_notification.dart';
@@ -38,14 +37,6 @@ class _HomepageState extends State<Homepage> {
             ),
           );
           break;
-        case "Web":
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => WebViewSpotify(),
-            ),
-          );
-          break;
       }
     }
 
@@ -67,7 +58,7 @@ class _HomepageState extends State<Homepage> {
           PopupMenuButton<String>(
             onSelected: _handleThreeDotClick,
             itemBuilder: (BuildContext context) {
-              return {"Contact Us", 'About', 'Logs', 'Web'}.map((String choice) {
+              return {"Contact Us", 'About', 'Logs'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),

@@ -22,3 +22,13 @@ bool noAvailableUsers(List<ChatPair> chats) {
   }
   return true;
 }
+
+/// Returns query URL such as /spotify/login?user_id=1&api_token=1
+String urlQuery(String baseUrl, Map<String, String> query) {
+  String result = "$baseUrl?";
+  query.forEach((k, v) {
+    result += "$k=$v&";
+  });
+  result = result.substring(0, result.length - 1);
+  return result;
+}
