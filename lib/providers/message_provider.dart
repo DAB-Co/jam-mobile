@@ -97,7 +97,9 @@ class MessageProvider extends ChangeNotifier {
     if (inDmOf != otherId) {
       chatPair.unreadMessages++;
       unread.incUnreadCount();
-      showNotification(chatPair.username, int.parse(otherId));
+      // only show older than 1 seconds and when in another user's dm
+      if (inDmOf != "" && (DateTime.now().toUtc().millisecondsSinceEpoch - message.timestamp > 1000))
+        showNotification(chatPair.username, int.parse(otherId));
     }
     messages.put(otherId, chatPair);
     // This call tells the widgets that are listening to this model to rebuild.
