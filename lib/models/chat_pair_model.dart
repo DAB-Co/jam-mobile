@@ -15,9 +15,9 @@ class ChatPair implements Comparable {
   @HiveField(4)
   String userId;
   @HiveField(5)
-  bool isBlocked = false;
+  bool isBlocked;
 
-  ChatPair({required this.username, required this.userId});
+  ChatPair({required this.username, required this.userId, required this.isBlocked});
 
   @override
   int compareTo(other) {
