@@ -104,11 +104,11 @@ class _RegisterState extends State<Register> {
     return SafeArea(
       child: Scaffold(
         appBar: formAppBar(),
-        body: Container(
-          padding: EdgeInsets.all(40.0),
-          child: Form(
-            key: formKey,
-            child: SingleChildScrollView(
+        body: SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(40.0),
+            child: Form(
+              key: formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
