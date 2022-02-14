@@ -4,17 +4,24 @@ import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
 import 'package:jam/models/otherUser.dart';
 
-/// Returns friend list from server
-Future<List<OtherUser>?> getFriends(String userId, String apiToken) async {
+/// Call wake API call from server.
+/// Returns null if api token was invalid,
+/// else friends: List<OtherUser> and refresh\_token\_expired: bool,
+/// If there was an error, returns friends: friendsList, refresh_token_expired: false
+Future<Map<String, dynamic>?> wakeRequest(String userId, String apiToken) async {
   final Map<String, String> usernameData = {
     "user_id": userId,
     "api_token": apiToken,
   };
   List<OtherUser> friendsList = [];
+  Map<String, dynamic> result = {
+    "friends": friendsList,
+    "refresh_token_expired": false,
+  };
   var response;
   try {
     response = await post(
-      Uri.parse(AppUrl.friends),
+      Uri.parse(AppUrl.wake),
       headers: {'Content-Type': 'application/json; charset=UTF-8'},
       body: json.encode(usernameData),
     );
@@ -22,7 +29,9 @@ Future<List<OtherUser>?> getFriends(String userId, String apiToken) async {
       print("wrong api token");
       return null;
     }
-    Map<String, dynamic> rawFriends = jsonDecode(response.body);
+    Map<String, dynamic> decoded = jsonDecode(response.body);
+    Map<String, dynamic> rawFriends = decoded["friends"];
+    result["refresh_token_expired"] = decoded["refresh_token_expired"];
     print("raw friends length:");
     print(rawFriends.length);
     for (String userId in rawFriends.keys) {
@@ -34,5 +43,5 @@ Future<List<OtherUser>?> getFriends(String userId, String apiToken) async {
   } catch (err) {
     print(err);
   }
-  return friendsList;
+  return result;
 }
