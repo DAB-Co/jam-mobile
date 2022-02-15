@@ -98,10 +98,10 @@ class MessageProvider extends ChangeNotifier {
     if (inDmOf != otherId) {
       chatPair.unreadMessages++;
       unread.incUnreadCount();
-      // only show when in another user's dm and don't show old queued messages
+      // don't show in related dm page and don't show old queued messages
       // for 3 seconds no new notification from this user will be shown
       bool isOld = await isOldMessage(otherId);
-      if (inDmOf != "" && !isOld)
+      if (inDmOf != otherId && !isOld)
         showNotification(chatPair.username, int.parse(otherId));
     }
     messages.put(otherId, chatPair);
