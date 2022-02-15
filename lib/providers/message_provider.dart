@@ -10,6 +10,7 @@ import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/local_notification.dart';
 import 'package:jam/util/log_to_file.dart';
+import 'package:jam/util/queued_message_time.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -97,8 +98,10 @@ class MessageProvider extends ChangeNotifier {
     if (inDmOf != otherId) {
       chatPair.unreadMessages++;
       unread.incUnreadCount();
-      // only show older than 1 seconds and when in another user's dm
-      if (inDmOf != "" && (DateTime.now().toUtc().millisecondsSinceEpoch - message.timestamp > 1000))
+      // only show when in another user's dm and don't show old queued messages
+      // for 3 seconds no new notification from this user will be shown
+      bool isOld = await isOldMessage(otherId);
+      if (inDmOf != "" && !isOld)
         showNotification(chatPair.username, int.parse(otherId));
     }
     messages.put(otherId, chatPair);
@@ -144,9 +147,9 @@ class MessageProvider extends ChangeNotifier {
     for (OtherUser friend in friendsList) {
       if (messages.get(friend.id) == null) {
         var chatPair = ChatPair(
-            username: friend.username,
-            userId: friend.id,
-            isBlocked: friend.isBlocked,
+          username: friend.username,
+          userId: friend.id,
+          isBlocked: friend.isBlocked,
         );
         messages.put(friend.id, chatPair);
       }

@@ -5,6 +5,7 @@ import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/util/local_notification.dart';
+import 'package:jam/util/queued_message_time.dart';
 import 'package:jam/util/shared_preference.dart';
 
 Future initFirebase() async {
@@ -73,7 +74,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
       print("incoming background message not in friends");
       return;
     }
-    //Hive.close();
+    addToQueuedBox(person.userId);
     showNotification(person.username, int.parse(fromId));
   }
 }
