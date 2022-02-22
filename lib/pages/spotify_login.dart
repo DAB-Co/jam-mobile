@@ -79,9 +79,11 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                     Navigator.pushNamedAndRemoveUntil(
                         context, homepage, (Route<dynamic> route) => false);
                   }
-                  setState(() {
-                    isLoading = false;
-                  });
+                  if (isLoading) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
                 },
               ),
               isLoading
