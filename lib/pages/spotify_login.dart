@@ -74,13 +74,14 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                   _controllerCompleter.complete(webViewController);
                 },
                 onPageFinished: (String s) async {
-                  if (s.contains(AppUrl.spotifyUrlEnd)) {
+                  if (s.split("?")[0] == AppUrl.spotifyUrlEnd) {
                     Navigator.pushNamedAndRemoveUntil(
                         context, homepage, (Route<dynamic> route) => false);
                   }
                   setState(() {
                     isLoading = false;
                   });
+                  print(s);
                 },
               ),
               isLoading
