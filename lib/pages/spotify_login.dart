@@ -49,6 +49,8 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
     }
   }
 
+  bool isLoading = true;
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
@@ -61,19 +63,43 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
       onWillPop: () => _goBack(context),
       child: Scaffold(
         body: SafeArea(
-          child: WebView(
-            initialUrl: initUrl,
-            javascriptMode: JavascriptMode.unrestricted,
-            onWebViewCreated: (WebViewController webViewController) {
-              _controllerCompleter.future.then((value) => _controller = value);
-              _controllerCompleter.complete(webViewController);
-            },
-            onPageFinished: (String s) async {
-              if (s.contains(AppUrl.spotifyUrlEnd)) {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, homepage, (Route<dynamic> route) => false);
-              }
-            },
+          child: Stack(
+            children: <Widget>[
+              WebView(
+                initialUrl: initUrl,
+                javascriptMode: JavascriptMode.unrestricted,
+                onWebViewCreated: (WebViewController webViewController) {
+                  _controllerCompleter.future
+                      .then((value) => _controller = value);
+                  _controllerCompleter.complete(webViewController);
+                },
+                onPageFinished: (String s) async {
+                  if (s.contains(AppUrl.spotifyUrlEnd)) {
+                    Navigator.pushNamedAndRemoveUntil(
+                        context, homepage, (Route<dynamic> route) => false);
+                  }
+                  setState(() {
+                    isLoading = false;
+                  });
+                },
+              ),
+              isLoading
+                  ? Center(
+                      child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Text(
+                                "Please wait while we connect you to the spotify login page"),
+                            SizedBox(height: 10),
+                            CircularProgressIndicator(),
+                          ],
+                        ),
+                      ),
+                    ))
+                  : SizedBox(),
+            ],
           ),
         ),
       ),
