@@ -35,10 +35,9 @@ Future<Map<String, dynamic>?> wakeRequest(String userId, String apiToken) async 
     print("raw friends length:");
     print(rawFriends.length);
     for (String userId in rawFriends.keys) {
-      if (!rawFriends[userId]["blocked"]) {
-        friendsList.add(
-            OtherUser(username: rawFriends[userId]["username"], id: userId));
-      }
+      Map<String, dynamic> cur = rawFriends[userId];
+      friendsList.add(OtherUser(
+          username: cur["username"], id: userId, isBlocked: cur["blocked"]));
     }
   } catch (err) {
     print(err);

@@ -158,7 +158,11 @@ class MessageProvider extends ChangeNotifier {
     print("friendsList length: ${friendsList.length}");
     for (OtherUser friend in friendsList) {
       if (messages.get(friend.id) == null) {
-        var chatPair = ChatPair(username: friend.username, userId: friend.id);
+        var chatPair = ChatPair(
+            username: friend.username,
+            userId: friend.id,
+            isBlocked: friend.isBlocked,
+        );
         messages.put(friend.id, chatPair);
       }
     }

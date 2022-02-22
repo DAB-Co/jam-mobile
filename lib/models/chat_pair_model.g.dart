@@ -19,11 +19,11 @@ class ChatPairAdapter extends TypeAdapter<ChatPair> {
     return ChatPair(
       username: fields[0] as String,
       userId: fields[4] as String,
+      isBlocked: fields[5] as bool,
     )
       ..unreadMessages = fields[1] as int
       ..lastMessage = fields[2] as String
-      ..lastMessageTimeStamp = fields[3] as int
-      ..isBlocked = fields[5] as bool;
+      ..lastMessageTimeStamp = fields[3] as int;
   }
 
   @override
