@@ -66,6 +66,7 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
           child: Stack(
             children: <Widget>[
               WebView(
+                userAgent: "JAM:" + getRandomString(15),
                 initialUrl: initUrl,
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (WebViewController webViewController) {
@@ -81,7 +82,6 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                   setState(() {
                     isLoading = false;
                   });
-                  print(s);
                 },
               ),
               isLoading
@@ -93,7 +93,7 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                           children: [
                             Text(
                                 "Please wait while we connect you to the spotify login page"),
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
                             CircularProgressIndicator(),
                           ],
                         ),
