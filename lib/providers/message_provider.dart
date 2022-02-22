@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
+import 'package:jam/config/routes.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/otherUser.dart';
 import 'package:jam/models/user.dart';
-import 'package:jam/network/get_friends.dart';
+import 'package:jam/network/wake.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/local_notification.dart';
@@ -13,6 +14,8 @@ import 'package:jam/util/log_to_file.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
+
+import '../main.dart';
 
 /* Hive functions are usually here
   Hive boxes:
@@ -62,7 +65,7 @@ class MessageProvider extends ChangeNotifier {
       messages = Hive.box<ChatPair>(messagesName);
     }
     unread.initUnreadCount(thisUserId);
-    initFriends(thisUser, context);
+    wake(thisUser, context);
   }
 
   /// adds message to the list
@@ -129,15 +132,29 @@ class MessageProvider extends ChangeNotifier {
     inDmOf = "";
   }
 
-  /// Take friends from server and save them to local storage
-  Future initFriends(User user, context) async {
-    List<OtherUser>? friendsList = await getFriends(user.id!, user.token!);
-    if (friendsList == null) {
+  /// Make wake API call,
+  /// Redirect to spotify login if refresh token is expired or not in server,
+  /// Log out if api token is invalid
+  /// Save friends to local storage
+  Future wake(User user, context) async {
+    Map<String, dynamic>? wakeResult = await wakeRequest(user.id!, user.token!);
+    if (wakeResult == null) {
       // logout, wrong api token
       Provider.of<UserProvider>(context, listen: false).logout();
       showSnackBar(context, "Please Log In Again");
       return;
     }
+    if (wakeResult["refresh_token_expired"]) {
+      // redirect to spotify login
+      navigatorKey.currentState?.pushNamedAndRemoveUntil(
+          spotifyLogin, (Route<dynamic> route) => false);
+      return;
+    }
+    initFriends(wakeResult["friends"]);
+  }
+
+  /// Take friends from server and save them to local storage
+  Future initFriends(List<OtherUser> friendsList) async {
     print("friendsList length: ${friendsList.length}");
     for (OtherUser friend in friendsList) {
       if (messages.get(friend.id) == null) {

@@ -57,7 +57,7 @@ class _LoginState extends State<Login> {
         ),
         TextButton(
           child: Text(
-            "Sign up",
+            "Register",
             style: TextStyle(
               fontWeight: FontWeight.w300,
               color: Colors.black,

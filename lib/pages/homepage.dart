@@ -36,6 +36,7 @@ class _HomepageState extends State<Homepage> {
               builder: (context) => ReadLog(),
             ),
           );
+          break;
       }
     }
 

@@ -5,6 +5,7 @@ import 'package:jam/pages/avatar.dart';
 import 'package:jam/pages/blocked_users.dart';
 import 'package:jam/pages/contact_us.dart';
 import 'package:jam/pages/messages.dart';
+import 'package:jam/pages/spotify_login.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/firebase.dart';
@@ -79,6 +80,7 @@ class MyApp extends StatelessWidget {
           routes.contactUs: (context) => ContactUs(),
           routes.avatar: (context) => AvatarCustomize(),
           routes.blockedUsers: (context) => BlockedUsers(),
+          routes.spotifyLogin: (context) => SpotifyLogin(),
         },
         navigatorKey: navigatorKey,
       ),
