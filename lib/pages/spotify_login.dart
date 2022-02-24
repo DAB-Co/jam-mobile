@@ -66,6 +66,7 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
           child: Stack(
             children: <Widget>[
               WebView(
+                userAgent: "JAM:" + getRandomString(15),
                 initialUrl: initUrl,
                 javascriptMode: JavascriptMode.unrestricted,
                 onWebViewCreated: (WebViewController webViewController) {
@@ -74,13 +75,15 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                   _controllerCompleter.complete(webViewController);
                 },
                 onPageFinished: (String s) async {
-                  if (s.contains(AppUrl.spotifyUrlEnd)) {
+                  if (s.split("?")[0] == AppUrl.spotifyUrlEnd) {
                     Navigator.pushNamedAndRemoveUntil(
                         context, homepage, (Route<dynamic> route) => false);
                   }
-                  setState(() {
-                    isLoading = false;
-                  });
+                  if (isLoading) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                  }
                 },
               ),
               isLoading
@@ -92,7 +95,7 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                           children: [
                             Text(
                                 "Please wait while we connect you to the spotify login page"),
-                            SizedBox(height: 10),
+                            SizedBox(height: 20),
                             CircularProgressIndicator(),
                           ],
                         ),

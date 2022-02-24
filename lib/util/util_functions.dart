@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:jam/models/chat_pair_model.dart';
 
 /// Removes non ASCII characters
@@ -8,8 +10,7 @@ String onlyASCII(String str) {
 /// Returns true if chats has no blocked users
 bool noBlockedUsers(List<ChatPair> chats) {
   for (ChatPair c in chats) {
-    if (c.isBlocked)
-      return false;
+    if (c.isBlocked) return false;
   }
   return true;
 }
@@ -17,8 +18,7 @@ bool noBlockedUsers(List<ChatPair> chats) {
 /// Returns true if chats has no unblocked users
 bool noAvailableUsers(List<ChatPair> chats) {
   for (ChatPair c in chats) {
-    if (!c.isBlocked)
-      return false;
+    if (!c.isBlocked) return false;
   }
   return true;
 }
@@ -31,4 +31,14 @@ String urlQuery(String baseUrl, Map<String, String> query) {
   });
   result = result.substring(0, result.length - 1);
   return result;
+}
+
+String getRandomString(int length) {
+  const _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  Random _rnd = Random();
+  return String.fromCharCodes(Iterable.generate(
+    length,
+    (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length)),
+  ));
 }
