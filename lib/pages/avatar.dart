@@ -48,6 +48,17 @@ class _AvatarCustomizeState extends State<AvatarCustomize> {
               children: [
                 ListTile(
                   leading: Icon(
+                    Icons.language,
+                    color: Colors.black,
+                  ),
+                  title: const Text('Your languages'),
+                  onTap: () {
+                    Navigator.pushNamed(context, chatLanguages);
+                  },
+                ),
+                Divider(color: Colors.grey),
+                ListTile(
+                  leading: Icon(
                     Icons.block,
                     color: Colors.red,
                   ),

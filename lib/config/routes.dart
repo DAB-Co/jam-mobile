@@ -8,3 +8,4 @@ var contactUs = "/contactUs";
 var avatar = "/avatar";
 var blockedUsers = "/blocked_users";
 var spotifyLogin = "/spotify/login";
+var chatLanguages = "/chatLanguages";
