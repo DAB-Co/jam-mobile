@@ -23,7 +23,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
         ],
       );
 
-  void _callApi(String iso) {
+  void _callAddLanguageApi(String iso) {
     setLanguages([iso], true).then((success) {
       if (success) {
         Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
@@ -32,6 +32,18 @@ class _ChatLanguageState extends State<ChatLanguage> {
       }
     }, onError: (error) {
       showSnackBar(context, "Could not add language");
+    });
+  }
+
+  void _callRemoveLanguageApi(String iso) {
+    setLanguages([iso], false).then((success) {
+      if (success) {
+        Provider.of<UserProvider>(context, listen: false).removeLanguage(iso);
+      } else {
+        showSnackBar(context, "Could not remove language, check your connection");
+      }
+    }, onError: (error) {
+      showSnackBar(context, "Could not remove language");
     });
   }
 
@@ -56,7 +68,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
                 constraints: BoxConstraints(),
                 splashRadius: 25,
                 onPressed: () {
-                  print("delete $iso");
+                  _callRemoveLanguageApi(iso);
                 },
                 icon: Icon(
                   Icons.cancel,
@@ -84,10 +96,11 @@ class _ChatLanguageState extends State<ChatLanguage> {
               isSearchable: true,
               title: const Text('Add a language'),
               onValuePicked: (Language language) {
+                // don't add same language twice
                 if (languages != null && languages.contains(language.isoCode)) {
                   return;
                 }
-                _callApi(language.isoCode);
+                _callAddLanguageApi(language.isoCode);
               },
               itemBuilder: _buildDialogItem,
             ),
