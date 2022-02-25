@@ -10,6 +10,7 @@ class AppUrl {
   static const String logout = apiUrl + "/logout";
   static const String block = apiUrl + "/block";
   static const String unBlock = apiUrl + "/unblock";
+  static const String setLanguages = apiUrl + "/set_languages";
 
   static const String suggestion = baseURL + "/suggestion";
 

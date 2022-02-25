@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/set_languages.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/form_widgets.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:language_picker/language_picker_dialog.dart';
 import 'package:language_picker/languages.dart';
 import 'package:provider/provider.dart';
@@ -32,14 +34,26 @@ class _ChatLanguageState extends State<ChatLanguage> {
             isSearchable: true,
             title: const Text('Add a language'),
             onValuePicked: (Language language) {
-              Provider.of<UserProvider>(context, listen: false)
-                  .addLanguage(language.isoCode);
-              print(language.isoCode);
+              _callApi(language.isoCode);
             },
             itemBuilder: _buildDialogItem,
           ),
         ),
       );
+
+  void _callApi(String iso) {
+    setLanguages([iso], true).then((success) {
+      if (success) {
+        Provider.of<UserProvider>(context, listen: false)
+            .addLanguage(iso);
+      }
+      else {
+        showSnackBar(context, "Could not add language, check your connection");
+      }
+    }, onError: (error) {
+      showSnackBar(context, "Could not add language");
+    });
+  }
 
   Container _languageCircle(String iso) => Container(
         margin: const EdgeInsets.all(10.0),

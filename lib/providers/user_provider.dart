@@ -33,7 +33,6 @@ class UserProvider with ChangeNotifier {
     } else {
       langs.add(lan);
     }
-    notifyListeners();
   }
 
   void logout() {
