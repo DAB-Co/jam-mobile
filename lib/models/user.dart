@@ -2,6 +2,7 @@ class User {
   String? username;
   String? token;
   String? id;
+  /// iso codes of chat languages
   List<String>? chatLanguages;
 
   User({this.username, this.token, this.id});

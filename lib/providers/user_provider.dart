@@ -26,6 +26,16 @@ class UserProvider with ChangeNotifier {
     _user = user;
   }
 
+  void addLanguage(String lan) {
+    List<String>? langs = user!.chatLanguages;
+    if (langs == null) {
+      user!.chatLanguages = [lan];
+    } else {
+      langs.add(lan);
+    }
+    notifyListeners();
+  }
+
   void logout() {
     _user = new User();
     UserPreferences().removeUser();
