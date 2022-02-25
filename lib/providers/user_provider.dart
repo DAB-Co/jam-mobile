@@ -30,8 +30,10 @@ class UserProvider with ChangeNotifier {
     List<String>? langs = user!.chatLanguages;
     if (langs == null) {
       user!.chatLanguages = [lan];
-    } else {
+      UserPreferences().saveUser(user!);
+    } else if (!langs.contains(lan)) {
       langs.add(lan);
+      UserPreferences().saveUser(user!);
     }
   }
 

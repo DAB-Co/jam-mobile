@@ -23,31 +23,11 @@ class _ChatLanguageState extends State<ChatLanguage> {
         ],
       );
 
-  void _openLanguagePickerDialog() => showDialog(
-        context: context,
-        builder: (context) => Theme(
-          data: Theme.of(context).copyWith(primaryColor: Colors.pink),
-          child: LanguagePickerDialog(
-            titlePadding: const EdgeInsets.all(8.0),
-            searchCursorColor: Colors.pinkAccent,
-            searchInputDecoration: InputDecoration(hintText: 'Search...'),
-            isSearchable: true,
-            title: const Text('Add a language'),
-            onValuePicked: (Language language) {
-              _callApi(language.isoCode);
-            },
-            itemBuilder: _buildDialogItem,
-          ),
-        ),
-      );
-
   void _callApi(String iso) {
     setLanguages([iso], true).then((success) {
       if (success) {
-        Provider.of<UserProvider>(context, listen: false)
-            .addLanguage(iso);
-      }
-      else {
+        Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
+      } else {
         showSnackBar(context, "Could not add language, check your connection");
       }
     }, onError: (error) {
@@ -92,6 +72,27 @@ class _ChatLanguageState extends State<ChatLanguage> {
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
     List<String>? languages = user.chatLanguages;
+
+    void _openLanguagePickerDialog() => showDialog(
+          context: context,
+          builder: (context) => Theme(
+            data: Theme.of(context).copyWith(primaryColor: Colors.pink),
+            child: LanguagePickerDialog(
+              titlePadding: const EdgeInsets.all(8.0),
+              searchCursorColor: Colors.pinkAccent,
+              searchInputDecoration: InputDecoration(hintText: 'Search...'),
+              isSearchable: true,
+              title: const Text('Add a language'),
+              onValuePicked: (Language language) {
+                if (languages != null && languages.contains(language.isoCode)) {
+                  return;
+                }
+                _callApi(language.isoCode);
+              },
+              itemBuilder: _buildDialogItem,
+            ),
+          ),
+        );
 
     return Scaffold(
       appBar: AppBar(
