@@ -154,7 +154,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
                       ],
                     )
                   : Container(
-                      height: 500,
+                      height: okVisible ? 450 : 500,
                       child: ListView.builder(
                         physics: BouncingScrollPhysics(),
                         shrinkWrap: true,
