@@ -14,16 +14,8 @@ class ChatLanguage extends StatefulWidget {
 }
 
 class _ChatLanguageState extends State<ChatLanguage> {
-  Widget _buildDialogItem(Language language) => Row(
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(language.name),
-          ),
-        ],
-      );
 
-  void _callAddLanguageApi(String iso) {
+  void _callAddLanguageApi(String iso) async {
     setLanguages([iso], true).then((success) {
       if (success) {
         Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
@@ -35,7 +27,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
     });
   }
 
-  void _callRemoveLanguageApi(String iso) {
+  void _callRemoveLanguageApi(String iso) async {
     setLanguages([iso], false).then((success) {
       if (success) {
         Provider.of<UserProvider>(context, listen: false).removeLanguage(iso);
@@ -102,7 +94,14 @@ class _ChatLanguageState extends State<ChatLanguage> {
                 }
                 _callAddLanguageApi(language.isoCode);
               },
-              itemBuilder: _buildDialogItem,
+              itemBuilder: (Language language) => Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(language.name),
+                  ),
+                ],
+              ),
             ),
           ),
         );

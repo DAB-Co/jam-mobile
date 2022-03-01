@@ -5,9 +5,11 @@ import 'package:jam/network/network_call.dart';
 Future<bool> setLanguages(List<String> iso, bool toAdd) async {
   Map<String, String?> dataToSend = {};
   if (toAdd) {
-    dataToSend["add"] = iso.toString();
+    dataToSend["add_languages"] = iso.toString();
+    dataToSend["remove_languages"] = "[]";
   } else {
-    dataToSend["remove"] = iso.toString();
+    dataToSend["add_languages"] = "[]";
+    dataToSend["remove_languages"] = iso.toString();
   }
   return networkCall(dataToSend, AppUrl.setLanguages);
 }
