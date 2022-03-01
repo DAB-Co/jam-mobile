@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/config/routes.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/network/set_languages.dart';
 import 'package:jam/providers/user_provider.dart';
@@ -18,12 +19,16 @@ class _ChatLanguageState extends State<ChatLanguage> {
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
     List<dynamic>? languages = user.chatLanguages;
+    bool okVisible = false;
 
     void _callAddLanguageApi(String iso) async {
       setLanguages(user, [iso], true).then((success) {
         if (success) {
           setState(() {
             Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
+            if (ModalRoute.of(context)!.isFirst) {
+              okVisible = true;
+            }
           });
         } else {
           showSnackBar(
@@ -38,7 +43,8 @@ class _ChatLanguageState extends State<ChatLanguage> {
       setLanguages(user, [iso], false).then((success) {
         if (success) {
           setState(() {
-            Provider.of<UserProvider>(context, listen: false).removeLanguage(iso);
+            Provider.of<UserProvider>(context, listen: false)
+                .removeLanguage(iso);
           });
         } else {
           showSnackBar(
@@ -157,10 +163,22 @@ class _ChatLanguageState extends State<ChatLanguage> {
           padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20),
           child: Align(
             alignment: Alignment.bottomCenter,
-            child: longButtons(
-              "Add a language",
-              _openLanguagePickerDialog,
-              color: Colors.pink,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                longButtons(
+                  "Add a language",
+                  _openLanguagePickerDialog,
+                  color: Colors.pink,
+                ),
+                okVisible
+                    ? longButtons(
+                        "OK",
+                        () => Navigator.pushReplacementNamed(context, homepage),
+                        color: Colors.green,
+                      )
+                    : SizedBox(),
+              ],
             ),
           ),
         ),

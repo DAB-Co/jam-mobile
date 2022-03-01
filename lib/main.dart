@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
                     return Register();
                   var user = snapshot.data as User;
                   Provider.of<UserProvider>(context).setUser(user, context);
-                  if (user.chatLanguages == null || user.chatLanguages!.isEmpty) {
+                  if (user.chatLanguages == null || user.chatLanguages!.length == 0) {
                     return ChatLanguage();
                   }
                   return Homepage();
