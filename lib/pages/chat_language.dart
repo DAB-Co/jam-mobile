@@ -14,21 +14,26 @@ class ChatLanguage extends StatefulWidget {
   _ChatLanguageState createState() => _ChatLanguageState();
 }
 
+bool okVisible = false;
+
 class _ChatLanguageState extends State<ChatLanguage> {
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
     List<dynamic>? languages = user.chatLanguages;
-    bool okVisible = false;
+
+    if (!ModalRoute.of(context)!.isFirst) {
+      okVisible = false;
+    }
 
     void _callAddLanguageApi(String iso) async {
       setLanguages(user, [iso], true).then((success) {
         if (success) {
           setState(() {
-            Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
             if (ModalRoute.of(context)!.isFirst) {
               okVisible = true;
             }
+            Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
           });
         } else {
           showSnackBar(
@@ -45,6 +50,10 @@ class _ChatLanguageState extends State<ChatLanguage> {
           setState(() {
             Provider.of<UserProvider>(context, listen: false)
                 .removeLanguage(iso);
+            if (ModalRoute.of(context)!.isFirst &&
+                user.chatLanguages?.length == 0) {
+              okVisible = false;
+            }
           });
         } else {
           showSnackBar(
@@ -166,18 +175,20 @@ class _ChatLanguageState extends State<ChatLanguage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                Visibility(
+                  child: longButtons(
+                    "OK",
+                    () => Navigator.pushReplacementNamed(context, homepage),
+                    color: Colors.green,
+                  ),
+                  visible: okVisible,
+                ),
+                SizedBox(height: 10),
                 longButtons(
                   "Add a language",
                   _openLanguagePickerDialog,
                   color: Colors.pink,
                 ),
-                okVisible
-                    ? longButtons(
-                        "OK",
-                        () => Navigator.pushReplacementNamed(context, homepage),
-                        color: Colors.green,
-                      )
-                    : SizedBox(),
               ],
             ),
           ),
