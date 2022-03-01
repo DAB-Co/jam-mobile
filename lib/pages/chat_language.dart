@@ -17,7 +17,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
-    List<String>? languages = user.chatLanguages;
+    List<dynamic>? languages = user.chatLanguages;
 
     void _callAddLanguageApi(String iso) async {
       setLanguages(user, [iso], true).then((success) {

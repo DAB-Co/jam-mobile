@@ -27,7 +27,7 @@ class UserProvider with ChangeNotifier {
   }
 
   void addLanguage(String lan) {
-    List<String>? langs = user!.chatLanguages;
+    List<dynamic>? langs = user!.chatLanguages;
     if (langs == null) {
       user!.chatLanguages = [lan];
       UserPreferences().saveUser(user!);
@@ -38,7 +38,7 @@ class UserProvider with ChangeNotifier {
   }
 
   void removeLanguage(String lan) {
-    List<String>? langs = user!.chatLanguages;
+    List<dynamic>? langs = user!.chatLanguages;
     if (langs == null) {
       return;
     } else if (langs.contains(lan)) {
