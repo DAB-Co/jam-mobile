@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 
 /// Can be used with api calls that return OK on success.
 /// Returns true on success
-Future<bool> networkCall(Map<String, String?> dataToSend, String apiUrl) async {
+Future<bool> networkCall(Map<String, dynamic> dataToSend, String apiUrl) async {
   try {
     var response = await post(
       Uri.parse(apiUrl),
