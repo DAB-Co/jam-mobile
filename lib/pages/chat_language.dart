@@ -14,68 +14,71 @@ class ChatLanguage extends StatefulWidget {
 }
 
 class _ChatLanguageState extends State<ChatLanguage> {
-
-  void _callAddLanguageApi(String iso) async {
-    setLanguages([iso], true).then((success) {
-      if (success) {
-        Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
-      } else {
-        showSnackBar(context, "Could not add language, check your connection");
-      }
-    }, onError: (error) {
-      showSnackBar(context, "Could not add language");
-    });
-  }
-
-  void _callRemoveLanguageApi(String iso) async {
-    setLanguages([iso], false).then((success) {
-      if (success) {
-        Provider.of<UserProvider>(context, listen: false).removeLanguage(iso);
-      } else {
-        showSnackBar(context, "Could not remove language, check your connection");
-      }
-    }, onError: (error) {
-      showSnackBar(context, "Could not remove language");
-    });
-  }
-
-  Container _languageCircle(String iso) => Container(
-        margin: const EdgeInsets.all(10.0),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: (Color(0x88FF4081)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                Language.fromIsoCode(iso).name,
-                style: TextStyle(color: Colors.white),
-              ),
-              IconButton(
-                padding: EdgeInsets.zero,
-                constraints: BoxConstraints(),
-                splashRadius: 25,
-                onPressed: () {
-                  _callRemoveLanguageApi(iso);
-                },
-                icon: Icon(
-                  Icons.cancel,
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
     List<String>? languages = user.chatLanguages;
+
+    void _callAddLanguageApi(String iso) async {
+      setLanguages(user, [iso], true).then((success) {
+        if (success) {
+          setState(() {
+            Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
+          });
+        } else {
+          showSnackBar(
+              context, "Could not add language, check your connection");
+        }
+      }, onError: (error) {
+        showSnackBar(context, "Could not add language");
+      });
+    }
+
+    void _callRemoveLanguageApi(String iso) async {
+      setLanguages(user, [iso], false).then((success) {
+        if (success) {
+          setState(() {
+            Provider.of<UserProvider>(context, listen: false).removeLanguage(iso);
+          });
+        } else {
+          showSnackBar(
+              context, "Could not remove language, check your connection");
+        }
+      }, onError: (error) {
+        showSnackBar(context, "Could not remove language");
+      });
+    }
+
+    Container _circleListItem(String iso) => Container(
+          margin: const EdgeInsets.all(10.0),
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: (Color(0x88FF4081)),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  Language.fromIsoCode(iso).name,
+                  style: TextStyle(color: Colors.white),
+                ),
+                IconButton(
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                  splashRadius: 25,
+                  onPressed: () => _callRemoveLanguageApi(iso),
+                  icon: Icon(
+                    Icons.cancel,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
 
     void _openLanguagePickerDialog() => showDialog(
           context: context,
@@ -90,6 +93,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
               onValuePicked: (Language language) {
                 // don't add same language twice
                 if (languages != null && languages.contains(language.isoCode)) {
+                  showSnackBar(context, "You already selected this language!");
                   return;
                 }
                 _callAddLanguageApi(language.isoCode);
@@ -141,7 +145,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
                         shrinkWrap: true,
                         itemCount: languages.length,
                         itemBuilder: (context, index) {
-                          return _languageCircle(languages[index]);
+                          return _circleListItem(languages[index]);
                         },
                       ),
                     ),

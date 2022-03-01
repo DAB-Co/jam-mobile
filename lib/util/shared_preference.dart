@@ -12,7 +12,7 @@ class UserPreferences {
     prefs.setString("token", user.token!);
     prefs.setString("user_id", user.id!);
     if (user.chatLanguages != null) {
-      prefs.setString("languages", user.chatLanguages!.toString());
+      prefs.setString("languages", json.encode(user.chatLanguages!));
     }
   }
 
