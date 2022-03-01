@@ -38,6 +38,7 @@ class _RegisterState extends State<Register> {
     AuthProvider auth = Provider.of<AuthProvider>(context);
 
     final emailField = TextFormField(
+      keyboardType: TextInputType.emailAddress,
       key: emailFormKey,
       onChanged: (_) => emailFormKey.currentState!.validate(),
       autofocus: false,
