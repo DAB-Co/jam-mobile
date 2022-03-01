@@ -3,6 +3,7 @@ import 'package:jam/config/ssl.dart';
 import 'package:jam/pages/about.dart';
 import 'package:jam/pages/avatar.dart';
 import 'package:jam/pages/blocked_users.dart';
+import 'package:jam/pages/chat_language.dart';
 import 'package:jam/pages/contact_us.dart';
 import 'package:jam/pages/messages.dart';
 import 'package:jam/pages/spotify_login.dart';
@@ -67,6 +68,9 @@ class MyApp extends StatelessWidget {
                     return Register();
                   var user = snapshot.data as User;
                   Provider.of<UserProvider>(context).setUser(user, context);
+                  if (user.chatLanguages == null || user.chatLanguages!.length == 0) {
+                    return ChatLanguage();
+                  }
                   return Homepage();
               }
             }),
@@ -81,6 +85,7 @@ class MyApp extends StatelessWidget {
           routes.avatar: (context) => AvatarCustomize(),
           routes.blockedUsers: (context) => BlockedUsers(),
           routes.spotifyLogin: (context) => SpotifyLogin(),
+          routes.chatLanguages: (context) => ChatLanguage(),
         },
         navigatorKey: navigatorKey,
       ),

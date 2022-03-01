@@ -26,6 +26,7 @@ class _LoginState extends State<Login> {
     AuthProvider auth = Provider.of<AuthProvider>(context);
 
     final emailField = TextFormField(
+      keyboardType: TextInputType.emailAddress,
       autofocus: false,
       validator: validateEmail,
       onSaved: (value) => _email = value,
