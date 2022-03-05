@@ -46,7 +46,7 @@ class _HomepageState extends State<Homepage> {
         title: Row(
           children: [
             GestureDetector(
-              onTap: () => {Navigator.pushNamed(context, routes.avatar)},
+              onTap: () => {Navigator.pushNamed(context, routes.profile)},
               child: CircleAvatar(
                 backgroundColor: Colors.white,
                 backgroundImage: AssetImage("assets/avatar.png"),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jam/config/ssl.dart';
 import 'package:jam/pages/about.dart';
-import 'package:jam/pages/avatar.dart';
+import 'package:jam/pages/profile.dart';
 import 'package:jam/pages/blocked_users.dart';
 import 'package:jam/pages/chat_language.dart';
 import 'package:jam/pages/contact_us.dart';
@@ -82,7 +82,7 @@ class MyApp extends StatelessWidget {
           // routes.dm: (context) => DM(),
           routes.about: (context) => About(),
           routes.contactUs: (context) => ContactUs(),
-          routes.avatar: (context) => AvatarCustomize(),
+          routes.profile: (context) => Profile(),
           routes.blockedUsers: (context) => BlockedUsers(),
           routes.spotifyLogin: (context) => SpotifyLogin(),
           routes.chatLanguages: (context) => ChatLanguage(),
