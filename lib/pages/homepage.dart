@@ -4,6 +4,7 @@ import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/local_notification.dart';
 import 'package:jam/widgets/messages_list.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
@@ -77,7 +78,23 @@ class _HomepageState extends State<Homepage> {
                 ? ""
                 : "${greetingsText()} ${user.username!}"),
           ),
-          SizedBox(height: 30),
+          SizedBox(height: 20),
+          Center(
+            child: const Text("Time until next match:"),
+          ),
+          Padding(
+            padding: EdgeInsets.all(15.0),
+            child: new LinearPercentIndicator(
+              width: MediaQuery.of(context).size.width - 50,
+              animation: true,
+              lineHeight: 20.0,
+              animationDuration: 1000,
+              percent: 0.8,
+              center: Text("2 hours"),
+              barRadius: const Radius.circular(16),
+              progressColor: Colors.pinkAccent,
+            ),
+          ),
           Divider(color: Colors.grey),
           SizedBox(height: 10),
           FutureBuilder(
