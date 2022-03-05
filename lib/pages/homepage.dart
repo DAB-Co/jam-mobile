@@ -49,6 +49,7 @@ class _HomepageState extends State<Homepage> {
         percent = getTimerPercentage();
         timerText = getTimerText();
       });
+      Provider.of<MessageProvider>(context, listen: false).wake(user, context);
     }
 
     return Scaffold(
@@ -83,7 +84,6 @@ class _HomepageState extends State<Homepage> {
       body: Column(
         children: [
           RefreshIndicator(
-            triggerMode: RefreshIndicatorTriggerMode.anywhere,
             onRefresh: _refreshTimer,
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
