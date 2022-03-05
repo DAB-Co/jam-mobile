@@ -3,6 +3,7 @@ import 'package:jam/pages/read_log.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/local_notification.dart';
+import 'package:jam/util/time_until_match.dart';
 import 'package:jam/widgets/messages_list.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -89,8 +90,8 @@ class _HomepageState extends State<Homepage> {
               animation: true,
               lineHeight: 20.0,
               animationDuration: 1000,
-              percent: 0.8,
-              center: Text("2 hours"),
+              percent: timerPercentage(),
+              center: Text(timerText()),
               barRadius: const Radius.circular(16),
               progressColor: Colors.pinkAccent,
             ),
