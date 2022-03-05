@@ -69,6 +69,7 @@ class AuthProvider with ChangeNotifier {
       authUser.username = userData["username"];
       authUser.token = userData["api_token"];
       authUser.id = userData["user_id"].toString();
+      authUser.chatLanguages = userData["languages"].map((iso)=>iso.toLowerCase()).toList();
 
       UserPreferences().saveUser(authUser);
 

@@ -4,16 +4,16 @@ import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:provider/provider.dart';
 
-class AvatarCustomize extends StatefulWidget {
+class Profile extends StatefulWidget {
   @override
-  _AvatarCustomizeState createState() => _AvatarCustomizeState();
+  _ProfileState createState() => _ProfileState();
 }
 
-class _AvatarCustomizeState extends State<AvatarCustomize> {
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     TextButton continueButton = TextButton(
-      child: Text("Log out"),
+      child: const Text("Log out"),
       onPressed: () {
         Provider.of<UserProvider>(context, listen: false).logout();
       },
@@ -24,7 +24,7 @@ class _AvatarCustomizeState extends State<AvatarCustomize> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
-        title: Text("Your Avatar"),
+        title: const Text("Your Profile"),
         elevation: 0.1,
       ),
       body: Column(

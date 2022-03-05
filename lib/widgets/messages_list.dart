@@ -67,13 +67,14 @@ messagesList(user, context) {
                       var name = chats[index].username;
                       var id = chats[index].userId;
                       Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DM(
-                              otherUsername: name,
-                              otherId: id,
-                            ),
-                          ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DM(
+                            otherUsername: name,
+                            otherId: id,
+                          ),
+                        ),
+                      );
                     },
                   ),
                 )
