@@ -5,13 +5,13 @@ Duration durationUntilNextMatch() {
   return nextMatch.difference(now);
 }
 
-double timerPercentage() {
+double getTimerPercentage() {
   Duration timeUntilNextMatch = durationUntilNextMatch();
   int inSeconds = timeUntilNextMatch.inSeconds;
   return 1 - inSeconds / Duration(days: 1).inSeconds;
 }
 
-String timerText() {
+String getTimerText() {
   Duration timeUntilNextMatch = durationUntilNextMatch();
   if (timeUntilNextMatch.inHours > 0) {
     return "${timeUntilNextMatch.inHours} hours";

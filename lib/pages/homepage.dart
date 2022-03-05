@@ -42,6 +42,15 @@ class _HomepageState extends State<Homepage> {
       }
     }
 
+    double percent = getTimerPercentage();
+    String timerText = getTimerText();
+    Future _refreshTimer() async {
+      setState(() {
+        percent = getTimerPercentage();
+        timerText = getTimerText();
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
@@ -73,31 +82,42 @@ class _HomepageState extends State<Homepage> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 30),
-          Center(
-            child: Text(user.username == null
-                ? ""
-                : "${greetingsText()} ${user.username!}"),
-          ),
-          SizedBox(height: 20),
-          Center(
-            child: const Text("Time until next match:"),
-          ),
-          Padding(
-            padding: EdgeInsets.all(15.0),
-            child: new LinearPercentIndicator(
-              width: MediaQuery.of(context).size.width - 50,
-              animation: true,
-              lineHeight: 20.0,
-              animationDuration: 1000,
-              percent: timerPercentage(),
-              center: Text(timerText()),
-              barRadius: const Radius.circular(16),
-              progressColor: Colors.pinkAccent,
+          RefreshIndicator(
+            triggerMode: RefreshIndicatorTriggerMode.anywhere,
+            onRefresh: _refreshTimer,
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              child: Column(
+                children: [
+                  SizedBox(height: 30),
+                  Center(
+                    child: Text(user.username == null
+                        ? ""
+                        : "${greetingsText()} ${user.username!}"),
+                  ),
+                  SizedBox(height: 20),
+                  Center(
+                    child: const Text("Time until next match:"),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(15.0),
+                    child: new LinearPercentIndicator(
+                      width: MediaQuery.of(context).size.width - 50,
+                      animation: true,
+                      lineHeight: 20.0,
+                      animationDuration: 1000,
+                      percent: percent,
+                      center: Text(timerText),
+                      barRadius: const Radius.circular(16),
+                      progressColor: Colors.pinkAccent,
+                    ),
+                  ),
+                  Divider(color: Colors.grey),
+                  SizedBox(height: 10),
+                ],
+              ),
             ),
           ),
-          Divider(color: Colors.grey),
-          SizedBox(height: 10),
           FutureBuilder(
             future: Provider.of<MessageProvider>(context, listen: false).init(
               Provider.of<UnreadMessageProvider>(context, listen: false),
