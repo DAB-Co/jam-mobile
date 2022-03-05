@@ -1,7 +1,7 @@
 Duration durationUntilNextMatch() {
-  var now = DateTime.now();
-  var nextMatch =
-      DateTime.utc(now.year, now.month, now.day + 1); // midnight at Greenwich
+  var now = DateTime.now().toUtc();
+  var nextMatch = DateTime.utc(
+      now.year, now.month, now.day + 1); // next midnight at Greenwich
   return nextMatch.difference(now);
 }
 
