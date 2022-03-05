@@ -44,6 +44,7 @@ dependencies:
   path_provider: ^2.0.8
   webview_flutter: ^3.0.0
   language_picker: ^0.4.1
+  percent_indicator: ^4.0.0
 
 dev_dependencies:
   flutter_test:
