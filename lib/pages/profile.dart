@@ -13,7 +13,7 @@ class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     TextButton continueButton = TextButton(
-      child: Text("Log out"),
+      child: const Text("Log out"),
       onPressed: () {
         Provider.of<UserProvider>(context, listen: false).logout();
       },
@@ -24,7 +24,7 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
-        title: Text("Your Profile"),
+        title: const Text("Your Profile"),
         elevation: 0.1,
       ),
       body: Column(

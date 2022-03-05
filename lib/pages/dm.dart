@@ -7,6 +7,7 @@ import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/network/block.dart';
+import 'package:jam/pages/profile_other.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
@@ -121,39 +122,53 @@ class _DMState extends State<DM> {
       appBar: AppBar(
         elevation: 0.1,
         backgroundColor: Colors.pinkAccent,
-        title: Row(
-          children: <Widget>[
-            CircleAvatar(
-              backgroundImage: AssetImage("assets/avatar.png"),
-              maxRadius: 20,
-              backgroundColor: Colors.white,
-            ),
-            SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    otherUsername,
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
-                  ),
-                  /* TODO online offline text
-                  SizedBox(height: 6),
-                  Text(
-                    "Online",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 13,
-                    ),
-                  ),
-                   */
-                ],
+        title: InkWell(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileOther(
+                otherUsername: otherUsername,
+                otherId: otherId,
               ),
             ),
-          ],
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                CircleAvatar(
+                  backgroundImage: AssetImage("assets/avatar.png"),
+                  maxRadius: 20,
+                  backgroundColor: Colors.white,
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        otherUsername,
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      /* TODO online offline text
+                      SizedBox(height: 6),
+                      Text(
+                        "Online",
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 13,
+                        ),
+                      ),
+                       */
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         actions: <Widget>[
           PopupMenuButton<String>(

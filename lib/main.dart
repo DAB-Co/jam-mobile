@@ -79,7 +79,6 @@ class MyApp extends StatelessWidget {
           routes.login: (context) => Login(),
           routes.register: (context) => Register(),
           routes.messages: (context) => Messages(),
-          // routes.dm: (context) => DM(),
           routes.about: (context) => About(),
           routes.contactUs: (context) => ContactUs(),
           routes.profile: (context) => Profile(),
