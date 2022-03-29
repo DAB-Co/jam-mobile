@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jam/config/routes.dart';
+import 'package:jam/config/valid_chat_languages.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/network/set_languages.dart';
 import 'package:jam/providers/user_provider.dart';
@@ -100,6 +101,7 @@ class _ChatLanguageState extends State<ChatLanguage> {
           builder: (context) => Theme(
             data: Theme.of(context).copyWith(primaryColor: Colors.pink),
             child: LanguagePickerDialog(
+              languages: supportedLanguages,
               titlePadding: const EdgeInsets.all(8.0),
               searchCursorColor: Colors.pinkAccent,
               searchInputDecoration: InputDecoration(hintText: 'Search...'),

@@ -112,12 +112,11 @@ class _HomepageState extends State<Homepage> {
                       progressColor: Colors.pinkAccent,
                     ),
                   ),
-                  Divider(color: Colors.grey),
-                  SizedBox(height: 10),
                 ],
               ),
             ),
           ),
+          Divider(color: Colors.grey),
           FutureBuilder(
             future: Provider.of<MessageProvider>(context, listen: false).init(
               Provider.of<UnreadMessageProvider>(context, listen: false),
