@@ -117,7 +117,6 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Divider(color: Colors.grey),
-          SizedBox(height: 10),
           FutureBuilder(
             future: Provider.of<MessageProvider>(context, listen: false).init(
               Provider.of<UnreadMessageProvider>(context, listen: false),

@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/pages/dm.dart';
+import 'package:jam/pages/profile_other.dart';
 import 'package:jam/util/util_functions.dart';
 
 messagesList(user, context) {
@@ -32,16 +33,22 @@ messagesList(user, context) {
               ? Padding(
                   padding: EdgeInsets.only(top: 5, bottom: 5),
                   child: ListTile(
-                    leading: Image(
-                      image: AssetImage("assets/avatar.png"),
+                    leading: IconButton(
+                      padding: EdgeInsets.all(0),
+                      iconSize: 70,
+                      icon: Image.asset("assets/avatar.png"),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProfileOther(
+                            otherUsername: chats[index].username,
+                            otherId: chats[index].userId,
+                          ),
+                        ),
+                      ),
                     ),
                     title: Text(chats[index].username),
-                    subtitle: chats[index].isBlocked
-                        ? Text(
-                            "Blocked",
-                            style: TextStyle(fontStyle: FontStyle.italic),
-                          )
-                        : Text(chats[index].lastMessage),
+                    subtitle: Text(chats[index].lastMessage),
                     trailing: chats[index].unreadMessages == 0
                         ? Text("")
                         : Container(
