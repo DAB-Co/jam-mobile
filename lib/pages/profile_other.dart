@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/open_hive_box.dart';
 import 'package:jam/widgets/tracks_artists_list.dart';
 import 'package:provider/provider.dart';
 
@@ -23,14 +24,18 @@ class _ProfileOtherState extends State<ProfileOther> {
   final String otherUsername;
   final String otherId;
 
+  Future openHiveBox(String boxName) async {
+    if (!Hive.isBoxOpen(boxName)) {
+      await Hive.openBox<List<String>>(boxName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
     String userId = user.id!;
-    String commonTracksBoxName = commonTracks(userId, otherId);
-    String commonArtistsBoxName = commonArtists(userId, otherId);
-    String otherTracksBoxName = otherTracks(userId, otherId);
-    String otherArtistsBoxName = otherArtists(userId, otherId);
+    topPreferencesCall(userId, user.token!, otherId); // request from server
+    String boxName = tracksArtistsBoxName(userId, otherId);
 
     return Scaffold(
       appBar: AppBar(
@@ -53,14 +58,9 @@ class _ProfileOtherState extends State<ProfileOther> {
               ),
             ),
             SizedBox(height: 30),
-            Divider(color: Colors.grey),
+            Divider(color: Colors.black),
             FutureBuilder(
-              future: Future.wait([
-                openStringHiveBox(commonTracksBoxName),
-                openStringHiveBox(commonArtistsBoxName),
-                openStringHiveBox(otherTracksBoxName),
-                openStringHiveBox(otherArtistsBoxName),
-              ]),
+              future: openHiveBox(boxName),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:

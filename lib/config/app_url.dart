@@ -11,6 +11,7 @@ class AppUrl {
   static const String block = apiUrl + "/block";
   static const String unBlock = apiUrl + "/unblock";
   static const String setLanguages = apiUrl + "/update_languages";
+  static const String topPreferences = apiUrl + "/top_preferences";
 
   static const String suggestion = baseURL + "/suggestion";
 
