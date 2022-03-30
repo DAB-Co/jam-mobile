@@ -56,10 +56,10 @@ class _ProfileOtherState extends State<ProfileOther> {
             Divider(color: Colors.grey),
             FutureBuilder(
               future: Future.wait([
-                openHiveBox(commonTracksBoxName),
-                openHiveBox(commonArtistsBoxName),
-                openHiveBox(otherTracksBoxName),
-                openHiveBox(otherArtistsBoxName),
+                openStringHiveBox(commonTracksBoxName),
+                openStringHiveBox(commonArtistsBoxName),
+                openStringHiveBox(otherTracksBoxName),
+                openStringHiveBox(otherArtistsBoxName),
               ]),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
