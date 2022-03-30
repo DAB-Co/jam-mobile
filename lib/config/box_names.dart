@@ -7,3 +7,7 @@ String messagesBoxName(String userId) {
 String chatBoxName(String thisUserId, String otherUserId) {
   return onlyASCII("$thisUserId:$otherUserId");
 }
+
+String tracksArtistsBoxName(String userId, String otherUserId) {
+  return onlyASCII("tracksAndArtists:$userId,$otherUserId");
+}
