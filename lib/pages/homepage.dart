@@ -86,14 +86,18 @@ class _HomepageState extends State<Homepage> {
           RefreshIndicator(
             onRefresh: _refreshTimer,
             child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+              physics: const BouncingScrollPhysics(
+                  parent: AlwaysScrollableScrollPhysics()),
               child: Column(
                 children: [
                   SizedBox(height: 30),
                   Center(
-                    child: Text(user.username == null
-                        ? ""
-                        : "${greetingsText()} ${user.username!}"),
+                    child: Text(
+                      user.username == null
+                          ? ""
+                          : "${greetingsText()} ${user.username!}",
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   SizedBox(height: 20),
                   Center(
@@ -104,7 +108,7 @@ class _HomepageState extends State<Homepage> {
                     child: new LinearPercentIndicator(
                       width: MediaQuery.of(context).size.width - 50,
                       animation: true,
-                      lineHeight: 20.0,
+                      lineHeight: 25.0,
                       animationDuration: 1000,
                       percent: percent,
                       center: Text(timerText),

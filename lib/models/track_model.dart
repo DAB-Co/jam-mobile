@@ -11,17 +11,14 @@ class Track {
   @HiveField(2)
   String spotifyUrl;
   @HiveField(3)
-  String? previewUrl;
-  @HiveField(4)
   String? albumName;
-  @HiveField(5)
+  @HiveField(4)
   String? artist;
 
   Track(
       {required this.name,
       required this.imageUrl,
       required this.spotifyUrl,
-      this.previewUrl,
       this.albumName,
       this.artist});
 

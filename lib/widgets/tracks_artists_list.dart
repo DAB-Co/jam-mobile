@@ -2,9 +2,22 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
-import 'package:jam/models/artist_model.dart';
-import 'package:jam/models/track_model.dart';
 import 'package:jam/util/util_functions.dart';
+
+_headerText(String text) {
+  TextStyle headerStyle = TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 15,
+  );
+  return Padding(
+    padding: const EdgeInsets.only(right: 15, left: 15),
+    child: Text(
+      text,
+      style: headerStyle,
+      textAlign: TextAlign.center,
+    ),
+  );
+}
 
 _noTrackOrArtist(String text, Icon icon) {
   return Center(
@@ -20,7 +33,7 @@ _noTrackOrArtist(String text, Icon icon) {
   );
 }
 
-_trackList(List<Track> list) {
+_trackList(List<dynamic> list) {
   return ListView.separated(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
@@ -54,7 +67,7 @@ _trackList(List<Track> list) {
   );
 }
 
-_artistList(List<Artist> list) {
+_artistList(List<dynamic> list) {
   return ListView.separated(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
@@ -90,36 +103,25 @@ _artistList(List<Artist> list) {
 tracksArtistsList(String userId, String otherUserId, context) {
   String commonTracksBoxName = tracksArtistsBoxName(userId, otherUserId);
 
-  TextStyle headerStyle = TextStyle(
-    fontWeight: FontWeight.bold,
-    fontSize: 15,
-  );
-
   return ValueListenableBuilder(
     valueListenable: Hive.box(commonTracksBoxName).listenable(),
     builder: (context, Box box, widget) {
-      List<Track>? commonTracks = box.get("commonTracks");
-      List<Artist>? commonArtists = box.get("commonArtists");
-      List<Track>? otherTracks = box.get("otherTracks");
-      List<Artist>? otherArtists = box.get("otherArtists");
+      List<dynamic>? commonTracks = box.get("commonTracks");
+      List<dynamic>? commonArtists = box.get("commonArtists");
+      List<dynamic>? otherTracks = box.get("otherTracks");
+      List<dynamic>? otherArtists = box.get("otherArtists");
 
       return Column(
         children: [
           SizedBox(height: 20),
-          Text(
-            "Common Tracks:",
-            style: headerStyle,
-          ),
+          _headerText("Common Tracks:"),
           SizedBox(height: 20),
           commonTracks == null || commonTracks.length == 0
               ? _noTrackOrArtist("No Common Tracks", Icon(Icons.music_note))
               : _trackList(commonTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
-          Text(
-            "Common Artists:",
-            style: headerStyle,
-          ),
+          _headerText("Common Artists:"),
           SizedBox(height: 20),
           commonArtists == null || commonArtists.length == 0
               ? _noTrackOrArtist(
@@ -127,20 +129,14 @@ tracksArtistsList(String userId, String otherUserId, context) {
               : _artistList(commonArtists),
           Divider(color: Colors.black),
           SizedBox(height: 20),
-          Text(
-            "Other Tracks This User Listened To:",
-            style: headerStyle,
-          ),
+          _headerText("Other Tracks This User Listened To:"),
           SizedBox(height: 20),
           otherTracks == null || otherTracks.length == 0
               ? _noTrackOrArtist("No Other Tracks", Icon(Icons.music_note))
               : _trackList(otherTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
-          Text(
-            "Other Artists This User Listened To:",
-            style: headerStyle,
-          ),
+          _headerText("Other Artists This User Listened To:"),
           SizedBox(height: 20),
           otherArtists == null || otherArtists.length == 0
               ? _noTrackOrArtist("No Other Artists", Icon(Icons.assignment_ind))

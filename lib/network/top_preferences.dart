@@ -45,6 +45,9 @@ Future topPreferencesCall(
     List<Track> otherUserTracks = otherUser[0];
     List<Artist> otherUserArtists = otherUser[1];
 
+    print(otherUserArtists);
+    print(otherUserTracks);
+
     List<List<Track>> tracks = [thisUserTracks, otherUserTracks];
     List<Track> commonTracks = tracks
         .fold<Set<Track>>(
@@ -61,6 +64,10 @@ Future topPreferencesCall(
         otherUserTracks.toSet().difference(commonTracks.toSet()).toList();
     List<Artist> otherArtists =
         otherUserArtists.toSet().difference(commonArtists.toSet()).toList();
+
+    print(commonArtists);
+    print(otherTracks);
+    print(otherArtists);
 
     // save to hive
     await storeTracksAndArtists(userId, otherId, commonTracks, otherTracks,
@@ -82,7 +89,6 @@ List<List> separateArtistAndTrack(l) {
         name: name,
         imageUrl: data["album"]["images"][2]["url"],
         spotifyUrl: data["external_urls"]["spotify"],
-        previewUrl: data["preview_url"],
         albumName: data["album"]["name"],
         artist: data["album"]["artists"][0]["name"],
       );
@@ -92,7 +98,7 @@ List<List> separateArtistAndTrack(l) {
         name: name,
         imageUrl: data["images"][2]["url"],
         spotifyUrl: data["external_urls"]["spotify"],
-        genre: data["genres"],
+        genre: data["genres"].join(', '),
       );
       artists.add(cur);
     }
