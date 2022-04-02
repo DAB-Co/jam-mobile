@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
+import 'package:jam/models/artist_model.dart';
+import 'package:jam/models/track_model.dart';
 
 tracksArtistsList(String userId, String otherUserId, context) {
   String commonTracksBoxName = tracksArtistsBoxName(userId, otherUserId);
@@ -11,12 +13,12 @@ tracksArtistsList(String userId, String otherUserId, context) {
   );
 
   return ValueListenableBuilder(
-    valueListenable: Hive.box<List<String>>(commonTracksBoxName).listenable(),
-    builder: (context, Box<List<String>> box, widget) {
-      List<String>? commonTracks = box.get("commonTracks");
-      List<String>? commonArtists = box.get("commonArtists");
-      List<String>? otherTracks = box.get("otherTracks");
-      List<String>? otherArtists = box.get("otherArtists");
+    valueListenable: Hive.box(commonTracksBoxName).listenable(),
+    builder: (context, Box box, widget) {
+      List<Track>? commonTracks = box.get("commonTracks");
+      List<Artist>? commonArtists = box.get("commonArtists");
+      List<Track>? otherTracks = box.get("otherTracks");
+      List<Artist>? otherArtists = box.get("otherArtists");
 
       return Column(
         children: [
@@ -42,7 +44,7 @@ tracksArtistsList(String userId, String otherUserId, context) {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) =>
-                      ListTile(title: Text(commonTracks[index])),
+                      ListTile(title: Text(commonTracks[index].name)),
                   separatorBuilder: (context, index) => Divider(
                     color: Colors.grey,
                   ),
@@ -71,7 +73,7 @@ tracksArtistsList(String userId, String otherUserId, context) {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) =>
-                      ListTile(title: Text(commonArtists[index])),
+                      ListTile(title: Text(commonArtists[index].name)),
                   separatorBuilder: (context, index) => Divider(
                     color: Colors.grey,
                   ),
@@ -100,7 +102,7 @@ tracksArtistsList(String userId, String otherUserId, context) {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) =>
-                      ListTile(title: Text(otherTracks[index])),
+                      ListTile(title: Text(otherTracks[index].name)),
                   separatorBuilder: (context, index) => Divider(
                     color: Colors.grey,
                   ),
@@ -129,7 +131,7 @@ tracksArtistsList(String userId, String otherUserId, context) {
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) =>
-                      ListTile(title: Text(otherArtists[index])),
+                      ListTile(title: Text(otherArtists[index].name)),
                   separatorBuilder: (context, index) => Divider(
                     color: Colors.grey,
                   ),

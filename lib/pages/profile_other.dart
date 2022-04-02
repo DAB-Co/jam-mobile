@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
+import 'package:jam/models/artist_model.dart';
+import 'package:jam/models/track_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
@@ -26,12 +28,21 @@ class _ProfileOtherState extends State<ProfileOther> {
 
   Future openHiveBox(String boxName) async {
     if (!Hive.isBoxOpen(boxName)) {
-      await Hive.openBox<List<String>>(boxName);
+      await Hive.openBox(boxName);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    ArtistAdapter artistAdapter = new ArtistAdapter();
+    TrackAdapter trackAdapter = new TrackAdapter();
+    if (!Hive.isAdapterRegistered(artistAdapter.typeId)) {
+      Hive.registerAdapter(artistAdapter);
+    }
+    if (!Hive.isAdapterRegistered(trackAdapter.typeId)) {
+      Hive.registerAdapter(trackAdapter);
+    }
+
     User user = Provider.of<UserProvider>(context).user!;
     String userId = user.id!;
     topPreferencesCall(userId, user.token!, otherId); // request from server
