@@ -4,6 +4,46 @@ import 'package:jam/config/box_names.dart';
 import 'package:jam/models/artist_model.dart';
 import 'package:jam/models/track_model.dart';
 
+noTrackOrArtist(String text, Icon icon) {
+  return Center(
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        icon,
+        SizedBox(height: 10),
+        Text(text),
+        SizedBox(height: 20),
+      ],
+    ),
+  );
+}
+
+trackList(List list) {
+  return ListView.separated(
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) =>
+        ListTile(title: Text(list[index].name)),
+    separatorBuilder: (context, index) => Divider(
+      color: Colors.grey,
+    ),
+    itemCount: list.length,
+  );
+}
+
+artistList(List list) {
+  return ListView.separated(
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) =>
+        ListTile(title: Text(list[index].name)),
+    separatorBuilder: (context, index) => Divider(
+      color: Colors.grey,
+    ),
+    itemCount: list.length,
+  );
+}
+
 tracksArtistsList(String userId, String otherUserId, context) {
   String commonTracksBoxName = tracksArtistsBoxName(userId, otherUserId);
 
@@ -29,27 +69,8 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           commonTracks == null || commonTracks.length == 0
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.music_note),
-                      SizedBox(height: 10),
-                      Text("No Common Tracks"),
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                )
-              : ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      ListTile(title: Text(commonTracks[index].name)),
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.grey,
-                  ),
-                  itemCount: commonTracks.length,
-                ),
+              ? noTrackOrArtist("No Common Tracks", Icon(Icons.music_note))
+              : trackList(commonTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           Text(
@@ -58,27 +79,8 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           commonArtists == null || commonArtists.length == 0
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.assignment_ind),
-                      SizedBox(height: 10),
-                      Text("No Common Artists"),
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                )
-              : ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      ListTile(title: Text(commonArtists[index].name)),
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.grey,
-                  ),
-                  itemCount: commonArtists.length,
-                ),
+              ? noTrackOrArtist("No Common Artists", Icon(Icons.assignment_ind))
+              : artistList(commonArtists),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           Text(
@@ -87,27 +89,8 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           otherTracks == null || otherTracks.length == 0
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.music_note),
-                      SizedBox(height: 10),
-                      Text("No Other Tracks"),
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                )
-              : ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      ListTile(title: Text(otherTracks[index].name)),
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.grey,
-                  ),
-                  itemCount: otherTracks.length,
-                ),
+              ? noTrackOrArtist("No Other Tracks", Icon(Icons.music_note))
+              : trackList(otherTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           Text(
@@ -116,27 +99,8 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           otherArtists == null || otherArtists.length == 0
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(Icons.assignment_ind),
-                      SizedBox(height: 10),
-                      Text("No Other Artists"),
-                      SizedBox(height: 20),
-                    ],
-                  ),
-                )
-              : ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemBuilder: (context, index) =>
-                      ListTile(title: Text(otherArtists[index].name)),
-                  separatorBuilder: (context, index) => Divider(
-                    color: Colors.grey,
-                  ),
-                  itemCount: otherArtists.length,
-                ),
+              ? noTrackOrArtist("No Other Artists", Icon(Icons.assignment_ind))
+              : artistList(otherArtists),
           SizedBox(height: 20),
         ],
       );
