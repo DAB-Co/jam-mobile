@@ -1,10 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/models/artist_model.dart';
 import 'package:jam/models/track_model.dart';
+import 'package:jam/util/util_functions.dart';
 
-noTrackOrArtist(String text, Icon icon) {
+_noTrackOrArtist(String text, Icon icon) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -18,12 +20,33 @@ noTrackOrArtist(String text, Icon icon) {
   );
 }
 
-trackList(List list) {
+_trackList(List<Track> list) {
   return ListView.separated(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
-    itemBuilder: (context, index) =>
-        ListTile(title: Text(list[index].name)),
+    itemBuilder: (context, index) => ListTile(
+      leading: CachedNetworkImage(
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        width: 64,
+        height: 64,
+        imageUrl: list[index].imageUrl,
+      ),
+      title: GestureDetector(
+        onTap: () => redirectToBrowser(list[index].spotifyUrl),
+        child: Text(
+          list[index].name,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.blue,
+          ),
+        ),
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+            "Album: ${list[index].albumName}\nArtist: ${list[index].artist}"),
+      ),
+    ),
     separatorBuilder: (context, index) => Divider(
       color: Colors.grey,
     ),
@@ -31,12 +54,32 @@ trackList(List list) {
   );
 }
 
-artistList(List list) {
+_artistList(List<Artist> list) {
   return ListView.separated(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
-    itemBuilder: (context, index) =>
-        ListTile(title: Text(list[index].name)),
+    itemBuilder: (context, index) => ListTile(
+      leading: CachedNetworkImage(
+        placeholder: (context, url) => const CircularProgressIndicator(),
+        width: 64,
+        height: 64,
+        imageUrl: list[index].imageUrl,
+      ),
+      title: GestureDetector(
+        onTap: () => redirectToBrowser(list[index].spotifyUrl),
+        child: Text(
+          list[index].name,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Colors.blue,
+          ),
+        ),
+      ),
+      subtitle: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text("Genres: ${list[index].genre}"),
+      ),
+    ),
     separatorBuilder: (context, index) => Divider(
       color: Colors.grey,
     ),
@@ -69,8 +112,8 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           commonTracks == null || commonTracks.length == 0
-              ? noTrackOrArtist("No Common Tracks", Icon(Icons.music_note))
-              : trackList(commonTracks),
+              ? _noTrackOrArtist("No Common Tracks", Icon(Icons.music_note))
+              : _trackList(commonTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           Text(
@@ -79,8 +122,9 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           commonArtists == null || commonArtists.length == 0
-              ? noTrackOrArtist("No Common Artists", Icon(Icons.assignment_ind))
-              : artistList(commonArtists),
+              ? _noTrackOrArtist(
+                  "No Common Artists", Icon(Icons.assignment_ind))
+              : _artistList(commonArtists),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           Text(
@@ -89,8 +133,8 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           otherTracks == null || otherTracks.length == 0
-              ? noTrackOrArtist("No Other Tracks", Icon(Icons.music_note))
-              : trackList(otherTracks),
+              ? _noTrackOrArtist("No Other Tracks", Icon(Icons.music_note))
+              : _trackList(otherTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           Text(
@@ -99,8 +143,8 @@ tracksArtistsList(String userId, String otherUserId, context) {
           ),
           SizedBox(height: 20),
           otherArtists == null || otherArtists.length == 0
-              ? noTrackOrArtist("No Other Artists", Icon(Icons.assignment_ind))
-              : artistList(otherArtists),
+              ? _noTrackOrArtist("No Other Artists", Icon(Icons.assignment_ind))
+              : _artistList(otherArtists),
           SizedBox(height: 20),
         ],
       );

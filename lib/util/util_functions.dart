@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:jam/models/chat_pair_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// Removes non ASCII characters
 String onlyASCII(String str) {
@@ -41,4 +42,8 @@ String getRandomString(int length) {
     length,
     (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length)),
   ));
+}
+
+void redirectToBrowser(String url) async {
+  if (!await launch(url)) throw 'Could not launch $url';
 }
