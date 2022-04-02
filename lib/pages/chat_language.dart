@@ -136,38 +136,40 @@ class _ChatLanguageState extends State<ChatLanguage> {
       body: Stack(children: [
         Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              const Text(
-                "Your Languages:",
-                style: TextStyle(fontSize: 20),
-              ),
-              SizedBox(height: 20),
-              languages == null || languages.length == 0
-                  ? Column(
-                      children: [
-                        Icon(
-                          Icons.warning,
-                          color: Colors.pinkAccent,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text(
+                  "Your Languages:",
+                  style: TextStyle(fontSize: 20),
+                ),
+                SizedBox(height: 20),
+                languages == null || languages.length == 0
+                    ? Column(
+                        children: [
+                          Icon(
+                            Icons.warning,
+                            color: Colors.pinkAccent,
+                          ),
+                          SizedBox(height: 10),
+                          const Text("You don't have any language preference."
+                              "You have to select at least one language in order to match with other people."),
+                        ],
+                      )
+                    : Container(
+                        margin: EdgeInsets.only(bottom: okVisible ? 80 : 40),
+                        child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: languages.length,
+                          itemBuilder: (context, index) {
+                            return _circleListItem(languages[index]);
+                          },
                         ),
-                        SizedBox(height: 10),
-                        const Text("You don't have any language preference."
-                            "You have to select at least one language in order to match with other people."),
-                      ],
-                    )
-                  : Container(
-                      height: okVisible ? 450 : 500,
-                      child: ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: languages.length,
-                        itemBuilder: (context, index) {
-                          return _circleListItem(languages[index]);
-                        },
                       ),
-                    ),
-              SizedBox(height: 20),
-            ],
+                SizedBox(height: 20),
+              ],
+            ),
           ),
         ),
         Padding(
@@ -178,14 +180,24 @@ class _ChatLanguageState extends State<ChatLanguage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Visibility(
-                  child: longButtons(
-                    "OK",
-                    () => Navigator.pushReplacementNamed(context, homepage),
-                    color: Colors.green,
+                  child: Column(
+                    children: [
+                      longButtons(
+                        "OK",
+                        () => Navigator.pushReplacementNamed(context, homepage),
+                        color: Colors.green,
+                      ),
+                      SizedBox(
+                        height: 10,
+                        width: double.infinity,
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                   visible: okVisible,
                 ),
-                SizedBox(height: 10),
                 longButtons(
                   "Add a language",
                   _openLanguagePickerDialog,
