@@ -73,6 +73,9 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                   _controllerCompleter.future
                       .then((value) => _controller = value);
                   _controllerCompleter.complete(webViewController);
+                  webViewController.clearCache();
+                  final cookieManager = CookieManager();
+                  cookieManager.clearCookies();
                 },
                 onPageFinished: (String s) async {
                   if (s.split("?")[0] == AppUrl.spotifyUrlEnd) {
