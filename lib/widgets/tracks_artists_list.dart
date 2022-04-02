@@ -2,8 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
-import 'package:jam/models/artist_model.dart';
-import 'package:jam/models/track_model.dart';
 import 'package:jam/util/util_functions.dart';
 
 _noTrackOrArtist(String text, Icon icon) {
@@ -20,7 +18,7 @@ _noTrackOrArtist(String text, Icon icon) {
   );
 }
 
-_trackList(List<Track> list) {
+_trackList(List<dynamic> list) {
   return ListView.separated(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
@@ -54,7 +52,7 @@ _trackList(List<Track> list) {
   );
 }
 
-_artistList(List<Artist> list) {
+_artistList(List<dynamic> list) {
   return ListView.separated(
     shrinkWrap: true,
     physics: NeverScrollableScrollPhysics(),
@@ -98,10 +96,10 @@ tracksArtistsList(String userId, String otherUserId, context) {
   return ValueListenableBuilder(
     valueListenable: Hive.box(commonTracksBoxName).listenable(),
     builder: (context, Box box, widget) {
-      List<Track>? commonTracks = box.get("commonTracks");
-      List<Artist>? commonArtists = box.get("commonArtists");
-      List<Track>? otherTracks = box.get("otherTracks");
-      List<Artist>? otherArtists = box.get("otherArtists");
+      List<dynamic>? commonTracks = box.get("commonTracks");
+      List<dynamic>? commonArtists = box.get("commonArtists");
+      List<dynamic>? otherTracks = box.get("otherTracks");
+      List<dynamic>? otherArtists = box.get("otherArtists");
 
       return Column(
         children: [

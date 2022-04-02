@@ -20,16 +20,15 @@ class TrackAdapter extends TypeAdapter<Track> {
       name: fields[0] as String,
       imageUrl: fields[1] as String,
       spotifyUrl: fields[2] as String,
-      previewUrl: fields[3] as String?,
-      albumName: fields[4] as String?,
-      artist: fields[5] as String?,
+      albumName: fields[3] as String?,
+      artist: fields[4] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Track obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(1)
@@ -37,10 +36,8 @@ class TrackAdapter extends TypeAdapter<Track> {
       ..writeByte(2)
       ..write(obj.spotifyUrl)
       ..writeByte(3)
-      ..write(obj.previewUrl)
-      ..writeByte(4)
       ..write(obj.albumName)
-      ..writeByte(5)
+      ..writeByte(4)
       ..write(obj.artist);
   }
 
