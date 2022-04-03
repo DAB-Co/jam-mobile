@@ -3,7 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/pages/dm.dart';
-import 'package:jam/pages/profile_other.dart';
+import 'package:jam/pages/profile/profile_other.dart';
 import 'package:jam/util/util_functions.dart';
 
 messagesList(user, context) {

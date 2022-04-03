@@ -5,7 +5,7 @@ import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '/config/routes.dart' as routes;
-import '../models/user.dart';
+import '../../models/user.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/validators.dart';

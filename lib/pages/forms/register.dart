@@ -9,7 +9,7 @@ import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/validators.dart';
 import '/widgets/form_widgets.dart';
-import '../models/user.dart';
+import '../../models/user.dart';
 
 class Register extends StatefulWidget {
   @override

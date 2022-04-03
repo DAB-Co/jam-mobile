@@ -7,7 +7,7 @@ import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
 
-import 'dm.dart';
+import '../dm.dart';
 
 class BlockedUsers extends StatefulWidget {
   @override

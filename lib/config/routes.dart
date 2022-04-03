@@ -1,7 +1,6 @@
 var homepage = "homepage";
 var login = "login";
 var register = "register";
-var messages = "messages";
 var dm = "dm";
 var about = "about";
 var contactUs = "contactUs";
@@ -10,3 +9,4 @@ var blockedUsers = "blocked_users";
 var spotifyLogin = "spotifyLogin";
 var chatLanguages = "chatLanguages";
 var profilePicSelection = "profilePicSelection";
+var drawYourself = "drawYourself";
