@@ -35,16 +35,18 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                 XFile? image =
                     await _picker.pickImage(source: ImageSource.gallery);
                 if (image == null) return;
+                // copy the file to a new path
                 File imageFile = File(image.path);
                 String path = await getProfilePicPath(user.id!);
-                // copy the file to a new path
                 await imageFile.copy(path);
+                // compress
+                testCompressAndGetFile(File(image.path), path);
+                // clear image cache, IMPORTANT
                 imageCache?.clear();
                 imageCache?.clearLiveImages();
-                // TODO compress and save
-                // returns null, fix later
-                // testCompressAndGetFile(File(image.path), path);
+                // go back to profile page
                 Navigator.pop(context);
+                // refresh for new profile picture
                 Navigator.pushReplacementNamed(context, profile);
               },
               child: const Text("Select From Gallery"),
