@@ -52,7 +52,7 @@ void redirectToBrowser(String url) async {
 }
 
 /// Compress file and get file.
-Future<File?> testCompressAndGetFile(File file, String targetPath) async {
+Future<File?> compressAndGetFile(File file, String targetPath) async {
   var result = await FlutterImageCompress.compressAndGetFile(
     file.absolute.path, targetPath,
     quality: 25,

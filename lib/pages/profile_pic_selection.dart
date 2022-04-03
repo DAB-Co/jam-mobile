@@ -40,7 +40,7 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                 String path = await getProfilePicPath(user.id!);
                 await imageFile.copy(path);
                 // compress
-                testCompressAndGetFile(File(image.path), path);
+                compressAndGetFile(File(image.path), path);
                 // clear image cache, IMPORTANT
                 imageCache?.clear();
                 imageCache?.clearLiveImages();
