@@ -1,9 +1,11 @@
 // https://stackoverflow.com/questions/50320479/flutter-how-would-one-save-a-canvas-custompainter-to-an-image-file
 
 import 'dart:io';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/util_functions.dart';
@@ -41,16 +43,13 @@ class _DrawYourselfState extends State<DrawYourself> {
       final img = await picture.toImage(width.toInt(), height.toInt());
       final pngBytes = await img.toByteData(format: ImageByteFormat.png);
       if (pngBytes == null) return;
-      // TODO compression
-      /**
-      var compressed = await FlutterImageCompress.compressWithList(
-        pngBytes.buffer.asUint8List(),
+      Uint8List compressed = await FlutterImageCompress.compressWithList(
+        pngBytes.buffer.asUint8List(pngBytes.offsetInBytes, pngBytes.lengthInBytes),
         quality: 25,
+        format: CompressFormat.png,
       );
-       */
       String path = await getProfilePicPath(user.id!);
-      File(path).writeAsBytes(pngBytes.buffer
-          .asUint8List(pngBytes.offsetInBytes, pngBytes.lengthInBytes));
+      File(path).writeAsBytes(compressed);
     }
 
     return Scaffold(
