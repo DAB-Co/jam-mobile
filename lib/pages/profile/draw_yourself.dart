@@ -1,4 +1,13 @@
+// https://stackoverflow.com/questions/50320479/flutter-how-would-one-save-a-canvas-custompainter-to-an-image-file
+
+import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:jam/models/user.dart';
+import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/util_functions.dart';
+import 'package:provider/provider.dart';
 
 class DrawYourself extends StatefulWidget {
   @override
@@ -10,6 +19,40 @@ class _DrawYourselfState extends State<DrawYourself> {
 
   @override
   Widget build(BuildContext context) {
+    User user = Provider.of<UserProvider>(context).user!;
+
+    Future _saveToImage(List<Offset?> points) async {
+      final recorder = new PictureRecorder();
+      final canvas = new Canvas(recorder);
+      Paint paint = new Paint()
+        ..color = Colors.black
+        ..strokeCap = StrokeCap.round
+        ..strokeWidth = 5.0;
+
+      for (int i = 0; i < points.length - 1; i++) {
+        if (points[i] != null && points[i + 1] != null) {
+          canvas.drawLine(points[i]!, points[i + 1]!, paint);
+        }
+      }
+
+      final picture = recorder.endRecording();
+      double width = MediaQuery. of(context). size. width ;
+      double height = MediaQuery. of(context). size. height;
+      final img = await picture.toImage(width.toInt(), height.toInt());
+      final pngBytes = await img.toByteData(format: ImageByteFormat.png);
+      if (pngBytes == null) return;
+      // TODO compression
+      /**
+      var compressed = await FlutterImageCompress.compressWithList(
+        pngBytes.buffer.asUint8List(),
+        quality: 25,
+      );
+       */
+      String path = await getProfilePicPath(user.id!);
+      File(path).writeAsBytes(pngBytes.buffer
+          .asUint8List(pngBytes.offsetInBytes, pngBytes.lengthInBytes));
+    }
+
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -23,7 +66,6 @@ class _DrawYourselfState extends State<DrawYourself> {
               Offset? localPosition =
                   referenceBox?.globalToLocal(details.globalPosition);
               _points = new List.from(_points)..add(localPosition);
-              print(localPosition);
             });
           },
           onPanEnd: (DragEndDetails details) => _points.add(null),
@@ -31,7 +73,11 @@ class _DrawYourselfState extends State<DrawYourself> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () async {
+          await _saveToImage(_points);
+          // clear image cache, IMPORTANT
+          imageCache?.clear();
+          imageCache?.clearLiveImages();
           Navigator.pop(context);
         },
         child: Icon(Icons.check),
