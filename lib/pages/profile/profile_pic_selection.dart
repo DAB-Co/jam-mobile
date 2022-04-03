@@ -26,7 +26,7 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.pinkAccent,
-          title: Text(""),
+          title: Text("Profile Picture"),
           elevation: 0.1,
           leading: new IconButton(
             icon: new Icon(Icons.arrow_back),
@@ -76,7 +76,9 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                     ),
                     SizedBox(width: 20),
                     ElevatedButton(
-                      onPressed: () => {},
+                      onPressed: () => {
+                        Navigator.pushReplacementNamed(context, drawYourself)
+                      },
                       child: const Text("Draw Yourself"),
                     ),
                   ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:jam/config/ssl.dart';
 import 'package:jam/pages/kebab_menu/about.dart';
+import 'package:jam/pages/profile/draw_yourself.dart';
 import 'package:jam/pages/profile/profile.dart';
 import 'package:jam/pages/profile/blocked_users.dart';
 import 'package:jam/pages/profile/chat_language.dart';
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
           routes.spotifyLogin: (context) => SpotifyLogin(),
           routes.chatLanguages: (context) => ChatLanguage(),
           routes.profilePicSelection: (context) => ProfilePicSelection(),
+          routes.drawYourself: (context) => DrawYourself(),
         },
         navigatorKey: navigatorKey,
       ),
