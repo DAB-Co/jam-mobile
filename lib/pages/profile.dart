@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:jam/config/routes.dart';
+import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/util_functions.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +25,34 @@ class _ProfileState extends State<Profile> {
     AlertDialog alertDialog = alert("Attention!", continueButton,
         content: "Are you sure you want to log out?");
 
+    Widget profilePicture(String path) {
+      return GestureDetector(
+        onTap: () => Navigator.pushNamed(context, profilePicSelection),
+        child: Container(
+          height: 200,
+          width: 200,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.contain,
+              image: FileImage(File(path)),
+            ),
+          ),
+        ),
+      );
+    }
+
+    Widget _defaultProfilePic() {
+      return profilePicture('assets/avatar.png');
+    }
+
+    User user = Provider.of<UserProvider>(context).user!;
+    late String profilePicPath;
+
+    Future<bool> _profilePicExists() async {
+      profilePicPath = await getProfilePicPath(user.id!);
+      return File(profilePicPath).existsSync();
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
@@ -31,16 +63,18 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             SizedBox(height: 30),
-            Container(
-              height: 200,
-              width: 200,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.contain,
-                  image: AssetImage('assets/avatar.png'),
-                ),
-              ),
-            ),
+            FutureBuilder(future: _profilePicExists(), builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return _defaultProfilePic();
+                default:
+                  if ((snapshot.hasError) || !(snapshot.data as bool))
+                    return _defaultProfilePic();
+                  else
+                    return profilePicture(profilePicPath);
+              }
+            }),
             SizedBox(height: 30),
             Divider(color: Colors.grey),
             Padding(

@@ -9,3 +9,4 @@ var profile = "profile";
 var blockedUsers = "blocked_users";
 var spotifyLogin = "spotifyLogin";
 var chatLanguages = "chatLanguages";
+var profilePicSelection = "profilePicSelection";

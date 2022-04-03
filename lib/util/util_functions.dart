@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:jam/models/chat_pair_model.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Removes non ASCII characters
@@ -46,4 +49,23 @@ String getRandomString(int length) {
 
 void redirectToBrowser(String url) async {
   if (!await launch(url)) throw 'Could not launch $url';
+}
+
+/// Compress file and get file.
+Future<File?> testCompressAndGetFile(File file, String targetPath) async {
+  var result = await FlutterImageCompress.compressAndGetFile(
+    file.absolute.path, targetPath,
+    quality: 5,
+  );
+
+  print(file.lengthSync());
+  print(result?.lengthSync());
+
+  return result;
+}
+
+Future<String> getProfilePicPath(String id) async {
+  Directory dir = await getApplicationDocumentsDirectory();
+  String path = dir.path;
+  return "$path/pp_$id.jpg";
 }
