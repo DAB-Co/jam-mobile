@@ -25,7 +25,7 @@ class _ProfileState extends State<Profile> {
     AlertDialog alertDialog = alert("Attention!", continueButton,
         content: "Are you sure you want to log out?");
 
-    Widget profilePicture(String path) {
+    Widget profilePicture(ImageProvider img) {
       return GestureDetector(
         onTap: () => Navigator.pushNamed(context, profilePicSelection),
         child: Container(
@@ -34,7 +34,7 @@ class _ProfileState extends State<Profile> {
           decoration: BoxDecoration(
             image: DecorationImage(
               fit: BoxFit.contain,
-              image: FileImage(File(path)),
+              image: img,
             ),
           ),
         ),
@@ -42,7 +42,7 @@ class _ProfileState extends State<Profile> {
     }
 
     Widget _defaultProfilePic() {
-      return profilePicture('assets/avatar.png');
+      return profilePicture(AssetImage('assets/avatar.png'));
     }
 
     User user = Provider.of<UserProvider>(context).user!;
@@ -72,7 +72,7 @@ class _ProfileState extends State<Profile> {
                   if ((snapshot.hasError) || !(snapshot.data as bool))
                     return _defaultProfilePic();
                   else
-                    return profilePicture(profilePicPath);
+                    return profilePicture(FileImage(File(profilePicPath)));
               }
             }),
             SizedBox(height: 30),
