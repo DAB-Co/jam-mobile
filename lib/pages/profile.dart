@@ -63,18 +63,20 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             SizedBox(height: 30),
-            FutureBuilder(future: _profilePicExists(), builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return _defaultProfilePic();
-                default:
-                  if ((snapshot.hasError) || !(snapshot.data as bool))
-                    return _defaultProfilePic();
-                  else
-                    return profilePicture(FileImage(File(profilePicPath)));
-              }
-            }),
+            FutureBuilder(
+                future: _profilePicExists(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return _defaultProfilePic();
+                    default:
+                      if ((snapshot.hasError) || !(snapshot.data as bool))
+                        return _defaultProfilePic();
+                      else
+                        return profilePicture(FileImage(File(profilePicPath)));
+                  }
+                }),
             SizedBox(height: 30),
             Divider(color: Colors.grey),
             Padding(
