@@ -27,7 +27,7 @@ class _ProfileState extends State<Profile> {
 
     Widget profilePicture(ImageProvider img) {
       return GestureDetector(
-        onTap: () => Navigator.pushNamed(context, profilePicSelection),
+        onTap: () => {},
         child: Container(
           height: 200,
           width: 200,

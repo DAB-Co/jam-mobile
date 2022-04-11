@@ -59,7 +59,7 @@ class _HomepageState extends State<Homepage> {
     // stream instead of future so that it can refresh after pop
     Stream<bool> _profilePicExists() async* {
       while (true) {
-        profilePicPath = await getOriginalProfilePicPath(user.id!);
+        profilePicPath = await getSmallProfilePicPath(user.id!);
         yield File(profilePicPath).existsSync();
       }
     }

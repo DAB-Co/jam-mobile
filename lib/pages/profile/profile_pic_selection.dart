@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jam/config/routes.dart';
@@ -55,21 +53,14 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                       children: [
                         ElevatedButton(
                           onPressed: () async {
-                            XFile? image =
-                                await _picker.pickImage(source: ImageSource.gallery);
-                            if (image == null) return;
-                            // copy the file to a new path
-                            File imageFile = File(image.path);
-                            String path = await getOriginalProfilePicPath(user.id!);
-                            await imageFile.copy(path);
-                            // compress
+                            XFile? image = await _picker.pickImage(
+                              source: ImageSource.gallery,
+                            );
+                            // wait for compression
                             setState(() {
                               waiting = true;
                             });
-                            await compressAndGetFile(File(image.path), path);
-                            // clear image cache, IMPORTANT
-                            imageCache?.clear();
-                            imageCache?.clearLiveImages();
+                            await savePicture(image, user.id!);
                             // go back to profile page
                             Navigator.pop(context);
                             // refresh for new profile picture
@@ -80,7 +71,8 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                         SizedBox(width: 20),
                         ElevatedButton(
                           onPressed: () => {
-                            Navigator.pushReplacementNamed(context, drawYourself)
+                            Navigator.pushReplacementNamed(
+                                context, drawYourself)
                           },
                           child: const Text("Draw Yourself"),
                         ),
@@ -88,7 +80,10 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                     ),
                     SizedBox(height: 40),
                     ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.red),
+                      ),
                       onPressed: () {
                         deleteProfilePicture(user.id!);
                         Navigator.pop(context);

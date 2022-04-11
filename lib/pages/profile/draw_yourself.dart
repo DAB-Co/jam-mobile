@@ -43,8 +43,7 @@ class _DrawYourselfState extends State<DrawYourself> {
       if (pngBytes == null) return;
       Uint8List bytes = pngBytes.buffer
           .asUint8List(pngBytes.offsetInBytes, pngBytes.lengthInBytes);
-      String path = await getOriginalProfilePicPath(user.id!);
-      await compressBytesAndGetFile(bytes, path);
+      await savePictureFromByteList(bytes, user.id!);
     }
 
     return Scaffold(
@@ -69,9 +68,6 @@ class _DrawYourselfState extends State<DrawYourself> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await _saveToImage(_points);
-          // clear image cache, IMPORTANT
-          imageCache?.clear();
-          imageCache?.clearLiveImages();
           Navigator.pop(context);
         },
         child: Icon(Icons.check),
