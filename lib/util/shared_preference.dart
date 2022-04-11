@@ -6,6 +6,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user.dart';
 
 class UserPreferences {
+  static final UserPreferences _singleton = UserPreferences._internal();
+
+  factory UserPreferences() {
+    return _singleton;
+  }
+
+  UserPreferences._internal();
+
   void saveUser(User user) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("username", user.username!);
