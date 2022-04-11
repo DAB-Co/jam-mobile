@@ -56,9 +56,12 @@ class _HomepageState extends State<Homepage> {
     }
 
     late String profilePicPath;
-    Future<bool> _profilePicExists() async {
-      profilePicPath = await getOriginalProfilePicPath(user.id!);
-      return File(profilePicPath).existsSync();
+    // stream instead of future so that it can refresh after pop
+    Stream<bool> _profilePicExists() async* {
+      while (true) {
+        profilePicPath = await getOriginalProfilePicPath(user.id!);
+        yield File(profilePicPath).existsSync();
+      }
     }
 
     Widget profilePicture(ImageProvider img) {
@@ -78,8 +81,8 @@ class _HomepageState extends State<Homepage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
-        title: FutureBuilder(
-            future: _profilePicExists(),
+        title: StreamBuilder(
+            stream: _profilePicExists(),
             builder: (context, snapshot) {
               switch (snapshot.connectionState) {
                 case ConnectionState.none:

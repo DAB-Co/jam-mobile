@@ -36,3 +36,8 @@ Future<String> getSmallProfilePicPath(String id) async {
   String path = dir.path;
   return "$path/small_pp_$id.jpg";
 }
+
+Future deleteProfilePicture(String id) async {
+  String path = await getOriginalProfilePicPath(id);
+  await File(path).delete();
+}

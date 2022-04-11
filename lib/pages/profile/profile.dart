@@ -48,9 +48,11 @@ class _ProfileState extends State<Profile> {
     User user = Provider.of<UserProvider>(context).user!;
     late String profilePicPath;
 
-    Future<bool> _profilePicExists() async {
-      profilePicPath = await getOriginalProfilePicPath(user.id!);
-      return File(profilePicPath).existsSync();
+    Stream<bool> _profilePicExists() async* {
+      while (true) {
+        profilePicPath = await getOriginalProfilePicPath(user.id!);
+        yield File(profilePicPath).existsSync();
+      }
     }
 
     return Scaffold(
@@ -63,8 +65,8 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             SizedBox(height: 30),
-            FutureBuilder(
-                future: _profilePicExists(),
+            StreamBuilder(
+                stream: _profilePicExists(),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:

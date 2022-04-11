@@ -47,39 +47,52 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                 textAlign: TextAlign.center,
               ))
             : Center(
-                child: Row(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                      onPressed: () async {
-                        XFile? image =
-                            await _picker.pickImage(source: ImageSource.gallery);
-                        if (image == null) return;
-                        // copy the file to a new path
-                        File imageFile = File(image.path);
-                        String path = await getOriginalProfilePicPath(user.id!);
-                        await imageFile.copy(path);
-                        // compress
-                        setState(() {
-                          waiting = true;
-                        });
-                        await compressAndGetFile(File(image.path), path);
-                        // clear image cache, IMPORTANT
-                        imageCache?.clear();
-                        imageCache?.clearLiveImages();
-                        // go back to profile page
-                        Navigator.pop(context);
-                        // refresh for new profile picture
-                        Navigator.pushReplacementNamed(context, profile);
-                      },
-                      child: const Text("Select From Gallery"),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () async {
+                            XFile? image =
+                                await _picker.pickImage(source: ImageSource.gallery);
+                            if (image == null) return;
+                            // copy the file to a new path
+                            File imageFile = File(image.path);
+                            String path = await getOriginalProfilePicPath(user.id!);
+                            await imageFile.copy(path);
+                            // compress
+                            setState(() {
+                              waiting = true;
+                            });
+                            await compressAndGetFile(File(image.path), path);
+                            // clear image cache, IMPORTANT
+                            imageCache?.clear();
+                            imageCache?.clearLiveImages();
+                            // go back to profile page
+                            Navigator.pop(context);
+                            // refresh for new profile picture
+                            Navigator.pushReplacementNamed(context, profile);
+                          },
+                          child: const Text("Select From Gallery"),
+                        ),
+                        SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: () => {
+                            Navigator.pushReplacementNamed(context, drawYourself)
+                          },
+                          child: const Text("Draw Yourself"),
+                        ),
+                      ],
                     ),
-                    SizedBox(width: 20),
+                    SizedBox(height: 20),
                     ElevatedButton(
-                      onPressed: () => {
-                        Navigator.pushReplacementNamed(context, drawYourself)
+                      onPressed: () {
+                        deleteProfilePicture(user.id!);
+                        Navigator.pop(context);
                       },
-                      child: const Text("Draw Yourself"),
+                      child: const Text("Delete Your Profile Photo"),
                     ),
                   ],
                 ),
