@@ -87,6 +87,17 @@ class _ProfileState extends State<Profile> {
                 children: [
                   ListTile(
                     leading: Icon(
+                      Icons.camera_alt,
+                      color: Colors.black,
+                    ),
+                    title: const Text('Change Profile Picture'),
+                    onTap: () {
+                      Navigator.pushNamed(context, profilePicSelection);
+                    },
+                  ),
+                  Divider(color: Colors.grey),
+                  ListTile(
+                    leading: Icon(
                       Icons.language,
                       color: Colors.black,
                     ),

@@ -86,13 +86,25 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20),
+                    SizedBox(height: 40),
                     ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.red)),
                       onPressed: () {
                         deleteProfilePicture(user.id!);
                         Navigator.pop(context);
                       },
-                      child: const Text("Delete Your Profile Photo"),
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            WidgetSpan(
+                              child: Icon(Icons.delete, size: 16),
+                            ),
+                            TextSpan(
+                              text: " Delete your profile picture",
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
