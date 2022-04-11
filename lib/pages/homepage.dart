@@ -6,7 +6,7 @@ import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/local_notification.dart';
 import 'package:jam/util/time_until_match.dart';
-import 'package:jam/util/util_functions.dart';
+import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/widgets/messages_list.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -57,7 +57,7 @@ class _HomepageState extends State<Homepage> {
 
     late String profilePicPath;
     Future<bool> _profilePicExists() async {
-      profilePicPath = await getProfilePicPath(user.id!);
+      profilePicPath = await getOriginalProfilePicPath(user.id!);
       return File(profilePicPath).existsSync();
     }
 

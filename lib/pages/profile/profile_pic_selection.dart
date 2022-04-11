@@ -5,7 +5,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:jam/config/routes.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/util_functions.dart';
+import 'package:jam/util/profile_pic_utils.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePicSelection extends StatefulWidget {
@@ -57,7 +57,7 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                         if (image == null) return;
                         // copy the file to a new path
                         File imageFile = File(image.path);
-                        String path = await getProfilePicPath(user.id!);
+                        String path = await getOriginalProfilePicPath(user.id!);
                         await imageFile.copy(path);
                         // compress
                         setState(() {

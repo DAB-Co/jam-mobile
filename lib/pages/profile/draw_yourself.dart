@@ -1,14 +1,12 @@
 // https://stackoverflow.com/questions/50320479/flutter-how-would-one-save-a-canvas-custompainter-to-an-image-file
 
-import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/util_functions.dart';
+import 'package:jam/util/profile_pic_utils.dart';
 import 'package:provider/provider.dart';
 
 class DrawYourself extends StatefulWidget {
@@ -38,18 +36,15 @@ class _DrawYourselfState extends State<DrawYourself> {
       }
 
       final picture = recorder.endRecording();
-      double width = MediaQuery. of(context). size. width ;
-      double height = MediaQuery. of(context). size. height;
+      double width = MediaQuery.of(context).size.width;
+      double height = MediaQuery.of(context).size.height;
       final img = await picture.toImage(width.toInt(), height.toInt());
       final pngBytes = await img.toByteData(format: ImageByteFormat.png);
       if (pngBytes == null) return;
-      Uint8List compressed = await FlutterImageCompress.compressWithList(
-        pngBytes.buffer.asUint8List(pngBytes.offsetInBytes, pngBytes.lengthInBytes),
-        quality: 25,
-        format: CompressFormat.png,
-      );
-      String path = await getProfilePicPath(user.id!);
-      File(path).writeAsBytes(compressed);
+      Uint8List bytes = pngBytes.buffer
+          .asUint8List(pngBytes.offsetInBytes, pngBytes.lengthInBytes);
+      String path = await getOriginalProfilePicPath(user.id!);
+      await compressBytesAndGetFile(bytes, path);
     }
 
     return Scaffold(

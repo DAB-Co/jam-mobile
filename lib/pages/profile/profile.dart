@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:jam/config/routes.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/util_functions.dart';
+import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +49,7 @@ class _ProfileState extends State<Profile> {
     late String profilePicPath;
 
     Future<bool> _profilePicExists() async {
-      profilePicPath = await getProfilePicPath(user.id!);
+      profilePicPath = await getOriginalProfilePicPath(user.id!);
       return File(profilePicPath).existsSync();
     }
 
