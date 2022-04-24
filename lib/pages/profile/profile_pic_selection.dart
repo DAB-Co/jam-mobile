@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jam/config/routes.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/profile_pic_utils.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePicSelection extends StatefulWidget {
@@ -60,7 +63,14 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                             setState(() {
                               waiting = true;
                             });
-                            await savePicture(image, user.id!);
+                            if (image == null) {
+                              showSnackBar(context, "Profile picture selection failed.");
+                            }
+                            var imageBytes = await File(image!.path).readAsBytes();
+                            bool success = await savePictureFromByteList(imageBytes, user);
+                            if (!success) {
+                              showSnackBar(context, "Check your connection.");
+                            }
                             // go back to profile page
                             Navigator.pop(context);
                             // refresh for new profile picture
