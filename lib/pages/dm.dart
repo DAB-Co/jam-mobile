@@ -13,6 +13,7 @@ import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/alert.dart';
+import 'package:jam/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -137,7 +138,7 @@ class _DMState extends State<DM> {
             child: Row(
               children: <Widget>[
                 CircleAvatar(
-                  backgroundImage: AssetImage("assets/avatar.png"),
+                  child: smallProfilePicture(otherId),
                   maxRadius: 20,
                   backgroundColor: Colors.white,
                 ),
