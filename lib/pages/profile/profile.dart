@@ -116,7 +116,7 @@ class _ProfileState extends State<Profile> {
                       );
                     },
                   ),
-                  Divider(color: Colors.grey),
+                  Divider(color: Colors.black),
                   FutureBuilder(
                     future: openHiveBox(boxName),
                     builder: (context, snapshot) {
@@ -133,7 +133,6 @@ class _ProfileState extends State<Profile> {
                 ],
               ),
             ),
-            Divider(color: Colors.grey),
           ],
         ),
       ),

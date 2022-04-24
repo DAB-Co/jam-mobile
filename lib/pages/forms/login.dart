@@ -65,7 +65,7 @@ class _LoginState extends State<Login> {
             ),
           ),
           onPressed: () {
-            Navigator.pushNamedAndRemoveUntil(context, routes.register, (Route<dynamic> route) => false);
+            Navigator.pushNamed(context, routes.register);
           },
         ),
       ],
