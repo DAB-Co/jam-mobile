@@ -7,12 +7,13 @@ import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/network/block.dart';
-import 'package:jam/pages/profile_other.dart';
+import 'package:jam/pages/profile/profile_other.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/alert.dart';
+import 'package:jam/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -137,7 +138,7 @@ class _DMState extends State<DM> {
             child: Row(
               children: <Widget>[
                 CircleAvatar(
-                  backgroundImage: AssetImage("assets/avatar.png"),
+                  child: smallProfilePicture(otherId),
                   maxRadius: 20,
                   backgroundColor: Colors.white,
                 ),

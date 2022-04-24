@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:jam/config/ssl.dart';
-import 'package:jam/pages/about.dart';
-import 'package:jam/pages/profile.dart';
-import 'package:jam/pages/blocked_users.dart';
-import 'package:jam/pages/chat_language.dart';
-import 'package:jam/pages/contact_us.dart';
-import 'package:jam/pages/messages.dart';
+import 'package:jam/pages/kebab_menu/about.dart';
+import 'package:jam/pages/profile/draw_yourself.dart';
+import 'package:jam/pages/profile/profile.dart';
+import 'package:jam/pages/profile/blocked_users.dart';
+import 'package:jam/pages/profile/chat_language.dart';
+import 'package:jam/pages/kebab_menu/contact_us.dart';
+import 'package:jam/pages/profile/profile_pic_selection.dart';
 import 'package:jam/pages/spotify_login.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
@@ -16,8 +17,8 @@ import 'package:provider/provider.dart';
 import '/config/routes.dart' as routes;
 import 'models/user.dart';
 import '/pages/homepage.dart';
-import '/pages/login.dart';
-import '/pages/register.dart';
+import 'pages/forms/login.dart';
+import 'pages/forms/register.dart';
 import '/providers/auth.dart';
 import '/providers/user_provider.dart';
 import '/util/shared_preference.dart';
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
                   if (snapshot.hasError)
                     return Text('Error: ${snapshot.error}');
                   else if ((snapshot.data as User).username == null)
-                    return Register();
+                    return Login();
                   var user = snapshot.data as User;
                   Provider.of<UserProvider>(context).setUser(user, context);
                   if (user.chatLanguages == null || user.chatLanguages!.length == 0) {
@@ -78,13 +79,14 @@ class MyApp extends StatelessWidget {
           routes.homepage: (context) => Homepage(),
           routes.login: (context) => Login(),
           routes.register: (context) => Register(),
-          routes.messages: (context) => Messages(),
           routes.about: (context) => About(),
           routes.contactUs: (context) => ContactUs(),
           routes.profile: (context) => Profile(),
           routes.blockedUsers: (context) => BlockedUsers(),
           routes.spotifyLogin: (context) => SpotifyLogin(),
           routes.chatLanguages: (context) => ChatLanguage(),
+          routes.profilePicSelection: (context) => ProfilePicSelection(),
+          routes.drawYourself: (context) => DrawYourself(),
         },
         navigatorKey: navigatorKey,
       ),

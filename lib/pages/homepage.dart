@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:jam/pages/read_log.dart';
+import 'package:jam/pages/kebab_menu/read_log.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/local_notification.dart';
 import 'package:jam/util/time_until_match.dart';
+import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/widgets/messages_list.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -52,20 +55,46 @@ class _HomepageState extends State<Homepage> {
       Provider.of<MessageProvider>(context, listen: false).wake(user, context);
     }
 
+    late String profilePicPath;
+    // stream instead of future so that it can refresh after pop
+    Stream<bool> _profilePicExists() async* {
+      while (true) {
+        profilePicPath = await getSmallProfilePicPath(user.id!);
+        yield File(profilePicPath).existsSync();
+      }
+    }
+
+    Widget profilePicture(ImageProvider img) {
+      return GestureDetector(
+        onTap: () => {Navigator.pushNamed(context, routes.profile)},
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          backgroundImage: img,
+        ),
+      );
+    }
+
+    Widget _defaultProfilePic() {
+      return profilePicture(AssetImage("assets/avatar.png"));
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent,
-        title: Row(
-          children: [
-            GestureDetector(
-              onTap: () => {Navigator.pushNamed(context, routes.profile)},
-              child: CircleAvatar(
-                backgroundColor: Colors.white,
-                backgroundImage: AssetImage("assets/avatar.png"),
-              ),
-            ),
-          ],
-        ),
+        title: StreamBuilder(
+            stream: _profilePicExists(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return _defaultProfilePic();
+                default:
+                  if ((snapshot.hasError) || !(snapshot.data as bool))
+                    return _defaultProfilePic();
+                  else
+                    return profilePicture(FileImage(File(profilePicPath)));
+              }
+            }),
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: _handleThreeDotClick,

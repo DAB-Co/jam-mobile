@@ -3,8 +3,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/pages/dm.dart';
-import 'package:jam/pages/profile_other.dart';
+import 'package:jam/pages/profile/profile_other.dart';
 import 'package:jam/util/util_functions.dart';
+import 'package:jam/widgets/profile_picture.dart';
 
 messagesList(user, context) {
   String boxName = messagesBoxName(user.id);
@@ -15,13 +16,20 @@ messagesList(user, context) {
         List<ChatPair> chats = box.values.toList().cast();
         if (noAvailableUsers(chats)) {
           return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.messenger_outlined),
-                SizedBox(height: 10),
-                Text("No messages yet"),
-              ],
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(Icons.messenger_outlined),
+                  SizedBox(height: 10),
+                  Text(
+                    "There will be other people here who share the same music taste soon",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
           );
         }
@@ -36,7 +44,7 @@ messagesList(user, context) {
                     leading: IconButton(
                       padding: EdgeInsets.all(0),
                       iconSize: 70,
-                      icon: Image.asset("assets/avatar.png"),
+                      icon: smallProfilePicture(chats[index].userId),
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(

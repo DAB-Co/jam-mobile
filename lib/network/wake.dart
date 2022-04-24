@@ -1,14 +1,17 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
 import 'package:jam/models/otherUser.dart';
+import 'package:jam/util/profile_pic_utils.dart';
 
 /// Call wake API call from server.
 /// Returns null if api token was invalid,
 /// else friends: List<OtherUser> and refresh\_token\_expired: bool,
 /// If there was an error, returns friends: friendsList, refresh_token_expired: false
-Future<Map<String, dynamic>?> wakeRequest(String userId, String apiToken) async {
+Future<Map<String, dynamic>?> wakeRequest(
+    String userId, String apiToken) async {
   final Map<String, String> usernameData = {
     "user_id": userId,
     "api_token": apiToken,
@@ -36,8 +39,15 @@ Future<Map<String, dynamic>?> wakeRequest(String userId, String apiToken) async 
     print(rawFriends.length);
     for (String userId in rawFriends.keys) {
       Map<String, dynamic> cur = rawFriends[userId];
+      if (cur["profile_picture_small"] != null) {
+        Uint8List profilePic = Uint8List.fromList(json.decode(cur["profile_picture_small"]).cast<int>());
+        saveOtherSmallPictureFromByteList(profilePic, userId);
+      }
       friendsList.add(OtherUser(
-          username: cur["username"], id: userId, isBlocked: cur["blocked"]));
+        username: cur["username"],
+        id: userId,
+        isBlocked: cur["blocked"],
+      ));
     }
   } catch (err) {
     print(err);
