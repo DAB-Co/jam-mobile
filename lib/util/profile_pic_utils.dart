@@ -13,7 +13,7 @@ const SMALL_PIC_HEIGHT = 50;
 
 /// Copies given byte list to profile picture path of user and compresses it
 /// Returns true if network call is successful
-Future<bool> savePictureFromByteList(Uint8List bytes, User user) async {
+Future<bool> saveOwnPictureFromByteList(Uint8List bytes, User user) async {
   // compress
   Uint8List compressed = await FlutterImageCompress.compressWithList(
     bytes,
@@ -44,6 +44,24 @@ Future<bool> savePictureFromByteList(Uint8List bytes, User user) async {
   // clear image cache, IMPORTANT
   _clearImageCache();
   return true;
+}
+
+Future saveOtherBigPictureFromByteList(Uint8List bytes, String userId) async {
+  String path = await getOriginalProfilePicPath(userId);
+  File oldImage = File(path);
+  if (!oldImage.existsSync() || await oldImage.readAsBytes() != bytes) {
+    await File(path).writeAsBytes(bytes);
+    _clearImageCache();
+  }
+}
+
+Future saveOtherSmallPictureFromByteList(Uint8List bytes, String userId) async {
+  String path = await getSmallProfilePicPath(userId);
+  File oldImage = File(path);
+  if (!oldImage.existsSync() || await oldImage.readAsBytes() != bytes) {
+    await File(path).writeAsBytes(bytes);
+    _clearImageCache();
+  }
 }
 
 Future<String> getOriginalProfilePicPath(String id) async {

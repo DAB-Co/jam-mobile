@@ -67,7 +67,7 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                               showSnackBar(context, "Profile picture selection failed.");
                             }
                             var imageBytes = await File(image!.path).readAsBytes();
-                            bool success = await savePictureFromByteList(imageBytes, user);
+                            bool success = await saveOwnPictureFromByteList(imageBytes, user);
                             if (!success) {
                               showSnackBar(context, "Check your connection.");
                             }

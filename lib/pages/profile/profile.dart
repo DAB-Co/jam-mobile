@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:jam/config/routes.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/widgets/alert.dart';
+import 'package:jam/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -25,35 +23,7 @@ class _ProfileState extends State<Profile> {
     AlertDialog alertDialog = alert("Attention!", continueButton,
         content: "Are you sure you want to log out?");
 
-    Widget profilePicture(ImageProvider img) {
-      return GestureDetector(
-        onTap: () => {},
-        child: Container(
-          height: 200,
-          width: 200,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              fit: BoxFit.contain,
-              image: img,
-            ),
-          ),
-        ),
-      );
-    }
-
-    Widget _defaultProfilePic() {
-      return profilePicture(AssetImage('assets/avatar.png'));
-    }
-
     User user = Provider.of<UserProvider>(context).user!;
-    late String profilePicPath;
-
-    Stream<bool> _profilePicExists() async* {
-      while (true) {
-        profilePicPath = await getOriginalProfilePicPath(user.id!);
-        yield File(profilePicPath).existsSync();
-      }
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -65,20 +35,7 @@ class _ProfileState extends State<Profile> {
         child: Column(
           children: [
             SizedBox(height: 30),
-            StreamBuilder(
-                stream: _profilePicExists(),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return _defaultProfilePic();
-                    default:
-                      if ((snapshot.hasError) || !(snapshot.data as bool))
-                        return _defaultProfilePic();
-                      else
-                        return profilePicture(FileImage(File(profilePicPath)));
-                  }
-                }),
+            bigProfilePicture(user.id!),
             SizedBox(height: 30),
             Divider(color: Colors.grey),
             Padding(

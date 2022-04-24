@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
 import 'package:jam/models/artist_model.dart';
 import 'package:jam/models/track_model.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/util/store_tracks_artists_hive.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 
@@ -37,6 +39,9 @@ Future topPreferencesCall(
     }
     Map<String, dynamic> decoded = jsonDecode(response.body);
 
+    Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
+    saveOtherBigPictureFromByteList(profilePic, otherId);
+
     List<dynamic> thisUser = separateArtistAndTrack(decoded["user_data"]);
     List<Track> thisUserTracks = thisUser[0];
     List<Artist> thisUserArtists = thisUser[1];
@@ -44,9 +49,6 @@ Future topPreferencesCall(
     List<dynamic> otherUser = separateArtistAndTrack(decoded["req_user_data"]);
     List<Track> otherUserTracks = otherUser[0];
     List<Artist> otherUserArtists = otherUser[1];
-
-    print(otherUserArtists);
-    print(otherUserTracks);
 
     List<List<Track>> tracks = [thisUserTracks, otherUserTracks];
     List<Track> commonTracks = tracks
@@ -64,10 +66,6 @@ Future topPreferencesCall(
         otherUserTracks.toSet().difference(commonTracks.toSet()).toList();
     List<Artist> otherArtists =
         otherUserArtists.toSet().difference(commonArtists.toSet()).toList();
-
-    print(commonArtists);
-    print(otherTracks);
-    print(otherArtists);
 
     // save to hive
     await storeTracksAndArtists(userId, otherId, commonTracks, otherTracks,

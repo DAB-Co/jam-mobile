@@ -43,7 +43,7 @@ class _DrawYourselfState extends State<DrawYourself> {
       if (pngBytes == null) return;
       Uint8List bytes = pngBytes.buffer
           .asUint8List(pngBytes.offsetInBytes, pngBytes.lengthInBytes);
-      await savePictureFromByteList(bytes, user);
+      await saveOwnPictureFromByteList(bytes, user);
     }
 
     return Scaffold(

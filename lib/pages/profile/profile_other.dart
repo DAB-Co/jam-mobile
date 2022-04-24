@@ -6,6 +6,7 @@ import 'package:jam/models/track_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/widgets/profile_picture.dart';
 import 'package:jam/widgets/tracks_artists_list.dart';
 import 'package:provider/provider.dart';
 
@@ -58,16 +59,7 @@ class _ProfileOtherState extends State<ProfileOther> {
         child: Column(
           children: [
             SizedBox(height: 30),
-            Container(
-              height: 200,
-              width: 200,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.contain,
-                  image: AssetImage('assets/avatar.png'),
-                ),
-              ),
-            ),
+            bigProfilePicture(otherId),
             SizedBox(height: 30),
             Divider(color: Colors.black),
             FutureBuilder(
