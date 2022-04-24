@@ -71,7 +71,7 @@ class _ProfileOtherState extends State<ProfileOther> {
                     print("other profile future builder waiting");
                     return Center(child: CircularProgressIndicator());
                   default:
-                    return tracksArtistsList(user.id!, otherId, context);
+                    return tracksArtistsListOther(user.id!, otherId, context);
                 }
               },
             ),

@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/config/box_names.dart';
 import 'package:jam/config/routes.dart';
+import 'package:jam/models/artist_model.dart';
+import 'package:jam/models/track_model.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:jam/widgets/profile_picture.dart';
+import 'package:jam/widgets/tracks_artists_list.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -12,8 +18,24 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+
+  Future openHiveBox(String boxName) async {
+    if (!Hive.isBoxOpen(boxName)) {
+      await Hive.openBox(boxName);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    ArtistAdapter artistAdapter = new ArtistAdapter();
+    TrackAdapter trackAdapter = new TrackAdapter();
+    if (!Hive.isAdapterRegistered(artistAdapter.typeId)) {
+      Hive.registerAdapter(artistAdapter);
+    }
+    if (!Hive.isAdapterRegistered(trackAdapter.typeId)) {
+      Hive.registerAdapter(trackAdapter);
+    }
+
     TextButton continueButton = TextButton(
       child: const Text("Log out"),
       onPressed: () {
@@ -24,6 +46,10 @@ class _ProfileState extends State<Profile> {
         content: "Are you sure you want to log out?");
 
     User user = Provider.of<UserProvider>(context).user!;
+    String userId = user.id!;
+
+    topPreferencesCall(userId, user.token!, userId); // request from server
+    String boxName = tracksArtistsBoxName(userId, userId);
 
     return Scaffold(
       appBar: AppBar(
@@ -88,6 +114,20 @@ class _ProfileState extends State<Profile> {
                           return alertDialog;
                         },
                       );
+                    },
+                  ),
+                  Divider(color: Colors.grey),
+                  FutureBuilder(
+                    future: openHiveBox(boxName),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          print("self profile future builder waiting");
+                          return Center(child: CircularProgressIndicator());
+                        default:
+                          return tracksArtistsListSelf(userId, userId, context);
+                      }
                     },
                   ),
                 ],

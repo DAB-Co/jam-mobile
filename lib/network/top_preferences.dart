@@ -39,7 +39,7 @@ Future topPreferencesCall(
     }
     Map<String, dynamic> decoded = jsonDecode(response.body);
 
-    if (decoded["profile_picture"] != null) {
+    if (decoded["profile_picture"] != null && userId != otherId) {
       Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
       saveOtherBigPictureFromByteList(profilePic, otherId);
     }

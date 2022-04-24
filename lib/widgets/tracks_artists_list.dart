@@ -100,7 +100,7 @@ _artistList(List<dynamic> list) {
   );
 }
 
-tracksArtistsList(String userId, String otherUserId, context) {
+tracksArtistsListOther(String userId, String otherUserId, context) {
   String commonTracksBoxName = tracksArtistsBoxName(userId, otherUserId);
 
   return ValueListenableBuilder(
@@ -141,6 +141,39 @@ tracksArtistsList(String userId, String otherUserId, context) {
           otherArtists == null || otherArtists.length == 0
               ? _noTrackOrArtist("No Other Artists", Icon(Icons.assignment_ind))
               : _artistList(otherArtists),
+          SizedBox(height: 20),
+        ],
+      );
+    },
+  );
+}
+
+tracksArtistsListSelf(String userId, String otherUserId, context) {
+  String commonTracksBoxName = tracksArtistsBoxName(userId, otherUserId);
+
+  return ValueListenableBuilder(
+    valueListenable: Hive.box(commonTracksBoxName).listenable(),
+    builder: (context, Box box, widget) {
+      List<dynamic>? commonTracks = box.get("commonTracks");
+      List<dynamic>? commonArtists = box.get("commonArtists");
+
+      return Column(
+        children: [
+          SizedBox(height: 20),
+          _headerText("Your Tracks:"),
+          SizedBox(height: 20),
+          commonTracks == null || commonTracks.length == 0
+              ? _noTrackOrArtist("No Tracks", Icon(Icons.music_note))
+              : _trackList(commonTracks),
+          Divider(color: Colors.black),
+          SizedBox(height: 20),
+          _headerText("Your Artists:"),
+          SizedBox(height: 20),
+          commonArtists == null || commonArtists.length == 0
+              ? _noTrackOrArtist(
+              "No Artists", Icon(Icons.assignment_ind))
+              : _artistList(commonArtists),
+          Divider(color: Colors.black),
           SizedBox(height: 20),
         ],
       );
