@@ -66,7 +66,7 @@ class MyApp extends StatelessWidget {
                   if (snapshot.hasError)
                     return Text('Error: ${snapshot.error}');
                   else if ((snapshot.data as User).username == null)
-                    return Register();
+                    return Login();
                   var user = snapshot.data as User;
                   Provider.of<UserProvider>(context).setUser(user, context);
                   if (user.chatLanguages == null || user.chatLanguages!.length == 0) {
