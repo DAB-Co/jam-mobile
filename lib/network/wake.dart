@@ -39,8 +39,10 @@ Future<Map<String, dynamic>?> wakeRequest(
     print(rawFriends.length);
     for (String userId in rawFriends.keys) {
       Map<String, dynamic> cur = rawFriends[userId];
-      Uint8List profilePic = Uint8List.fromList(json.decode(cur["profile_picture_small"]).cast<int>());
-      saveOtherSmallPictureFromByteList(profilePic, userId);
+      if (cur["profile_picture_small"] != null) {
+        Uint8List profilePic = Uint8List.fromList(json.decode(cur["profile_picture_small"]).cast<int>());
+        saveOtherSmallPictureFromByteList(profilePic, userId);
+      }
       friendsList.add(OtherUser(
         username: cur["username"],
         id: userId,

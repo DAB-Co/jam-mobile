@@ -39,8 +39,10 @@ Future topPreferencesCall(
     }
     Map<String, dynamic> decoded = jsonDecode(response.body);
 
-    Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
-    saveOtherBigPictureFromByteList(profilePic, otherId);
+    if (decoded["profile_picture"] != null) {
+      Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
+      saveOtherBigPictureFromByteList(profilePic, otherId);
+    }
 
     List<dynamic> thisUser = separateArtistAndTrack(decoded["user_data"]);
     List<Track> thisUserTracks = thisUser[0];
