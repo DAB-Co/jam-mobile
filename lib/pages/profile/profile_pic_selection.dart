@@ -89,7 +89,7 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                         SizedBox(width: 20),
                         ElevatedButton(
                           onPressed: () => {
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamed(
                                 context, drawYourself)
                           },
                           child: const Text("Draw Yourself"),
@@ -106,7 +106,7 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                         updateProfilePicCall(user, null, null).then((success) {
                           if (success) {
                             deleteProfilePicture(user.id!);
-                            Navigator.pop(context);
+                            showSnackBar(context, "Profile picture deleted");
                           } else {
                             showSnackBar(context, "Could not connect to the server");
                           }
