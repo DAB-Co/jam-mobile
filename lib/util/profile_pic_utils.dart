@@ -31,7 +31,8 @@ Future<bool> saveOwnPictureFromByteList(Uint8List bytes, User user) async {
   );
 
   // send pictures to server
-  bool networkCallSuccess = await updateProfilePicCall(user, compressed, thumbnail);
+  bool networkCallSuccess =
+      await updateProfilePicCall(user, compressed, thumbnail);
   if (!networkCallSuccess) return false;
 
   // save pictures to local storage
@@ -78,7 +79,17 @@ Future<String> getSmallProfilePicPath(String id) async {
 
 Future deleteProfilePicture(String id) async {
   String path = await getOriginalProfilePicPath(id);
-  await File(path).delete();
+  String smallPath = await getSmallProfilePicPath(id);
+  try {
+    await File(path).delete();
+  } catch (err) {
+    print(err);
+  }
+  try {
+    await File(smallPath).delete();
+  } catch (err) {
+    print(err);
+  }
 }
 
 void _clearImageCache() {

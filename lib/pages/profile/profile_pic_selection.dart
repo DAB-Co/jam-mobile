@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jam/config/routes.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/update_profile_pic.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/widgets/show_snackbar.dart';
@@ -95,8 +96,14 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                             MaterialStateProperty.all<Color>(Colors.red),
                       ),
                       onPressed: () {
-                        deleteProfilePicture(user.id!);
-                        Navigator.pop(context);
+                        updateProfilePicCall(user, null, null).then((success) {
+                          if (success) {
+                            deleteProfilePicture(user.id!);
+                            Navigator.pop(context);
+                          } else {
+                            showSnackBar(context, "Could not connect to the server");
+                          }
+                        });
                       },
                       child: RichText(
                         text: TextSpan(
