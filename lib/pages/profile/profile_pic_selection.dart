@@ -65,24 +65,31 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                               waiting = true;
                             });
                             if (image == null) {
-                              showSnackBar(context, "Profile picture selection failed.");
+                              setState(() {
+                                waiting = false;
+                              });
+                            } else {
+                              var imageBytes = await File(image.path).readAsBytes();
+                              bool success = await saveOwnPictureFromByteList(imageBytes, user);
+                              if (!success) {
+                                showSnackBar(context, "Check your connection.");
+                                setState(() {
+                                  waiting = false;
+                                });
+                              } else {
+                                // go back to profile page
+                                Navigator.pop(context);
+                                // refresh for new profile picture
+                                Navigator.pushReplacementNamed(context, profile);
+                              }
                             }
-                            var imageBytes = await File(image!.path).readAsBytes();
-                            bool success = await saveOwnPictureFromByteList(imageBytes, user);
-                            if (!success) {
-                              showSnackBar(context, "Check your connection.");
-                            }
-                            // go back to profile page
-                            Navigator.pop(context);
-                            // refresh for new profile picture
-                            Navigator.pushReplacementNamed(context, profile);
                           },
                           child: const Text("Select From Gallery"),
                         ),
                         SizedBox(width: 20),
                         ElevatedButton(
                           onPressed: () => {
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamed(
                                 context, drawYourself)
                           },
                           child: const Text("Draw Yourself"),
@@ -99,7 +106,7 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                         updateProfilePicCall(user, null, null).then((success) {
                           if (success) {
                             deleteProfilePicture(user.id!);
-                            Navigator.pop(context);
+                            showSnackBar(context, "Profile picture deleted");
                           } else {
                             showSnackBar(context, "Could not connect to the server");
                           }
