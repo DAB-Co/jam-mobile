@@ -65,17 +65,24 @@ class _ProfilePicSelectionState extends State<ProfilePicSelection> {
                               waiting = true;
                             });
                             if (image == null) {
-                              showSnackBar(context, "Profile picture selection failed.");
+                              setState(() {
+                                waiting = false;
+                              });
+                            } else {
+                              var imageBytes = await File(image.path).readAsBytes();
+                              bool success = await saveOwnPictureFromByteList(imageBytes, user);
+                              if (!success) {
+                                showSnackBar(context, "Check your connection.");
+                                setState(() {
+                                  waiting = false;
+                                });
+                              } else {
+                                // go back to profile page
+                                Navigator.pop(context);
+                                // refresh for new profile picture
+                                Navigator.pushReplacementNamed(context, profile);
+                              }
                             }
-                            var imageBytes = await File(image!.path).readAsBytes();
-                            bool success = await saveOwnPictureFromByteList(imageBytes, user);
-                            if (!success) {
-                              showSnackBar(context, "Check your connection.");
-                            }
-                            // go back to profile page
-                            Navigator.pop(context);
-                            // refresh for new profile picture
-                            Navigator.pushReplacementNamed(context, profile);
                           },
                           child: const Text("Select From Gallery"),
                         ),
