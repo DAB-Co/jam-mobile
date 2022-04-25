@@ -48,6 +48,12 @@ Future topPreferencesCall(
     List<Track> thisUserTracks = thisUser[0];
     List<Artist> thisUserArtists = thisUser[1];
 
+    // user's own tracks and artists
+    if (userId == otherId) {
+      await storeTracksAndArtistsSelf(userId, thisUserTracks, thisUserArtists);
+      return;
+    }
+
     List<dynamic> otherUser = separateArtistAndTrack(decoded["req_user_data"]);
     List<Track> otherUserTracks = otherUser[0];
     List<Artist> otherUserArtists = otherUser[1];
@@ -70,7 +76,7 @@ Future topPreferencesCall(
         otherUserArtists.toSet().difference(commonArtists.toSet()).toList();
 
     // save to hive
-    await storeTracksAndArtists(userId, otherId, commonTracks, otherTracks,
+    await storeTracksAndArtistsOther(userId, otherId, commonTracks, otherTracks,
         commonArtists, otherArtists);
   } catch (err) {
     print(err);
