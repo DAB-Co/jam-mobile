@@ -13,6 +13,7 @@ class AppUrl {
   static const String setLanguages = apiUrl + "/update_languages";
   static const String topPreferences = apiUrl + "/top_preferences";
   static const String updateProfilePic = apiUrl + "/update_profile_picture";
+  static const String getLanguages = apiUrl + "/get_languages";
 
   static const String suggestion = baseURL + "/suggestion";
 

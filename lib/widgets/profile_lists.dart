@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/util/util_functions.dart';
+import 'package:language_picker/languages.dart';
 
 _headerText(String text) {
   TextStyle headerStyle = TextStyle(
@@ -19,7 +20,7 @@ _headerText(String text) {
   );
 }
 
-_noTrackOrArtist(String text, Icon icon) {
+_noItem(String text, Icon icon) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -100,6 +101,23 @@ _artistList(List<dynamic> list) {
   );
 }
 
+_languageList(List<String> list) {
+  return ListView.separated(
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) => ListTile(
+      title: Text(
+        Language.fromIsoCode(list[index].toLowerCase()).name,
+        textAlign: TextAlign.center,
+      ),
+    ),
+    separatorBuilder: (context, index) => Divider(
+      color: Colors.grey,
+    ),
+    itemCount: list.length,
+  );
+}
+
 tracksArtistsListOther(String userId, String otherUserId, context) {
   String commonTracksBoxName = tracksArtistsBoxName(userId, otherUserId);
 
@@ -117,14 +135,14 @@ tracksArtistsListOther(String userId, String otherUserId, context) {
           _headerText("Common Tracks:"),
           SizedBox(height: 20),
           commonTracks == null || commonTracks.length == 0
-              ? _noTrackOrArtist("No Common Tracks", Icon(Icons.music_note))
+              ? _noItem("No Common Tracks", Icon(Icons.music_note))
               : _trackList(commonTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           _headerText("Common Artists:"),
           SizedBox(height: 20),
           commonArtists == null || commonArtists.length == 0
-              ? _noTrackOrArtist(
+              ? _noItem(
                   "No Common Artists", Icon(Icons.assignment_ind))
               : _artistList(commonArtists),
           Divider(color: Colors.black),
@@ -132,14 +150,14 @@ tracksArtistsListOther(String userId, String otherUserId, context) {
           _headerText("Other Tracks This User Listened To:"),
           SizedBox(height: 20),
           otherTracks == null || otherTracks.length == 0
-              ? _noTrackOrArtist("No Other Tracks", Icon(Icons.music_note))
+              ? _noItem("No Other Tracks", Icon(Icons.music_note))
               : _trackList(otherTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           _headerText("Other Artists This User Listened To:"),
           SizedBox(height: 20),
           otherArtists == null || otherArtists.length == 0
-              ? _noTrackOrArtist("No Other Artists", Icon(Icons.assignment_ind))
+              ? _noItem("No Other Artists", Icon(Icons.assignment_ind))
               : _artistList(otherArtists),
           SizedBox(height: 20),
         ],
@@ -163,17 +181,40 @@ tracksArtistsListSelf(String userId, String otherUserId, context) {
           _headerText("Your Tracks:"),
           SizedBox(height: 20),
           commonTracks == null || commonTracks.length == 0
-              ? _noTrackOrArtist("No Tracks", Icon(Icons.music_note))
+              ? _noItem("No Tracks", Icon(Icons.music_note))
               : _trackList(commonTracks),
           Divider(color: Colors.black),
           SizedBox(height: 20),
           _headerText("Your Artists:"),
           SizedBox(height: 20),
           commonArtists == null || commonArtists.length == 0
-              ? _noTrackOrArtist(
+              ? _noItem(
               "No Artists", Icon(Icons.assignment_ind))
               : _artistList(commonArtists),
           Divider(color: Colors.black),
+          SizedBox(height: 20),
+        ],
+      );
+    },
+  );
+}
+
+languagesListOther(String userId, String otherUserId, context) {
+  String lBoxName = languagesBoxName(userId);
+
+  return ValueListenableBuilder(
+    valueListenable: Hive.box(lBoxName).listenable(),
+    builder: (context, Box box, widget) {
+      List<String>? langs = box.get(otherUserId);
+
+      return Column(
+        children: [
+          SizedBox(height: 20),
+          _headerText("This User's Languages:"),
+          SizedBox(height: 20),
+          langs == null || langs.length == 0
+              ? _noItem("No Languages", Icon(Icons.language))
+              : _languageList(langs),
           SizedBox(height: 20),
         ],
       );

@@ -9,7 +9,7 @@ import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:jam/widgets/profile_picture.dart';
-import 'package:jam/widgets/tracks_artists_list.dart';
+import 'package:jam/widgets/profile_lists.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {

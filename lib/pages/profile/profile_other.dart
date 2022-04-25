@@ -4,10 +4,11 @@ import 'package:jam/config/box_names.dart';
 import 'package:jam/models/artist_model.dart';
 import 'package:jam/models/track_model.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/get_languages.dart';
 import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/profile_picture.dart';
-import 'package:jam/widgets/tracks_artists_list.dart';
+import 'package:jam/widgets/profile_lists.dart';
 import 'package:provider/provider.dart';
 
 class ProfileOther extends StatefulWidget {
@@ -46,8 +47,12 @@ class _ProfileOtherState extends State<ProfileOther> {
 
     User user = Provider.of<UserProvider>(context).user!;
     String userId = user.id!;
-    topPreferencesCall(userId, user.token!, otherId); // request from server
-    String boxName = tracksArtistsBoxName(userId, otherId);
+    // request from server
+    topPreferencesCall(userId, user.token!, otherId);
+    getLanguagesCall(userId, user.token!, otherId);
+    // hive box names
+    String taBoxName = tracksArtistsBoxName(userId, otherId);
+    String lBoxName = languagesBoxName(userId);
 
     return Scaffold(
       appBar: AppBar(
@@ -63,7 +68,7 @@ class _ProfileOtherState extends State<ProfileOther> {
             SizedBox(height: 30),
             Divider(color: Colors.black),
             FutureBuilder(
-              future: openHiveBox(boxName),
+              future: openHiveBox(taBoxName),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
@@ -72,6 +77,20 @@ class _ProfileOtherState extends State<ProfileOther> {
                     return Center(child: CircularProgressIndicator());
                   default:
                     return tracksArtistsListOther(user.id!, otherId, context);
+                }
+              },
+            ),
+            Divider(color: Colors.black),
+            FutureBuilder(
+              future: openHiveBox(lBoxName),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    print("other profile languages future builder waiting");
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    return languagesListOther(user.id!, otherId, context);
                 }
               },
             ),

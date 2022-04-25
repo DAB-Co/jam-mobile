@@ -11,3 +11,7 @@ String chatBoxName(String thisUserId, String otherUserId) {
 String tracksArtistsBoxName(String userId, String otherUserId) {
   return onlyASCII("tracksAndArtists:$userId,$otherUserId");
 }
+
+String languagesBoxName(String userId) {
+  return onlyASCII("languages:$userId");
+}
