@@ -43,6 +43,13 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                     },
                     child: Text('Yes'),
                   ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      logout();
+                    },
+                    child: Text('Logout'),
+                  ),
                 ],
               ));
       return true;
