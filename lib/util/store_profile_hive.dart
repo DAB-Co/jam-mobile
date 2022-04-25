@@ -39,3 +39,18 @@ Future storeTracksAndArtistsSelf(
   box.put("commonTracks", tracks);
   box.put("commonArtists", artists);
 }
+
+Future storeLanguages(
+    String userId,
+    String otherUserId,
+    List<String> languages,
+    ) async {
+  String boxName = languagesBoxName(userId);
+  var box;
+  if (!Hive.isBoxOpen(boxName)) {
+    box = await Hive.openBox(boxName);
+  } else {
+    box = Hive.box(boxName);
+  }
+  box.put(otherUserId, languages);
+}

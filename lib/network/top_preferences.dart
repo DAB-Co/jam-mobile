@@ -7,7 +7,7 @@ import 'package:jam/models/artist_model.dart';
 import 'package:jam/models/track_model.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/profile_pic_utils.dart';
-import 'package:jam/util/store_tracks_artists_hive.dart';
+import 'package:jam/util/store_profile_hive.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 
 import '../main.dart';
