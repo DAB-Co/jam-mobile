@@ -61,12 +61,22 @@ Widget smallProfilePicture(String id) {
         switch (snapshot.connectionState) {
           case ConnectionState.none:
           case ConnectionState.waiting:
-            return Image.asset("assets/avatar.png");
+            return CircleAvatar(
+              backgroundColor: Colors.white,
+              backgroundImage: AssetImage("assets/avatar.png"),
+            );
           default:
             if ((snapshot.hasError) || !(snapshot.data as bool))
-              return Image.asset("assets/avatar.png");
+              return CircleAvatar(
+                backgroundColor: Colors.white,
+                backgroundImage: AssetImage("assets/avatar.png"),
+              );
             else
-              return Image.file((File(profilePicPath)));
+              return CircleAvatar(
+                backgroundColor: Colors.white,
+                backgroundImage: FileImage(File(profilePicPath)),
+              );
         }
-      });
+      },
+  );
 }

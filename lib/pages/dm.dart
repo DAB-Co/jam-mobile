@@ -137,11 +137,7 @@ class _DMState extends State<DM> {
             padding: const EdgeInsets.all(8.0),
             child: Row(
               children: <Widget>[
-                CircleAvatar(
-                  child: smallProfilePicture(otherId),
-                  maxRadius: 20,
-                  backgroundColor: Colors.white,
-                ),
+                smallProfilePicture(otherId),
                 SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -154,16 +150,6 @@ class _DMState extends State<DM> {
                           fontSize: 16,
                         ),
                       ),
-                      /* TODO online offline text
-                      SizedBox(height: 6),
-                      Text(
-                        "Online",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 13,
-                        ),
-                      ),
-                       */
                     ],
                   ),
                 ),
