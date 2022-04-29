@@ -7,6 +7,7 @@ import 'package:jam/models/user.dart';
 import 'package:jam/network/get_languages.dart';
 import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/store_profile_hive.dart';
 import 'package:jam/widgets/profile_picture.dart';
 import 'package:jam/widgets/profile_lists.dart';
 import 'package:provider/provider.dart';
@@ -45,11 +46,18 @@ class _ProfileOtherState extends State<ProfileOther> {
       Hive.registerAdapter(trackAdapter);
     }
 
+    void _getAndSaveLanguages(userId, token, otherId) async {
+      List<String>? langs = await getLanguagesCall(userId, token, otherId);
+      if (langs != null) {
+        storeLanguages(userId, otherId, langs);
+      }
+    }
+
     User user = Provider.of<UserProvider>(context).user!;
     String userId = user.id!;
     // request from server
     topPreferencesCall(userId, user.token!, otherId);
-    getLanguagesCall(userId, user.token!, otherId);
+    _getAndSaveLanguages(userId, user.token!, otherId);
     // hive box names
     String taBoxName = tracksArtistsBoxName(userId, otherId);
     String lBoxName = languagesBoxName(userId);

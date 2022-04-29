@@ -82,10 +82,14 @@ class _LoginState extends State<Login> {
 
         successfulMessage.then((response) {
           if (response['status']) {
-            User? user = response['user'];
+            User user = response['user'];
             Provider.of<UserProvider>(context, listen: false)
                 .setUser(user, context);
-            Navigator.pushNamedAndRemoveUntil(context, routes.homepage, (Route<dynamic> route) => false);
+            if (user.chatLanguages == null || user.chatLanguages!.length == 0) {
+              Navigator.pushNamedAndRemoveUntil(context, routes.chatLanguages, (Route<dynamic> route) => false);
+            } else {
+              Navigator.pushNamedAndRemoveUntil(context, routes.homepage, (Route<dynamic> route) => false);
+            }
           } else {
             showSnackBar(context, response["message"]);
           }

@@ -92,7 +92,7 @@ class _RegisterState extends State<Register> {
             User? user = response['user'];
             Provider.of<UserProvider>(context, listen: false)
                 .setUser(user, context);
-            Navigator.pushNamedAndRemoveUntil(context, routes.spotifyLogin, (Route<dynamic> route) => false);
+            Navigator.pushNamedAndRemoveUntil(context, routes.chatLanguages, (Route<dynamic> route) => false);
           } else {
             showSnackBar(context, response['message']);
           }

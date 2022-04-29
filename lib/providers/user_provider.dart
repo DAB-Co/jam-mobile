@@ -47,6 +47,11 @@ class UserProvider with ChangeNotifier {
     }
   }
 
+  void overrideLanguages(List<String> lans) {
+    user!.chatLanguages = lans;
+    UserPreferences().saveUser(user!);
+  }
+
   void logout() {
     _user = new User();
     UserPreferences().removeUser();
