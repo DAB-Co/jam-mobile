@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:jam/config/routes.dart';
 import 'package:jam/config/valid_chat_languages.dart';
 import 'package:jam/models/user.dart';
+import 'package:jam/network/get_languages.dart';
 import 'package:jam/network/set_languages.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/form_widgets.dart';
@@ -29,15 +30,28 @@ class _ChatLanguageState extends State<ChatLanguage> {
     }
 
     void _callAddLanguageApi(String iso) async {
-      setLanguages(user, [iso], true).then((success) {
-        if (success) {
+      setLanguages(user, [iso], true, context).then((success) async {
+        if (success == 1) {
           setState(() {
             if (ModalRoute.of(context)!.isFirst) {
               okVisible = true;
             }
             Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
           });
-        } else {
+        } else if (success == 2) {
+          showSnackBar(
+              context, "It looks like you have already selected your languages");
+          List<String>? langs = await getLanguagesCall(user.id!, user.token!, user.id!);
+          if (langs != null) {
+            setState(() {
+              if (ModalRoute.of(context)!.isFirst) {
+                okVisible = true;
+              }
+              Provider.of<UserProvider>(context, listen: false).overrideLanguages(langs);
+            });
+          }
+        }
+        else {
           showSnackBar(
               context, "Could not add language, check your connection");
         }
@@ -47,8 +61,8 @@ class _ChatLanguageState extends State<ChatLanguage> {
     }
 
     void _callRemoveLanguageApi(String iso) async {
-      setLanguages(user, [iso], false).then((success) {
-        if (success) {
+      setLanguages(user, [iso], false, context).then((success) {
+        if (success == 1) {
           setState(() {
             Provider.of<UserProvider>(context, listen: false)
                 .removeLanguage(iso);

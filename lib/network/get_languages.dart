@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
 import 'package:jam/providers/user_provider.dart';
-import 'package:jam/util/store_profile_hive.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 
 import '../main.dart';
@@ -11,7 +10,7 @@ import '../main.dart';
 /// Call get_languages from server.
 /// Logs out if api token was invalid,
 /// If call was successful it writes to hive box
-Future getLanguagesCall(
+Future<List<String>?> getLanguagesCall(
   String userId,
   String apiToken,
   String otherId,
@@ -34,13 +33,12 @@ Future getLanguagesCall(
     }
     if (response.statusCode != 200) {
       print(response);
-      return;
+      return null;
     }
-    List<String> decoded = jsonDecode(response.body).cast<String>();
-
-    // save to hive
-    await storeLanguages(userId, otherId, decoded);
+    List<String> decoded = jsonDecode(response.body).map((iso)=>iso.toLowerCase()).toList().cast<String>();
+    return decoded;
   } catch (err) {
     print(err);
+    return null;
   }
 }
