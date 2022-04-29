@@ -51,6 +51,8 @@ Future topPreferencesCall(
     // user's own tracks and artists
     if (userId == otherId) {
       await storeTracksAndArtistsSelf(userId, thisUserTracks, thisUserArtists);
+      Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
+      await saveOwnBigPicture(profilePic, userId);
       return;
     }
 

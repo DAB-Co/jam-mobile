@@ -22,29 +22,32 @@ Future<bool> saveOwnPictureFromByteList(Uint8List bytes, User user) async {
   );
 
   // compress to thumbnail
-  Uint8List thumbnail = await FlutterImageCompress.compressWithList(
-    bytes,
-    quality: PIC_QUALITY,
-    format: CompressFormat.png,
-    minWidth: SMALL_PIC_WIDTH,
-    minHeight: SMALL_PIC_HEIGHT,
-  );
+  Uint8List thumbnail = await createThumbnail(compressed);
 
   // send pictures to server
   bool networkCallSuccess =
       await updateProfilePicCall(user, compressed, thumbnail);
   if (!networkCallSuccess) return false;
 
-  // save pictures to local storage
-  String path = await getOriginalProfilePicPath(user.id!);
-  String thumbnailPath = await getSmallProfilePicPath(user.id!);
+  saveOwnPictures(thumbnail, compressed, user.id!);
+  return true;
+}
 
-  await File(path).writeAsBytes(compressed);
-  await File(thumbnailPath).writeAsBytes(thumbnail);
+Future saveOwnPictures(Uint8List small, Uint8List big, String userId) async {
+  // save pictures to local storage
+  String path = await getOriginalProfilePicPath(userId);
+  String thumbnailPath = await getSmallProfilePicPath(userId);
+
+  await File(path).writeAsBytes(big);
+  await File(thumbnailPath).writeAsBytes(small);
 
   // clear image cache, IMPORTANT
   _clearImageCache();
-  return true;
+}
+
+Future saveOwnBigPicture(Uint8List image, String userId) async {
+  Uint8List thumbnail = await createThumbnail(image);
+  saveOwnPictures(thumbnail, image, userId);
 }
 
 Future saveOtherBigPictureFromByteList(Uint8List bytes, String userId) async {
@@ -95,4 +98,14 @@ Future deleteProfilePicture(String id) async {
 void _clearImageCache() {
   imageCache?.clear();
   imageCache?.clearLiveImages();
+}
+
+Future<Uint8List> createThumbnail(Uint8List image) async {
+  return await FlutterImageCompress.compressWithList(
+    image,
+    quality: PIC_QUALITY,
+    format: CompressFormat.png,
+    minWidth: SMALL_PIC_WIDTH,
+    minHeight: SMALL_PIC_HEIGHT,
+  );
 }
