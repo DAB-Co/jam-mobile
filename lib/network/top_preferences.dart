@@ -40,7 +40,7 @@ Future topPreferencesCall(
     Map<String, dynamic> decoded = jsonDecode(response.body);
 
     if (decoded["profile_picture"] == null) { // no profile picture
-      deleteProfilePicture(userId);
+      deleteProfilePicture(otherId);
     } else if (userId == otherId) { // own profile picture
       Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
       await saveBothPictures(profilePic, userId);
