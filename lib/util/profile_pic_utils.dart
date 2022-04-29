@@ -45,12 +45,12 @@ Future saveOwnPictures(Uint8List small, Uint8List big, String userId) async {
   _clearImageCache();
 }
 
-Future saveOwnBigPicture(Uint8List image, String userId) async {
+Future saveBothPictures(Uint8List image, String userId) async {
   Uint8List thumbnail = await createThumbnail(image);
   saveOwnPictures(thumbnail, image, userId);
 }
 
-Future saveOtherBigPictureFromByteList(Uint8List bytes, String userId) async {
+Future saveBigPicture(Uint8List bytes, String userId) async {
   String path = await getOriginalProfilePicPath(userId);
   File oldImage = File(path);
   if (!oldImage.existsSync() || await oldImage.readAsBytes() != bytes) {
@@ -59,7 +59,7 @@ Future saveOtherBigPictureFromByteList(Uint8List bytes, String userId) async {
   }
 }
 
-Future saveOtherSmallPictureFromByteList(Uint8List bytes, String userId) async {
+Future saveSmallPicture(Uint8List bytes, String userId) async {
   String path = await getSmallProfilePicPath(userId);
   File oldImage = File(path);
   if (!oldImage.existsSync() || await oldImage.readAsBytes() != bytes) {
@@ -83,15 +83,36 @@ Future<String> getSmallProfilePicPath(String id) async {
 Future deleteProfilePicture(String id) async {
   String path = await getOriginalProfilePicPath(id);
   String smallPath = await getSmallProfilePicPath(id);
-  try {
-    await File(path).delete();
-  } catch (err) {
-    print(err);
+  File original = File(path);
+  File small = File(smallPath);
+  if (original.existsSync()) {
+    try {
+      await original.delete();
+      _clearImageCache();
+    } catch (err) {
+      print(err);
+    }
   }
-  try {
-    await File(smallPath).delete();
-  } catch (err) {
-    print(err);
+  if (small.existsSync()) {
+    try {
+      await small.delete();
+      _clearImageCache();
+    } catch (err) {
+      print(err);
+    }
+  }
+}
+
+Future deleteSmallPicture(String id) async {
+  String smallPath = await getSmallProfilePicPath(id);
+  File small = File(smallPath);
+  if (small.existsSync()) {
+    try {
+      await small.delete();
+      _clearImageCache();
+    } catch (err) {
+      print(err);
+    }
   }
 }
 

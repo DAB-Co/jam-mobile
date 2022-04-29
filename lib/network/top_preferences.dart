@@ -39,9 +39,14 @@ Future topPreferencesCall(
     }
     Map<String, dynamic> decoded = jsonDecode(response.body);
 
-    if (decoded["profile_picture"] != null && userId != otherId) {
+    if (decoded["profile_picture"] == null) { // no profile picture
+      deleteProfilePicture(userId);
+    } else if (userId == otherId) { // own profile picture
       Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
-      saveOtherBigPictureFromByteList(profilePic, otherId);
+      await saveBothPictures(profilePic, userId);
+    } else { // other user's profile picture
+      Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
+      await saveBigPicture(profilePic, otherId);
     }
 
     List<dynamic> thisUser = separateArtistAndTrack(decoded["user_data"]);
@@ -51,8 +56,6 @@ Future topPreferencesCall(
     // user's own tracks and artists
     if (userId == otherId) {
       await storeTracksAndArtistsSelf(userId, thisUserTracks, thisUserArtists);
-      Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
-      await saveOwnBigPicture(profilePic, userId);
       return;
     }
 
