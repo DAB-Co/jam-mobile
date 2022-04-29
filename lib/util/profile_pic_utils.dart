@@ -10,6 +10,8 @@ import 'package:path_provider/path_provider.dart';
 const PIC_QUALITY = 25;
 const SMALL_PIC_WIDTH = 50;
 const SMALL_PIC_HEIGHT = 50;
+const BIG_PIC_WIDTH = 200;
+const BIG_PIC_HEIGHT = 200;
 
 /// Copies given byte list to profile picture path of user and compresses it
 /// Returns true if network call is successful
@@ -18,7 +20,9 @@ Future<bool> saveOwnPictureFromByteList(Uint8List bytes, User user) async {
   Uint8List compressed = await FlutterImageCompress.compressWithList(
     bytes,
     quality: PIC_QUALITY,
-    format: CompressFormat.png,
+    format: CompressFormat.jpeg,
+    minWidth: BIG_PIC_WIDTH,
+    minHeight: BIG_PIC_HEIGHT,
   );
 
   // compress to thumbnail
@@ -125,7 +129,7 @@ Future<Uint8List> createThumbnail(Uint8List image) async {
   return await FlutterImageCompress.compressWithList(
     image,
     quality: PIC_QUALITY,
-    format: CompressFormat.png,
+    format: CompressFormat.jpeg,
     minWidth: SMALL_PIC_WIDTH,
     minHeight: SMALL_PIC_HEIGHT,
   );
