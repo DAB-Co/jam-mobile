@@ -5,6 +5,7 @@ import 'package:jam/models/user.dart';
 import 'package:jam/network/set_languages.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/widgets/form_widgets.dart';
+import 'package:jam/widgets/goBackDialog.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:language_picker/language_picker_dialog.dart';
 import 'package:language_picker/languages.dart';
@@ -127,87 +128,101 @@ class _ChatLanguageState extends State<ChatLanguage> {
           ),
         );
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.pinkAccent,
-        title: const Text("Chat Language Preference"),
-        elevation: 0.1,
-      ),
-      body: Stack(children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                const Text(
-                  "Your Languages:",
-                  style: TextStyle(fontSize: 20),
-                ),
-                SizedBox(height: 20),
-                languages == null || languages.length == 0
-                    ? Column(
-                        children: [
-                          Icon(
-                            Icons.warning,
-                            color: Colors.pinkAccent,
-                          ),
-                          SizedBox(height: 10),
-                          const Text("You don't have any language preference."
-                              "You have to select at least one language in order to match with other people."),
-                        ],
-                      )
-                    : Container(
-                        margin: EdgeInsets.only(bottom: okVisible ? 80 : 40),
-                        child: ListView.builder(
-                          physics: BouncingScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: languages.length,
-                          itemBuilder: (context, index) {
-                            return _circleListItem(languages[index]);
-                          },
-                        ),
-                      ),
-                SizedBox(height: 20),
-              ],
-            ),
-          ),
+    Future<bool> _goBack(BuildContext context) async {
+      if (languages == null || languages.length == 0) {
+        showDialog(
+          context: context,
+          builder: (context) => goBackDialog(context),
+        );
+      }
+      return true;
+    }
+
+    return WillPopScope(
+      onWillPop: () => _goBack(context),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.pinkAccent,
+          title: const Text("Chat Language Preference"),
+          elevation: 0.1,
         ),
-        Padding(
-          padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20),
-          child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Visibility(
-                  child: Column(
-                    children: [
-                      longButtons(
-                        "OK",
-                        () => Navigator.pushReplacementNamed(context, homepage),
-                        color: Colors.green,
-                      ),
-                      SizedBox(
-                        height: 10,
-                        width: double.infinity,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(color: Colors.white),
-                        ),
-                      ),
-                    ],
+        body: Stack(children: [
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const Text(
+                    "Your Languages:",
+                    style: TextStyle(fontSize: 20),
                   ),
-                  visible: okVisible,
-                ),
-                longButtons(
-                  "Add a language",
-                  _openLanguagePickerDialog,
-                  color: Colors.pink,
-                ),
-              ],
+                  SizedBox(height: 20),
+                  languages == null || languages.length == 0
+                      ? Column(
+                          children: [
+                            Icon(
+                              Icons.warning,
+                              color: Colors.pinkAccent,
+                            ),
+                            SizedBox(height: 10),
+                            const Text("You don't have any language preference."
+                                "You have to select at least one language in order to match with other people."),
+                          ],
+                        )
+                      : Container(
+                          margin: EdgeInsets.only(bottom: okVisible ? 80 : 40),
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: languages.length,
+                            itemBuilder: (context, index) {
+                              return _circleListItem(languages[index]);
+                            },
+                          ),
+                        ),
+                  SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
-        ),
-      ]),
+          Padding(
+            padding: const EdgeInsets.only(left: 8, right: 8, bottom: 20),
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Visibility(
+                    child: Column(
+                      children: [
+                        longButtons(
+                          "OK",
+                          () =>
+                              Navigator.pushReplacementNamed(context, homepage),
+                          color: Colors.green,
+                        ),
+                        SizedBox(
+                          height: 10,
+                          width: double.infinity,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                    visible: okVisible,
+                  ),
+                  longButtons(
+                    "Add a language",
+                    _openLanguagePickerDialog,
+                    color: Colors.pink,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ]),
+      ),
     );
   }
 }

@@ -1,14 +1,16 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:jam/config/app_url.dart';
 import 'package:jam/config/routes.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/widgets/goBackDialog.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+// Redirected in wake API call
 
 class SpotifyLogin extends StatefulWidget {
   @override
@@ -28,30 +30,8 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
     } else {
       showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-                title: Text('Do you want to exit?'),
-                actions: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('No'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      SystemNavigator.pop();
-                    },
-                    child: Text('Yes'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      logout();
-                    },
-                    child: Text('Logout'),
-                  ),
-                ],
-              ));
+          builder: (context) => goBackDialog(context),
+      );
       return true;
     }
   }
@@ -87,7 +67,7 @@ class _SpotifyLoginState extends State<SpotifyLogin> {
                 onPageFinished: (String s) async {
                   if (s.split("?")[0] == AppUrl.spotifyUrlEnd) {
                     Navigator.pushNamedAndRemoveUntil(
-                        context, homepage, (Route<dynamic> route) => false);
+                        context, chatLanguages, (Route<dynamic> route) => false);
                   }
                   if (isLoading) {
                     setState(() {
