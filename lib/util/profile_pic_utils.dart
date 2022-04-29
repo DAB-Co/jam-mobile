@@ -10,8 +10,8 @@ import 'package:path_provider/path_provider.dart';
 const PIC_QUALITY = 25;
 const SMALL_PIC_WIDTH = 50;
 const SMALL_PIC_HEIGHT = 50;
-const BIG_PIC_WIDTH = 200;
-const BIG_PIC_HEIGHT = 200;
+const BIG_PIC_WIDTH = 400;
+const BIG_PIC_HEIGHT = 400;
 
 /// Copies given byte list to profile picture path of user and compresses it
 /// Returns true if network call is successful
