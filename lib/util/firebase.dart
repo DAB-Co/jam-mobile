@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/user.dart';
@@ -64,10 +65,12 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   }
   else {
     String fromId = message.data["fromId"];
-    if (!Hive.isBoxOpen("${currentUser.id}:messages")) {
-      await Hive.openBox<ChatPair>("${currentUser.id}:messages");
+    String boxName = messagesBoxName(currentUser.id!);
+    if (!Hive.isBoxOpen(boxName)) {
+      await Hive.openBox<ChatPair>(boxName);
     }
-    var messages = Hive.box<ChatPair>('${currentUser.id}:messages');
+    var messages = Hive.box<ChatPair>(boxName);
+    print(messages.length);
     var person = messages.get(fromId);
     if (person == null) {
       print("incoming background message not in friends");
