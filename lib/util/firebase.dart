@@ -74,10 +74,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     var person = messages.get(fromId);
     if (person == null) {
       print("incoming background message not in friends");
+      showNotification("a new user", int.parse(fromId));
       return;
+    } else {
+      showNotification(person.username, int.parse(fromId));
     }
-    //Hive.close();
-    showNotification(person.username, int.parse(fromId));
   }
 }
 
