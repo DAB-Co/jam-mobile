@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
+import 'package:jam/providers/mqtt.dart';
 
 import '../models/user.dart';
 import '/util/shared_preference.dart';
@@ -40,6 +41,7 @@ class AuthProvider with ChangeNotifier {
       'email': email,
       'password': password,
       'notification_token': await FirebaseMessaging.instance.getToken(),
+      "device_id": await getDeviceIdentifier(),
     };
 
     _loggedInStatus = Status.Authenticating;
@@ -99,6 +101,7 @@ class AuthProvider with ChangeNotifier {
       'email': email,
       'password': password,
       'notification_token': await FirebaseMessaging.instance.getToken(),
+      "device_id": await getDeviceIdentifier(),
     };
 
     _loggedInStatus = Status.Authenticating;
