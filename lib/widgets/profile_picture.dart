@@ -46,6 +46,7 @@ Widget bigProfilePicture(String id) {
 }
 
 Widget smallProfilePicture(String id) {
+  const double radius = 70;
   late String profilePicPath;
 
   Stream<bool> _profilePicExists() async* {
@@ -64,17 +65,20 @@ Widget smallProfilePicture(String id) {
             return CircleAvatar(
               backgroundColor: Colors.white,
               backgroundImage: AssetImage("assets/avatar.png"),
+              radius: radius,
             );
           default:
             if ((snapshot.hasError) || !(snapshot.data as bool))
               return CircleAvatar(
                 backgroundColor: Colors.white,
                 backgroundImage: AssetImage("assets/avatar.png"),
+                radius: radius,
               );
             else
               return CircleAvatar(
                 backgroundColor: Colors.white,
                 backgroundImage: FileImage(File(profilePicPath)),
+                radius: radius,
               );
         }
       },
