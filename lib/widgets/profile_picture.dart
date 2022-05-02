@@ -46,7 +46,7 @@ Widget bigProfilePicture(String id) {
 }
 
 Widget smallProfilePicture(String id) {
-  const double radius = 70;
+  const double radius = 25;
   late String profilePicPath;
 
   Stream<bool> _profilePicExists() async* {
