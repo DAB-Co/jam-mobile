@@ -8,8 +8,8 @@ import 'package:jam/network/update_profile_pic.dart';
 import 'package:path_provider/path_provider.dart';
 
 const PIC_QUALITY = 25;
-const SMALL_PIC_WIDTH = 50;
-const SMALL_PIC_HEIGHT = 50;
+const SMALL_PIC_WIDTH = 100;
+const SMALL_PIC_HEIGHT = 100;
 const BIG_PIC_WIDTH = 400;
 const BIG_PIC_HEIGHT = 400;
 

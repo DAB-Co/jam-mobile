@@ -28,7 +28,7 @@ class DM extends StatefulWidget {
       _DMState(otherUsername: otherUsername, otherId: otherId);
 }
 
-class _DMState extends State<DM> {
+class _DMState extends State<DM> with WidgetsBindingObserver {
   // Constructor
   _DMState({required this.otherUsername, required this.otherId}) : super();
   final String otherUsername;
@@ -40,6 +40,7 @@ class _DMState extends State<DM> {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     chatTextController.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
@@ -47,12 +48,34 @@ class _DMState extends State<DM> {
   void initState() {
     Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();
+    WidgetsBinding.instance?.addObserver(this);
   }
 
   @override
   void deactivate() {
-    Provider.of<MessageProvider>(context).exitDM(otherId);
+    Provider.of<MessageProvider>(context, listen: false).exitDM(otherId);
     super.deactivate();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.resumed:
+        print("dm resumed");
+        Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
+        break;
+      case AppLifecycleState.inactive:
+        print("dm inactive");
+        break;
+      case AppLifecycleState.paused:
+        print("dm paused");
+        Provider.of<MessageProvider>(context, listen: false).exitDM(otherId);
+        break;
+      case AppLifecycleState.detached:
+        print("dm detached");
+        Provider.of<MessageProvider>(context, listen: false).exitDM(otherId);
+        break;
+    }
   }
 
   @override
