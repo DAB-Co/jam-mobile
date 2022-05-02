@@ -10,7 +10,6 @@ import 'package:jam/network/wake.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/local_notification.dart';
-import 'package:jam/util/log_to_file.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -89,7 +88,6 @@ class MessageProvider extends ChangeNotifier {
     String key = "${message.timestamp}";
     if (chat.get(key) != null) {
       print("double message: ${message.messageContent}");
-      logToFile("double message: ${message.messageContent}\n");
       return;
     }
     await chat.put(key, message);
