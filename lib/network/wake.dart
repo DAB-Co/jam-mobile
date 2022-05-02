@@ -33,8 +33,11 @@ Future<Map<String, dynamic>?> wakeRequest(
       return null;
     }
     Map<String, dynamic> decoded = jsonDecode(response.body);
-    Uint8List smallPicture = Uint8List.fromList(json.decode(decoded["small_profile_picture"]).cast<int>());
-    saveSmallPicture(smallPicture, userId);
+    var smallPic = decoded["small_profile_picture"];
+    if (smallPic != null) {
+      Uint8List smallPicture = Uint8List.fromList(json.decode(smallPic).cast<int>());
+      saveSmallPicture(smallPicture, userId);
+    }
 
     Map<String, dynamic> rawFriends = decoded["friends"];
     result["refresh_token_expired"] = decoded["refresh_token_expired"];

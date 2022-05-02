@@ -98,12 +98,15 @@ class _ProfileState extends State<Profile> {
                                     final form = formKey.currentState!;
                                     if (form.validate()) {
                                       form.save();
-                                      bool success = await deleteAccountCall(userId, _password!);
-                                      if (success) {
+                                      String? result = await deleteAccountCall(userId, _password!);
+                                      if (result == null) {
+                                        Navigator.pop(context);
+                                        showSnackBar(context, "Check your connection");
+                                      } else if (result == "OK") {
                                         Provider.of<UserProvider>(context, listen: false).logout();
                                       } else {
                                         Navigator.pop(context);
-                                        showSnackBar(context, "Check your connection");
+                                        showSnackBar(context, result);
                                       }
                                     }
                                     setState(() {
