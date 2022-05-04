@@ -39,19 +39,20 @@ class _ChatLanguageState extends State<ChatLanguage> {
             Provider.of<UserProvider>(context, listen: false).addLanguage(iso);
           });
         } else if (success == 2) {
-          showSnackBar(
-              context, "It looks like you have already selected your languages");
-          List<String>? langs = await getLanguagesCall(user.id!, user.token!, user.id!);
+          showSnackBar(context,
+              "It looks like you have already selected your languages");
+          List<String>? langs =
+              await getLanguagesCall(user.id!, user.token!, user.id!);
           if (langs != null) {
             setState(() {
               if (ModalRoute.of(context)!.isFirst) {
                 okVisible = true;
               }
-              Provider.of<UserProvider>(context, listen: false).overrideLanguages(langs);
+              Provider.of<UserProvider>(context, listen: false)
+                  .overrideLanguages(langs);
             });
           }
-        }
-        else {
+        } else {
           showSnackBar(
               context, "Could not add language, check your connection");
         }
@@ -179,8 +180,12 @@ class _ChatLanguageState extends State<ChatLanguage> {
                               color: Colors.pinkAccent,
                             ),
                             SizedBox(height: 10),
-                            const Text("You don't have any language preference."
-                                "You have to select at least one language in order to match with other people."),
+                            const Text(
+                              "Choose the languages you can speak.\n\n"
+                              "You have to select at least one language in order to match with other people.",
+                              style: TextStyle(fontSize: 15),
+                              textAlign: TextAlign.center,
+                            ),
                           ],
                         )
                       : Container(
