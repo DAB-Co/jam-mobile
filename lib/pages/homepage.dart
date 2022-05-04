@@ -141,22 +141,24 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Divider(color: Colors.grey),
-          FutureBuilder(
-            future: Provider.of<MessageProvider>(context, listen: false).init(
-              Provider.of<UnreadMessageProvider>(context, listen: false),
-              user,
-              context,
+          Expanded(
+            child: FutureBuilder(
+              future: Provider.of<MessageProvider>(context, listen: false).init(
+                Provider.of<UnreadMessageProvider>(context, listen: false),
+                user,
+                context,
+              ),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    print("messages future builder waiting");
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    return messagesList(user, context);
+                }
+              },
             ),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  print("messages future builder waiting");
-                  return Center(child: CircularProgressIndicator());
-                default:
-                  return messagesList(user, context);
-              }
-            },
           ),
         ],
       ),
