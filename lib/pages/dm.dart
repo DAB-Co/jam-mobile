@@ -119,8 +119,10 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       },
     );
     AlertDialog alertDialog = alert(
-        "Do you really want to block $otherUsername?", blockButton,
-        content: "You won't be able to receive messages from $otherUsername.");
+      "Do you really want to block $otherUsername?",
+      blockButton,
+      content: Text("You won't be able to receive messages from $otherUsername."),
+    );
 
     void _handleThreeDotClick(String value) {
       switch (value) {

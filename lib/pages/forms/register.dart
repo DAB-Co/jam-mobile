@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jam/pages/explanation.dart';
 import 'package:jam/widgets/app_bar.dart';
 import 'package:jam/widgets/loading.dart';
 import 'package:jam/widgets/show_snackbar.dart';
@@ -92,7 +93,12 @@ class _RegisterState extends State<Register> {
             User? user = response['user'];
             Provider.of<UserProvider>(context, listen: false)
                 .setUser(user, context);
-            Navigator.pushNamedAndRemoveUntil(context, routes.chatLanguages, (Route<dynamic> route) => false);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => Explanation()),
+              (route) => false,
+            );
           } else {
             showSnackBar(context, response['message']);
           }

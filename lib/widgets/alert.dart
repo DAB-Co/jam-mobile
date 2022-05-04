@@ -8,10 +8,10 @@ Widget cancelButton = TextButton(
   },
 );
 
-AlertDialog alert(String title, TextButton continueButton, {content: String}) {
+AlertDialog alert(String title, TextButton continueButton, {content: Widget}) {
   return AlertDialog(
     title: Text(title),
-    content: Text(content),
+    content: content,
     actions: [
       cancelButton,
       continueButton,

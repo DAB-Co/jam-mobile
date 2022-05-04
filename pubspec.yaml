@@ -78,6 +78,7 @@ flutter:
   assets:
     - assets/avatar.png
     - assets/ca/lets-encrypt-r3.pem
+    - assets/icon/icon.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

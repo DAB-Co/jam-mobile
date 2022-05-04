@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:jam/pages/kebab_menu/read_log.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/local_notification.dart';
@@ -33,14 +32,6 @@ class _HomepageState extends State<Homepage> {
           break;
         case "Contact Us":
           Navigator.pushNamed(context, routes.contactUs);
-          break;
-        case "Logs":
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ReadLog(),
-            ),
-          );
           break;
       }
     }
@@ -99,7 +90,7 @@ class _HomepageState extends State<Homepage> {
           PopupMenuButton<String>(
             onSelected: _handleThreeDotClick,
             itemBuilder: (BuildContext context) {
-              return {"Contact Us", 'About', 'Logs'}.map((String choice) {
+              return {"Contact Us", 'About'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
@@ -150,22 +141,24 @@ class _HomepageState extends State<Homepage> {
             ),
           ),
           Divider(color: Colors.grey),
-          FutureBuilder(
-            future: Provider.of<MessageProvider>(context, listen: false).init(
-              Provider.of<UnreadMessageProvider>(context, listen: false),
-              user,
-              context,
+          Expanded(
+            child: FutureBuilder(
+              future: Provider.of<MessageProvider>(context, listen: false).init(
+                Provider.of<UnreadMessageProvider>(context, listen: false),
+                user,
+                context,
+              ),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    print("messages future builder waiting");
+                    return Center(child: CircularProgressIndicator());
+                  default:
+                    return messagesList(user, context);
+                }
+              },
             ),
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  print("messages future builder waiting");
-                  return Center(child: CircularProgressIndicator());
-                default:
-                  return messagesList(user, context);
-              }
-            },
           ),
         ],
       ),

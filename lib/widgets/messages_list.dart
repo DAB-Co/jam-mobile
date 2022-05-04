@@ -35,8 +35,6 @@ messagesList(user, context) {
         }
         chats.sort();
         return ListView.separated(
-          shrinkWrap: true,
-          // needed for this scrollable widget inside another scrollable widget
           itemBuilder: (context, index) => !chats[index].isBlocked
               ? Padding(
                   padding: EdgeInsets.only(top: 5, bottom: 5),
