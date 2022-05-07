@@ -20,7 +20,7 @@ Future<bool> saveOwnPictureFromByteList(Uint8List bytes, User user) async {
   Uint8List compressed = await FlutterImageCompress.compressWithList(
     bytes,
     quality: PIC_QUALITY,
-    format: CompressFormat.jpeg,
+    format: CompressFormat.png,
     minWidth: BIG_PIC_WIDTH,
     minHeight: BIG_PIC_HEIGHT,
   );
@@ -35,6 +35,16 @@ Future<bool> saveOwnPictureFromByteList(Uint8List bytes, User user) async {
 
   saveOwnPictures(thumbnail, compressed, user.id!);
   return true;
+}
+
+Future<Uint8List> createThumbnail(Uint8List image) async {
+  return await FlutterImageCompress.compressWithList(
+    image,
+    quality: PIC_QUALITY,
+    format: CompressFormat.png,
+    minWidth: SMALL_PIC_WIDTH,
+    minHeight: SMALL_PIC_HEIGHT,
+  );
 }
 
 Future saveOwnPictures(Uint8List small, Uint8List big, String userId) async {
@@ -123,14 +133,4 @@ Future deleteSmallPicture(String id) async {
 void _clearImageCache() {
   imageCache?.clear();
   imageCache?.clearLiveImages();
-}
-
-Future<Uint8List> createThumbnail(Uint8List image) async {
-  return await FlutterImageCompress.compressWithList(
-    image,
-    quality: PIC_QUALITY,
-    format: CompressFormat.jpeg,
-    minWidth: SMALL_PIC_WIDTH,
-    minHeight: SMALL_PIC_HEIGHT,
-  );
 }
