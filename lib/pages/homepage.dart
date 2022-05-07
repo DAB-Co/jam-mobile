@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:jam/config/box_names.dart';
+import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/util/local_notification.dart';
-import 'package:jam/util/time_until_match.dart';
 import 'package:jam/util/profile_pic_utils.dart';
+import 'package:jam/util/time_until_match.dart';
 import 'package:jam/widgets/messages_list.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
@@ -155,7 +158,21 @@ class _HomepageState extends State<Homepage> {
                     print("messages future builder waiting");
                     return Center(child: CircularProgressIndicator());
                   default:
-                    return messagesList(user, context);
+                    {
+                      String boxName = messagesBoxName(user.id!);
+
+                      return ValueListenableBuilder(
+                          valueListenable:
+                              Hive.box<ChatPair>(boxName).listenable(),
+                          builder: (context, Box<ChatPair> box, widget) {
+                            List<ChatPair> chats = box.values.toList().cast();
+                            List<ChatPair> nonBlockedChats =
+                                chats.where((c) => !c.isBlocked).toList();
+                            nonBlockedChats.sort();
+                            return messagesList(nonBlockedChats,
+                                "There will be other people here who share the same music taste soon");
+                          });
+                    }
                 }
               },
             ),
