@@ -11,6 +11,7 @@ import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/local_notification.dart';
 import 'package:jam/util/util_functions.dart';
+import 'package:jam/widgets/inactive_dialog.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
@@ -147,6 +148,15 @@ class MessageProvider extends ChangeNotifier {
       navigatorKey.currentState?.pushNamedAndRemoveUntil(
           spotifyLogin, (Route<dynamic> route) => false);
       return;
+    }
+    if (wakeResult["was_inactive"]) {
+      // show inactive dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return inactiveDialog();
+        },
+      );
     }
     initFriends(wakeResult["friends"]);
   }
