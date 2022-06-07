@@ -16,7 +16,9 @@ import 'package:provider/provider.dart';
 import '/config/routes.dart' as routes;
 import '/providers/user_provider.dart';
 import "/util/greetings.dart";
+import '../main.dart';
 import '../models/user.dart';
+import 'dm.dart';
 
 class Homepage extends StatefulWidget {
   @override
@@ -159,8 +161,10 @@ class _HomepageState extends State<Homepage> {
                     return Center(child: CircularProgressIndicator());
                   default:
                     {
-                      String boxName = messagesBoxName(user.id!);
+                      // check if a notification opened this page
+                      _checkForNotificationLaunch();
 
+                      String boxName = messagesBoxName(user.id!);
                       return ValueListenableBuilder(
                           valueListenable:
                               Hive.box<ChatPair>(boxName).listenable(),
@@ -187,5 +191,28 @@ class _HomepageState extends State<Homepage> {
     super.initState();
     // discard all jam notifications
     flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  void _checkForNotificationLaunch() async {
+    var details =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+    if (details == null) return;
+
+    if (details.didNotificationLaunchApp) {
+      String? payload = details.payload;
+      if (payload != null) {
+        // payload = id + username
+        String id = payload.split(" ")[0];
+        String username = payload.split(" ")[1];
+        navigatorKey.currentState?.push(
+          MaterialPageRoute(
+            builder: (context) => DM(
+              otherUsername: username,
+              otherId: id,
+            ),
+          ),
+        );
+      }
+    }
   }
 }
