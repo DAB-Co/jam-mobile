@@ -39,29 +39,37 @@ Future topPreferencesCall(
     }
     Map<String, dynamic> decoded = jsonDecode(response.body);
 
-    if (decoded["profile_picture"] == null) { // no profile picture
+    if (decoded["profile_picture"] == null) {
+      // no profile picture
       deleteProfilePicture(otherId);
-    } else if (userId == otherId) { // own profile picture
-      Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
+    } else if (userId == otherId) {
+      // own profile picture
+      Uint8List profilePic = Uint8List.fromList(
+          json.decode(decoded["profile_picture"]).cast<int>());
       await saveBothPictures(profilePic, userId);
-    } else { // other user's profile picture
-      Uint8List profilePic = Uint8List.fromList(json.decode(decoded["profile_picture"]).cast<int>());
+    } else {
+      // other user's profile picture
+      Uint8List profilePic = Uint8List.fromList(
+          json.decode(decoded["profile_picture"]).cast<int>());
       await saveBigPicture(profilePic, otherId);
     }
 
     List<dynamic> thisUser = separateArtistAndTrack(decoded["user_data"]);
     List<Track> thisUserTracks = thisUser[0];
     List<Artist> thisUserArtists = thisUser[1];
+    List<String> thisUserGenres = thisUser[2];
 
     // user's own tracks and artists
     if (userId == otherId) {
-      await storeTracksAndArtistsSelf(userId, thisUserTracks, thisUserArtists);
+      await storeTracksAndArtistsSelf(
+          userId, thisUserTracks, thisUserArtists, thisUserGenres);
       return;
     }
 
     List<dynamic> otherUser = separateArtistAndTrack(decoded["req_user_data"]);
     List<Track> otherUserTracks = otherUser[0];
     List<Artist> otherUserArtists = otherUser[1];
+    List<String> otherUserGenres = otherUser[2];
 
     List<List<Track>> tracks = [thisUserTracks, otherUserTracks];
     List<Track> commonTracks = tracks
@@ -75,23 +83,32 @@ Future topPreferencesCall(
             artists.first.toSet(), (a, b) => a.intersection(b.toSet()))
         .toList();
 
+    List<List<String>> genres = [thisUserGenres, otherUserGenres];
+    List<String> commonGenres = genres
+        .fold<Set<String>>(
+            genres.first.toSet(), (a, b) => a.intersection(b.toSet()))
+        .toList();
+
     List<Track> otherTracks =
         otherUserTracks.toSet().difference(commonTracks.toSet()).toList();
     List<Artist> otherArtists =
         otherUserArtists.toSet().difference(commonArtists.toSet()).toList();
+    List<String> otherGenres =
+        otherUserGenres.toSet().difference(commonGenres.toSet()).toList();
 
     // save to hive
     await storeTracksAndArtistsOther(userId, otherId, commonTracks, otherTracks,
-        commonArtists, otherArtists);
+        commonArtists, otherArtists, commonGenres, otherGenres);
   } catch (err) {
     print(err);
   }
 }
 
-/// [tracks, artists]
+/// [tracks, artists, genres]
 List<List> separateArtistAndTrack(l) {
   List<Track> tracks = [];
   List<Artist> artists = [];
+  List<String> genres = [];
   for (dynamic i in l) {
     String name = i["name"];
     var data = jsonDecode(i["raw_data"]);
@@ -104,7 +121,7 @@ List<List> separateArtistAndTrack(l) {
         artist: data["album"]["artists"][0]["name"],
       );
       tracks.add(cur);
-    } else {
+    } else if (i["type"] == "artist") {
       Artist cur = Artist(
         name: name,
         imageUrl: data["images"][2]["url"],
@@ -112,7 +129,9 @@ List<List> separateArtistAndTrack(l) {
         genre: data["genres"].join(', '),
       );
       artists.add(cur);
+    } else {
+      genres.add(name);
     }
   }
-  return [tracks, artists];
+  return [tracks, artists, genres];
 }
