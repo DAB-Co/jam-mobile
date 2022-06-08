@@ -218,6 +218,7 @@ class _HomepageState extends State<Homepage> {
         String username = payload.split(" ")[1];
         navigatorKey.currentState?.push(
           MaterialPageRoute(
+            settings: RouteSettings(name: "dm " + id),
             builder: (context) => DM(
               otherUsername: username,
               otherId: id,

@@ -73,6 +73,7 @@ Widget messagesList(List<ChatPair> chats, String emptyText) {
             Navigator.push(
               context,
               MaterialPageRoute(
+                settings: RouteSettings(name: "dm " + id),
                 builder: (context) => DM(
                   otherUsername: name,
                   otherId: id,

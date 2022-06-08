@@ -58,6 +58,22 @@ Future<dynamic> _selectNotification(String? payload) async {
     // payload = id + username
     String id = payload.split(" ")[0];
     String username = payload.split(" ")[1];
+    String? currentRoute;
+    navigatorKey.currentState?.popUntil((route) {
+      currentRoute = route.settings.name;
+      return true;
+    });
+    print("current route:");
+    print(currentRoute);
+    if (currentRoute != null) {
+      List<String> splitted = currentRoute!.split(" ");
+      if (splitted.length == 2) {
+        String f = splitted[0];
+        String currentId = splitted[1];
+        // check if already in same dm page
+        if (f == "dm" && currentId == id) return;
+      }
+    }
     navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
           builder: (context) => Homepage(
@@ -67,6 +83,7 @@ Future<dynamic> _selectNotification(String? payload) async {
         (route) => false);
     navigatorKey.currentState?.push(
       MaterialPageRoute(
+        settings: RouteSettings(name: "dm " + id),
         builder: (context) => DM(
           otherUsername: username,
           otherId: id,

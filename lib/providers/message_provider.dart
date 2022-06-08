@@ -125,6 +125,8 @@ class MessageProvider extends ChangeNotifier {
   }
 
   exitDM(username) {
+    // Important, check if exiting correct dm page
+    if (inDmOf != username) return;
     print("exit DM");
     currentBox?.close();
     currentBox = null;
