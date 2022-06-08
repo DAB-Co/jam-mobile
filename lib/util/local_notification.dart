@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jam/pages/dm.dart';
+import 'package:jam/pages/homepage.dart';
 
-import '/config/routes.dart' as routes;
 import '../main.dart';
 
 var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -58,10 +58,32 @@ Future<dynamic> _selectNotification(String? payload) async {
     // payload = id + username
     String id = payload.split(" ")[0];
     String username = payload.split(" ")[1];
-    navigatorKey.currentState
-        ?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
+    String? currentRoute;
+    navigatorKey.currentState?.popUntil((route) {
+      currentRoute = route.settings.name;
+      return true;
+    });
+    print("current route:");
+    print(currentRoute);
+    if (currentRoute != null) {
+      List<String> splitted = currentRoute!.split(" ");
+      if (splitted.length == 2) {
+        String f = splitted[0];
+        String currentId = splitted[1];
+        // check if already in same dm page
+        if (f == "dm" && currentId == id) return;
+      }
+    }
+    navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => Homepage(
+            openedNotification: true,
+          ),
+        ),
+        (route) => false);
     navigatorKey.currentState?.push(
       MaterialPageRoute(
+        settings: RouteSettings(name: "dm " + id),
         builder: (context) => DM(
           otherUsername: username,
           otherId: id,

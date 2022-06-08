@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:jam/widgets/app_bar.dart';
+import 'package:jam/widgets/inactive_dialog.dart';
 import 'package:jam/widgets/loading.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,14 @@ class _LoginState extends State<Login> {
               Navigator.pushNamedAndRemoveUntil(context, routes.chatLanguages, (Route<dynamic> route) => false);
             } else {
               Navigator.pushNamedAndRemoveUntil(context, routes.homepage, (Route<dynamic> route) => false);
+            }
+            if (response["was_inactive"]) {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return inactiveDialog();
+                },
+              );
             }
           } else {
             showSnackBar(context, response["message"]);

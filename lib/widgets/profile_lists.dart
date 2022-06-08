@@ -101,6 +101,26 @@ _artistList(List<dynamic> list) {
   );
 }
 
+_genresList(List<String> list) {
+  return ListView.separated(
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    itemBuilder: (context, index) => ListTile(
+      title: Text(
+        list[index],
+        textAlign: TextAlign.center,
+        style: TextStyle(
+          color: Colors.black,
+        ),
+      ),
+    ),
+    separatorBuilder: (context, index) => Divider(
+      color: Colors.grey,
+    ),
+    itemCount: list.length,
+  );
+}
+
 _languageList(List<String> list) {
   return ListView.separated(
     shrinkWrap: true,
@@ -126,8 +146,10 @@ tracksArtistsListOther(String userId, String otherUserId, context) {
     builder: (context, Box box, widget) {
       List<dynamic>? commonTracks = box.get("commonTracks");
       List<dynamic>? commonArtists = box.get("commonArtists");
+      List<String>? commonGenres = box.get("commonGenres");
       List<dynamic>? otherTracks = box.get("otherTracks");
       List<dynamic>? otherArtists = box.get("otherArtists");
+      List<String>? otherGenres = box.get("otherGenres");
 
       return Column(
         children: [
@@ -147,6 +169,14 @@ tracksArtistsListOther(String userId, String otherUserId, context) {
               : _artistList(commonArtists),
           Divider(color: Colors.black),
           SizedBox(height: 20),
+          _headerText("Common Genres:"),
+          SizedBox(height: 20),
+          commonGenres == null || commonGenres.length == 0
+              ? _noItem(
+              "No Common Genres", Icon(Icons.apps))
+              : _genresList(commonGenres),
+          Divider(color: Colors.black),
+          SizedBox(height: 20),
           _headerText("Other Tracks This User Listened To:"),
           SizedBox(height: 20),
           otherTracks == null || otherTracks.length == 0
@@ -159,7 +189,14 @@ tracksArtistsListOther(String userId, String otherUserId, context) {
           otherArtists == null || otherArtists.length == 0
               ? _noItem("No Other Artists", Icon(Icons.assignment_ind))
               : _artistList(otherArtists),
+          Divider(color: Colors.black),
           SizedBox(height: 20),
+          _headerText("Other Genres This User Listened To:"),
+          SizedBox(height: 20),
+          otherGenres == null || otherGenres.length == 0
+              ? _noItem(
+              "No Other Genres", Icon(Icons.apps))
+              : _genresList(otherGenres),
         ],
       );
     },
@@ -174,6 +211,7 @@ tracksArtistsListSelf(String userId, String otherUserId, context) {
     builder: (context, Box box, widget) {
       List<dynamic>? commonTracks = box.get("commonTracks");
       List<dynamic>? commonArtists = box.get("commonArtists");
+      List<String>? commonGenres = box.get("commonGenres");
 
       return Column(
         children: [
@@ -192,6 +230,13 @@ tracksArtistsListSelf(String userId, String otherUserId, context) {
               "No Artists", Icon(Icons.assignment_ind))
               : _artistList(commonArtists),
           Divider(color: Colors.black),
+          SizedBox(height: 20),
+          _headerText("Your Genres:"),
+          SizedBox(height: 20),
+          commonGenres == null || commonGenres.length == 0
+              ? _noItem(
+              "No Genres", Icon(Icons.apps))
+              : _genresList(commonGenres),
           SizedBox(height: 20),
         ],
       );

@@ -82,6 +82,7 @@ class AuthProvider with ChangeNotifier {
         'status': true,
         'message': 'Successful',
         'user': authUser,
+        "was_inactive": userData["was_inactive"],
       };
     } else {
       _loggedInStatus = Status.NotLoggedIn;

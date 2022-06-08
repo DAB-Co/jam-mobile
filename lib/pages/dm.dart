@@ -42,19 +42,22 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     chatTextController.dispose();
     WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
+    print("dm dispose");
+  }
+
+  @override
+  void deactivate() {
+    Provider.of<MessageProvider>(context, listen: false).exitDM(otherId);
+    print("deactivate");
+    super.deactivate();
   }
 
   @override
   void initState() {
     Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();
+    print("dm init state");
     WidgetsBinding.instance?.addObserver(this);
-  }
-
-  @override
-  void deactivate() {
-    Provider.of<MessageProvider>(context, listen: false).exitDM(otherId);
-    super.deactivate();
   }
 
   @override

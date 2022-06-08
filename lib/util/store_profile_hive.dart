@@ -10,6 +10,8 @@ Future storeTracksAndArtistsOther(
   List<Track> otherTracks,
   List<Artist> commonArtists,
   List<Artist> otherArtists,
+  List<String> commonGenres,
+  List<String> otherGenres,
 ) async {
   String boxName = tracksArtistsBoxName(userId, otherId);
   var box;
@@ -20,15 +22,18 @@ Future storeTracksAndArtistsOther(
   }
   box.put("commonTracks", commonTracks);
   box.put("commonArtists", commonArtists);
+  box.put("commonGenres", commonGenres);
   box.put("otherTracks", otherTracks);
   box.put("otherArtists", otherArtists);
+  box.put("otherGenres", otherGenres);
 }
 
 Future storeTracksAndArtistsSelf(
-    String userId,
-    List<Track> tracks,
-    List<Artist> artists,
-    ) async {
+  String userId,
+  List<Track> tracks,
+  List<Artist> artists,
+  List<String> genres,
+) async {
   String boxName = tracksArtistsBoxName(userId, userId);
   var box;
   if (!Hive.isBoxOpen(boxName)) {
@@ -38,13 +43,14 @@ Future storeTracksAndArtistsSelf(
   }
   box.put("commonTracks", tracks);
   box.put("commonArtists", artists);
+  box.put("commonGenres", genres);
 }
 
 Future storeLanguages(
-    String userId,
-    String otherUserId,
-    List<String> languages,
-    ) async {
+  String userId,
+  String otherUserId,
+  List<String> languages,
+) async {
   String boxName = languagesBoxName(userId);
   var box;
   if (!Hive.isBoxOpen(boxName)) {
@@ -53,4 +59,30 @@ Future storeLanguages(
     box = Hive.box(boxName);
   }
   box.put(otherUserId, languages);
+}
+
+Future deleteTracksAndArtists(String userId, String otherId) async {
+  String boxName = tracksArtistsBoxName(userId, otherId);
+  bool exists = await Hive.boxExists(boxName);
+  if (!exists) return;
+  var box;
+  if (!Hive.isBoxOpen(boxName)) {
+    box = await Hive.openBox(boxName);
+  } else {
+    box = Hive.box(boxName);
+  }
+  box.deleteFromDisk();
+}
+
+Future deleteLanguages(String userId, String otherId) async {
+  String boxName = languagesBoxName(userId);
+  bool exists = await Hive.boxExists(boxName);
+  if (!exists) return;
+  var box;
+  if (!Hive.isBoxOpen(boxName)) {
+    box = await Hive.openBox(boxName);
+  } else {
+    box = Hive.box(boxName);
+  }
+  box.deleteFromDisk();
 }
