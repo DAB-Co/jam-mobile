@@ -60,3 +60,29 @@ Future storeLanguages(
   }
   box.put(otherUserId, languages);
 }
+
+Future deleteTracksAndArtists(String userId, String otherId) async {
+  String boxName = tracksArtistsBoxName(userId, otherId);
+  bool exists = await Hive.boxExists(boxName);
+  if (!exists) return;
+  var box;
+  if (!Hive.isBoxOpen(boxName)) {
+    box = await Hive.openBox(boxName);
+  } else {
+    box = Hive.box(boxName);
+  }
+  box.deleteFromDisk();
+}
+
+Future deleteLanguages(String userId, String otherId) async {
+  String boxName = languagesBoxName(userId);
+  bool exists = await Hive.boxExists(boxName);
+  if (!exists) return;
+  var box;
+  if (!Hive.isBoxOpen(boxName)) {
+    box = await Hive.openBox(boxName);
+  } else {
+    box = Hive.box(boxName);
+  }
+  box.deleteFromDisk();
+}

@@ -10,6 +10,8 @@ import 'package:jam/network/wake.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/local_notification.dart';
+import 'package:jam/util/profile_pic_utils.dart';
+import 'package:jam/util/store_profile_hive.dart';
 import 'package:jam/util/util_functions.dart';
 import 'package:jam/widgets/inactive_dialog.dart';
 import 'package:jam/widgets/show_snackbar.dart';
@@ -137,6 +139,7 @@ class MessageProvider extends ChangeNotifier {
   /// Redirect to spotify login if refresh token is expired or not in server,
   /// Log out if api token is invalid
   /// Save friends to local storage
+  /// Delete stored friend data that is not in wake
   Future wake(User user, context) async {
     Map<String, dynamic>? wakeResult = await wakeRequest(user.id!, user.token!);
     if (wakeResult == null) {
@@ -161,6 +164,7 @@ class MessageProvider extends ChangeNotifier {
       );
     }
     initFriends(wakeResult["friends"]);
+    deleteNonFriends(user.id!, wakeResult["friends"]);
   }
 
   /// Take friends from server and save them to local storage
@@ -174,6 +178,25 @@ class MessageProvider extends ChangeNotifier {
             isBlocked: friend.isBlocked,
         );
         messages.put(friend.id, chatPair);
+      }
+    }
+  }
+
+  Future deleteNonFriends(String thisUserId, List<OtherUser> friendsList) async {
+    List<String> friendIds = messages.keys.toList().cast<String>();
+    Set<String> wakeFriendIds = Set<String>();
+    for (OtherUser u in friendsList) {
+      wakeFriendIds.add(u.id);
+    }
+    print(friendIds);
+    print(wakeFriendIds);
+    for (String currentId in friendIds) {
+      if (!wakeFriendIds.contains(currentId)) {
+        print("deleting user info: " + currentId);
+        deleteProfilePicture(currentId);
+        deleteSmallPicture(currentId);
+        deleteTracksAndArtists(thisUserId, currentId);
+        deleteLanguages(thisUserId, currentId);
       }
     }
   }
