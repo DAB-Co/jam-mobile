@@ -154,7 +154,7 @@ class MessageProvider extends ChangeNotifier {
           spotifyLogin, (Route<dynamic> route) => false);
       return;
     }
-    if (wakeResult["was_inactive"]) {
+    else if (wakeResult["was_inactive"]) {
       // show inactive dialog
       showDialog(
         context: context,
