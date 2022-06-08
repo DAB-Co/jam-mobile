@@ -21,11 +21,16 @@ import '../models/user.dart';
 import 'dm.dart';
 
 class Homepage extends StatefulWidget {
+  Homepage({this.openedNotification = false}) : super();
+  final bool openedNotification;
   @override
-  _HomepageState createState() => _HomepageState();
+  _HomepageState createState() => _HomepageState(openedNotification: openedNotification);
 }
 
 class _HomepageState extends State<Homepage> {
+  _HomepageState({this.openedNotification = false}) : super();
+  final bool openedNotification;
+
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
@@ -161,8 +166,10 @@ class _HomepageState extends State<Homepage> {
                     return Center(child: CircularProgressIndicator());
                   default:
                     {
-                      // check if a notification opened this page
-                      _checkForNotificationLaunch();
+                      if (!this.openedNotification) {
+                        // check if a notification opened this page
+                        _checkForNotificationLaunch();
+                      }
 
                       String boxName = messagesBoxName(user.id!);
                       return ValueListenableBuilder(
@@ -193,14 +200,19 @@ class _HomepageState extends State<Homepage> {
     flutterLocalNotificationsPlugin.cancelAll();
   }
 
+  bool checkedNotification = false;
   void _checkForNotificationLaunch() async {
+    print("checkedNotification: " + checkedNotification.toString());
     var details =
         await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
     if (details == null) return;
+    print("notification launched app: " + details.didNotificationLaunchApp.toString());
 
     if (details.didNotificationLaunchApp) {
       String? payload = details.payload;
-      if (payload != null) {
+      if (payload != null && !checkedNotification) {
+        print("payload: " + payload);
+        checkedNotification = true;
         // payload = id + username
         String id = payload.split(" ")[0];
         String username = payload.split(" ")[1];

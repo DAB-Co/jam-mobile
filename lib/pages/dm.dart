@@ -46,6 +46,13 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
   }
 
   @override
+  void deactivate() {
+    Provider.of<MessageProvider>(context, listen: false).exitDM(otherId);
+    print("deactivate");
+    super.deactivate();
+  }
+
+  @override
   void initState() {
     Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();

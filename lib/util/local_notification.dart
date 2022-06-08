@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jam/pages/dm.dart';
+import 'package:jam/pages/homepage.dart';
 
-import '/config/routes.dart' as routes;
 import '../main.dart';
 
 var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -58,8 +58,13 @@ Future<dynamic> _selectNotification(String? payload) async {
     // payload = id + username
     String id = payload.split(" ")[0];
     String username = payload.split(" ")[1];
-    navigatorKey.currentState
-        ?.pushNamedAndRemoveUntil(routes.homepage, (route) => false);
+    navigatorKey.currentState?.pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => Homepage(
+            openedNotification: true,
+          ),
+        ),
+        (route) => false);
     navigatorKey.currentState?.push(
       MaterialPageRoute(
         builder: (context) => DM(
