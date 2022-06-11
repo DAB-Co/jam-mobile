@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:jam/providers/mqtt.dart';
+import 'package:jam/util/e2e.dart';
 
 import '../models/user.dart';
 import '/util/shared_preference.dart';
@@ -74,6 +75,7 @@ class AuthProvider with ChangeNotifier {
       authUser.chatLanguages = userData["languages"].map((iso)=>iso.toLowerCase()).toList();
 
       UserPreferences().saveUser(authUser);
+      initializeEncryption();
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
@@ -134,6 +136,7 @@ class AuthProvider with ChangeNotifier {
       authUser.id = userData["user_id"].toString();
 
       UserPreferences().saveUser(authUser);
+      initializeEncryption();
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();

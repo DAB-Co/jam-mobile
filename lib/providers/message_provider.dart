@@ -91,7 +91,6 @@ class MessageProvider extends ChangeNotifier {
       unConfirmedMessages[msgId] = SentMessage(to: otherId, index: chat.length);
     }
     String key = "${message.timestamp}";
-    // encode(message.messageContent);
     if (chat.get(key) != null) {
       print("double message: ${message.messageContent}");
       return;

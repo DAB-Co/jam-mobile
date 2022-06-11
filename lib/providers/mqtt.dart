@@ -8,6 +8,7 @@ import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/e2e.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -127,10 +128,12 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
       var id = message["from"];
       var messageContent = message["content"];
+      String? decrypted = decryptMessage(messageContent);
+      if (decrypted == null) return;
       msgProvider.add(
           id,
           ChatMessage(
-            messageContent: messageContent,
+            messageContent: decrypted,
             isIncomingMessage: true,
             timestamp: timestamp,
             successful: true,
@@ -148,10 +151,12 @@ void sendMessage(String receiver, String content) {
   if (client == null) return;
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
+  String? encrypted = encryptMessage(content, receiver);
+  if (encrypted == null) return;
   var message = {
     "from": user.id,
     "timestamp": timestamp,
-    "content": content,
+    "content": encrypted,
   };
   builder.addUTF8String(jsonEncode(message));
   bool sent = true;
