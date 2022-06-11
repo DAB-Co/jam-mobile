@@ -17,7 +17,8 @@ void deleteKeysBox() {
   box.deleteFromDisk();
 }
 
-Future initializeEncryption() async {
+/// Returns public key pem file
+Future<String> initializeEncryption() async {
   // create own key pair
   AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> key = generateKeyPair();
   // save private key
@@ -26,7 +27,7 @@ Future initializeEncryption() async {
   }
   Box<String> box = Hive.box<String>(keysBoxName);
   box.put(ownPrivateKey, encodeRSAPrivateKeyToPem(key.privateKey));
-  // send public key to server TODO
+  return encodeRSAPublicKeyToPem(key.publicKey);
 }
 
 /// Returns null if there is no public key for given user

@@ -38,15 +38,16 @@ class AuthProvider with ChangeNotifier {
     var result;
     var response;
 
+    _loggedInStatus = Status.Authenticating;
+    notifyListeners();
+
     final Map<String, dynamic> loginData = {
       'email': email,
       'password': password,
       'notification_token': await FirebaseMessaging.instance.getToken(),
       "device_id": await getDeviceIdentifier(),
+      "public_key": await initializeEncryption(),
     };
-
-    _loggedInStatus = Status.Authenticating;
-    notifyListeners();
 
     try {
       response = await post(
@@ -75,7 +76,6 @@ class AuthProvider with ChangeNotifier {
       authUser.chatLanguages = userData["languages"].map((iso)=>iso.toLowerCase()).toList();
 
       UserPreferences().saveUser(authUser);
-      initializeEncryption();
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
@@ -99,16 +99,17 @@ class AuthProvider with ChangeNotifier {
     var result;
     var response;
 
+    _loggedInStatus = Status.Authenticating;
+    notifyListeners();
+
     final Map<String, String?> registrationData = {
       'username': username,
       'email': email,
       'password': password,
       'notification_token': await FirebaseMessaging.instance.getToken(),
       "device_id": await getDeviceIdentifier(),
+      "public_key": await initializeEncryption(),
     };
-
-    _loggedInStatus = Status.Authenticating;
-    notifyListeners();
 
     try {
       response = await post(
@@ -136,7 +137,6 @@ class AuthProvider with ChangeNotifier {
       authUser.id = userData["user_id"].toString();
 
       UserPreferences().saveUser(authUser);
-      initializeEncryption();
 
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
