@@ -9,6 +9,7 @@ import 'package:jam/models/user.dart';
 import 'package:jam/network/wake.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/e2e.dart';
 import 'package:jam/util/local_notification.dart';
 import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/util/store_profile_hive.dart';
@@ -66,6 +67,7 @@ class MessageProvider extends ChangeNotifier {
     } else {
       messages = Hive.box<ChatPair>(messagesName);
     }
+    openKeysBox();
     unread.initUnreadCount(thisUserId);
     wake(thisUser, context);
   }
@@ -89,6 +91,7 @@ class MessageProvider extends ChangeNotifier {
       unConfirmedMessages[msgId] = SentMessage(to: otherId, index: chat.length);
     }
     String key = "${message.timestamp}";
+    // encode(message.messageContent);
     if (chat.get(key) != null) {
       print("double message: ${message.messageContent}");
       return;
