@@ -30,6 +30,11 @@ Future<String> initializeEncryption() async {
   return encodeRSAPublicKeyToPem(key.publicKey);
 }
 
+void addPublicKey(String userId, String publicKeyPem) {
+  Box<String> box = Hive.box<String>(keysBoxName);
+  box.put(userId, publicKeyPem);
+}
+
 /// Returns null if there is no public key for given user
 String? encryptMessage(String plaintext, String userId) {
   Box<String> box = Hive.box<String>(keysBoxName);

@@ -57,6 +57,7 @@ Future<Map<String, dynamic>?> wakeRequest(
         username: cur["username"],
         id: userId,
         isBlocked: cur["blocked"],
+        publicKey: cur["public_key"],
       ));
     }
   } catch (err) {

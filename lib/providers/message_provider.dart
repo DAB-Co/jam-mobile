@@ -173,6 +173,7 @@ class MessageProvider extends ChangeNotifier {
   Future initFriends(List<OtherUser> friendsList) async {
     print("friendsList length: ${friendsList.length}");
     for (OtherUser friend in friendsList) {
+      addPublicKey(friend.id, friend.publicKey);
       if (messages.get(friend.id) == null) {
         var chatPair = ChatPair(
             username: friend.username,
