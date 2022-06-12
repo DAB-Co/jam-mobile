@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
             ),
           ),
           onPressed: () {
-            showSnackBar(context, "Will be implemented soon");
+            Navigator.pushNamed(context, routes.forgotPassword);
           },
         ),
         TextButton(
