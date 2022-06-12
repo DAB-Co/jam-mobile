@@ -23,6 +23,12 @@ var clientId;
 var msgProvider;
 var unreadProvider;
 
+enum messageTypes {
+  text,
+  picture,
+  video,
+}
+
 Future<String> getDeviceIdentifier() async {
   String deviceIdentifier = "unknown";
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -96,6 +102,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
     final payload = MqttEncoding().decoder.convert(byteMessage.payload.message);
 
     var topic = c[0].topic;
+    print(topic);
 
     var message = jsonDecode(payload);
     if (message == null) {
@@ -127,15 +134,18 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       int timestamp = DateTime.parse(date).millisecondsSinceEpoch;
       var id = message["from"];
       var messageContent = message["content"];
-      msgProvider.add(
-          id,
-          ChatMessage(
-            messageContent: messageContent,
-            isIncomingMessage: true,
-            timestamp: timestamp,
-            successful: true,
-          ),
-          unreadProvider);
+      var messageType = message["type"];
+      if (messageType == messageTypes.text.index) {
+        msgProvider.add(
+            id,
+            ChatMessage(
+              messageContent: messageContent,
+              isIncomingMessage: true,
+              timestamp: timestamp,
+              successful: true,
+            ),
+            unreadProvider);
+      }
     }
   });
 
@@ -144,7 +154,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 }
 
 /// Sends message from this user to receiver
-void sendMessage(String receiver, String content) {
+void sendMessage(String receiver, String content, messageTypes messageType) {
   if (client == null) return;
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
@@ -152,6 +162,7 @@ void sendMessage(String receiver, String content) {
     "from": user.id,
     "timestamp": timestamp,
     "content": content,
+    "type": messageType.index,
   };
   builder.addUTF8String(jsonEncode(message));
   bool sent = true;

@@ -101,7 +101,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       String message = chatTextController.text.trim();
       chatTextController.clear();
       if (message == "") return;
-      sendMessage(otherId, message);
+      sendMessage(otherId, message, messageTypes.text);
     }
 
     Future<void> _onOpen(LinkableElement link) async {
