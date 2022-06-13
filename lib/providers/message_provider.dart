@@ -7,6 +7,7 @@ import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/otherUser.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/network/wake.dart';
+import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/local_notification.dart';
@@ -95,7 +96,11 @@ class MessageProvider extends ChangeNotifier {
     }
     await chat.put(key, message);
     print("adding message");
-    chatPair.lastMessage = message.messageContent;
+    if (message.type == messageTypes.picture.index) {
+      chatPair.lastMessage = "Image";
+    } else {
+      chatPair.lastMessage = message.messageContent;
+    }
     chatPair.lastMessageTimeStamp = message.timestamp;
     // increase unread if not in current dm
     if (inDmOf != otherId) {
