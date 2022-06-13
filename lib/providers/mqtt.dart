@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -143,6 +144,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
               isIncomingMessage: true,
               timestamp: timestamp,
               successful: true,
+              type: messageType,
             ),
             unreadProvider);
       }
@@ -154,14 +156,14 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 }
 
 /// Sends message from this user to receiver
-void sendMessage(String receiver, String content, messageTypes messageType) {
+void sendMessage(String receiver, String localContent, messageTypes messageType, {Uint8List? bytes}) {
   if (client == null) return;
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
   var message = {
     "from": user.id,
     "timestamp": timestamp,
-    "content": content,
+    "content": messageType == messageTypes.text ? localContent : bytes!,
     "type": messageType.index,
   };
   builder.addUTF8String(jsonEncode(message));
@@ -180,10 +182,11 @@ void sendMessage(String receiver, String content, messageTypes messageType) {
   msgProvider.add(
     receiver,
     ChatMessage(
-      messageContent: content,
+      messageContent: localContent,
       isIncomingMessage: false,
       timestamp: DateTime.now().toUtc().millisecondsSinceEpoch,
       successful: sent,
+      type: messageType.index,
     ),
     unreadProvider,
     msgId: messageId,

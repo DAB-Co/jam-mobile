@@ -439,6 +439,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       source: ImageSource.gallery,
     );
     print(image);
+    Navigator.pop(context);
     if (image != null) {
       // compress the image
       Uint8List imageBytes = await File(image.path).readAsBytes();
@@ -448,7 +449,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       // copy the compressed image into a separate folder
       String imgPath = await saveChatImage(compressed, user.id!);
       // give the path of image to sendMessage function
-      sendMessage(otherId, imgPath, messageTypes.picture);
+      sendMessage(otherId, imgPath, messageTypes.picture, bytes: compressed);
     }
   }
 
