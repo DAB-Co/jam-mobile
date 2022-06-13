@@ -336,6 +336,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
                   ),
                   IconButton(
                     onPressed: () {
+                      FocusManager.instance.primaryFocus?.unfocus();
                       showModalBottomSheet(
                           backgroundColor: Colors.transparent,
                           context: context,
@@ -372,7 +373,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
   Widget bottomSheet() {
     return Container(
       height: 180,
-      width: MediaQuery.of(context).size.width,
+      width: double.infinity,
       child: Card(
         margin: const EdgeInsets.all(18.0),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
