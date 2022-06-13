@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:jam/config/box_names.dart';
@@ -17,9 +16,9 @@ import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/chat_media_utils.dart';
 import 'package:jam/widgets/alert.dart';
+import 'package:jam/widgets/chat_message_dm.dart';
 import 'package:jam/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class DM extends StatefulWidget {
   // Constructor
@@ -106,14 +105,6 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       chatTextController.clear();
       if (message == "") return;
       sendMessage(otherId, message, messageTypes.text);
-    }
-
-    Future<void> _onOpen(LinkableElement link) async {
-      if (await canLaunch(link.url)) {
-        await launch(link.url);
-      } else {
-        throw 'Could not launch $link';
-      }
     }
 
     TextButton blockButton = TextButton(
@@ -273,49 +264,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
                                   alignment: (messages[index].isIncomingMessage
                                       ? Alignment.topLeft
                                       : Alignment.topRight),
-                                  child: messages[index].type ==
-                                          messageTypes.text.index
-                                      ? Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            color: (messages[index]
-                                                    .isIncomingMessage
-                                                ? Colors.grey.shade200
-                                                : Colors.blue[200]),
-                                          ),
-                                          padding: EdgeInsets.all(16),
-                                          child: SelectableLinkify(
-                                            text:
-                                                messages[index].messageContent,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: messages[index].successful
-                                                  ? Colors.black
-                                                  : Colors.red,
-                                            ),
-                                            onOpen: _onOpen,
-                                            options:
-                                                LinkifyOptions(looseUrl: true),
-                                          ),
-                                        )
-                                      : Container(
-                                          height: 400,
-                                          width: 400,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color:
-                                                    messages[index].successful
-                                                        ? Colors.transparent
-                                                        : Colors.red),
-                                            image: DecorationImage(
-                                              fit: BoxFit.contain,
-                                              image: (FileImage(File(
-                                                  messages[index]
-                                                      .messageContent))),
-                                            ),
-                                          ),
-                                        ),
+                                  child: chatMessage(messages[index]),
                                 ),
                               );
                             },
