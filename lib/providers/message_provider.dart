@@ -143,7 +143,11 @@ class MessageProvider extends ChangeNotifier {
   Future wake(User user, context) async {
     Map<String, dynamic>? wakeResult = await wakeRequest(user.id!, user.token!);
     if (wakeResult == null) {
-      // logout, wrong api token
+      // server error or network error
+      return;
+    }
+    if (wakeResult.containsKey("wrong_api_token")) {
+      // wrong api token, logout
       Provider.of<UserProvider>(context, listen: false).logout();
       showSnackBar(context, "Please Log In Again");
       return;

@@ -7,9 +7,9 @@ import 'package:jam/models/otherUser.dart';
 import 'package:jam/util/profile_pic_utils.dart';
 
 /// Call wake API call from server.
-/// Returns null if api token was invalid,
-/// else friends: List<OtherUser> and refresh\_token\_expired: bool,
-/// If there was an error, returns friends: friendsList, refresh_token_expired: false
+/// If api token was invalid, return {wrong_api_token: true}
+/// else friends: List<OtherUser> and refresh_token_expired: bool and was_inactive: bool
+/// If there was an error, returns null
 Future<Map<String, dynamic>?> wakeRequest(
     String userId, String apiToken) async {
   final Map<String, String> usernameData = {
@@ -30,8 +30,7 @@ Future<Map<String, dynamic>?> wakeRequest(
       body: json.encode(usernameData),
     );
     if (response.body == "Wrong api token") {
-      print("wrong api token");
-      return null;
+      return {"wrong_api_token": true};
     }
     Map<String, dynamic> decoded = jsonDecode(response.body);
     var smallPic = decoded["small_profile_picture"];
@@ -62,5 +61,5 @@ Future<Map<String, dynamic>?> wakeRequest(
   } catch (err) {
     print(err);
   }
-  return result;
+  return null;
 }
