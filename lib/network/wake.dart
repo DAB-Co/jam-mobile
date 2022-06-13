@@ -60,6 +60,7 @@ Future<Map<String, dynamic>?> wakeRequest(
     }
   } catch (err) {
     print(err);
+    return null;
   }
-  return null;
+  return result;
 }

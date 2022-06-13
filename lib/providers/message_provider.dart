@@ -149,6 +149,7 @@ class MessageProvider extends ChangeNotifier {
     Map<String, dynamic>? wakeResult = await wakeRequest(user.id!, user.token!);
     if (wakeResult == null) {
       // server error or network error
+      print("wake result null");
       return;
     }
     if (wakeResult.containsKey("wrong_api_token")) {
