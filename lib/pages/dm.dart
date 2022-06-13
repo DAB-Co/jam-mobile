@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jam/config/box_names.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
@@ -12,6 +15,7 @@ import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/mqtt.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/chat_media_utils.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:jam/widgets/profile_picture.dart';
 import 'package:provider/provider.dart';
@@ -384,15 +388,15 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  iconCreation(Icons.camera_alt, Colors.pink, "Camera"),
+                  iconCreation(Icons.camera_alt, Colors.pink, "Camera", _selectCamera),
                   SizedBox(
                     width: 40,
                   ),
-                  iconCreation(Icons.video_camera_back, Colors.blue, "Video"),
+                  iconCreation(Icons.video_camera_back, Colors.blue, "Video", _selectVideo),
                   SizedBox(
                     width: 40,
                   ),
-                  iconCreation(Icons.insert_photo, Colors.purple, "Image"),
+                  iconCreation(Icons.insert_photo, Colors.purple, "Image", _selectImage),
                 ],
               ),
             ],
@@ -402,11 +406,11 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     );
   }
 
-  Widget iconCreation(IconData icons, Color color, String text) {
+  Widget iconCreation(IconData icons, Color color, String text, void Function() onPressed) {
     return Column(
       children: [
         ElevatedButton(
-          onPressed: () {},
+          onPressed: onPressed,
           child: Icon(icons),
           style: ButtonStyle(
             shape: MaterialStateProperty.all(CircleBorder()),
@@ -425,5 +429,32 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
         )
       ],
     );
+  }
+
+  final ImagePicker _picker = ImagePicker();
+
+  void _selectImage() async {
+    // select image from gallery
+    XFile? image = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+    print(image);
+    if (image != null) {
+      // compress the image
+      Uint8List imageBytes = await File(image.path).readAsBytes();
+      print(imageBytes.length);
+      Uint8List compressed = await compressChatImage(imageBytes);
+      print(compressed.length);
+      // copy the compressed image into a separate folder
+      // give the path of image to sendMessage function
+    }
+  }
+
+  void _selectCamera() {
+
+  }
+
+  void _selectVideo() {
+
   }
 }
