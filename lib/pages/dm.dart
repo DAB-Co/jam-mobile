@@ -273,26 +273,49 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
                                   alignment: (messages[index].isIncomingMessage
                                       ? Alignment.topLeft
                                       : Alignment.topRight),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: (messages[index].isIncomingMessage
-                                          ? Colors.grey.shade200
-                                          : Colors.blue[200]),
-                                    ),
-                                    padding: EdgeInsets.all(16),
-                                    child: SelectableLinkify(
-                                      text: messages[index].messageContent,
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        color: messages[index].successful
-                                            ? Colors.black
-                                            : Colors.red,
-                                      ),
-                                      onOpen: _onOpen,
-                                      options: LinkifyOptions(looseUrl: true),
-                                    ),
-                                  ),
+                                  child: messages[index].type ==
+                                          messageTypes.text.index
+                                      ? Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            color: (messages[index]
+                                                    .isIncomingMessage
+                                                ? Colors.grey.shade200
+                                                : Colors.blue[200]),
+                                          ),
+                                          padding: EdgeInsets.all(16),
+                                          child: SelectableLinkify(
+                                            text:
+                                                messages[index].messageContent,
+                                            style: TextStyle(
+                                              fontSize: 15,
+                                              color: messages[index].successful
+                                                  ? Colors.black
+                                                  : Colors.red,
+                                            ),
+                                            onOpen: _onOpen,
+                                            options:
+                                                LinkifyOptions(looseUrl: true),
+                                          ),
+                                        )
+                                      : Container(
+                                          height: 400,
+                                          width: 400,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color:
+                                                    messages[index].successful
+                                                        ? Colors.transparent
+                                                        : Colors.red),
+                                            image: DecorationImage(
+                                              fit: BoxFit.contain,
+                                              image: (FileImage(File(
+                                                  messages[index]
+                                                      .messageContent))),
+                                            ),
+                                          ),
+                                        ),
                                 ),
                               );
                             },
@@ -388,15 +411,18 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  iconCreation(Icons.camera_alt, Colors.pink, "Camera", _selectCamera),
+                  iconCreation(
+                      Icons.camera_alt, Colors.pink, "Camera", _selectCamera),
                   SizedBox(
                     width: 40,
                   ),
-                  iconCreation(Icons.video_camera_back, Colors.blue, "Video", _selectVideo),
+                  iconCreation(Icons.video_camera_back, Colors.blue, "Video",
+                      _selectVideo),
                   SizedBox(
                     width: 40,
                   ),
-                  iconCreation(Icons.insert_photo, Colors.purple, "Image", _selectImage),
+                  iconCreation(
+                      Icons.insert_photo, Colors.purple, "Image", _selectImage),
                 ],
               ),
             ],
@@ -406,7 +432,8 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     );
   }
 
-  Widget iconCreation(IconData icons, Color color, String text, void Function() onPressed) {
+  Widget iconCreation(
+      IconData icons, Color color, String text, void Function() onPressed) {
     return Column(
       children: [
         ElevatedButton(
@@ -453,11 +480,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     }
   }
 
-  void _selectCamera() {
+  void _selectCamera() {}
 
-  }
-
-  void _selectVideo() {
-
-  }
+  void _selectVideo() {}
 }
