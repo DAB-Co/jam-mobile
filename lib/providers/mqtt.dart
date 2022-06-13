@@ -9,6 +9,7 @@ import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/chat_media_utils.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:mqtt_client/mqtt_client.dart';
 import 'package:mqtt_client/mqtt_server_client.dart';
@@ -98,12 +99,11 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
     _client.disconnect();
   }
 
-  _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) {
+  _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) async {
     final MqttPublishMessage byteMessage = c[0].payload as MqttPublishMessage;
     final payload = MqttEncoding().decoder.convert(byteMessage.payload.message);
 
     var topic = c[0].topic;
-    print(topic);
 
     var message = jsonDecode(payload);
     if (message == null) {
@@ -136,18 +136,23 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       var id = message["from"];
       var messageContent = message["content"];
       var messageType = message["type"];
-      if (messageType == messageTypes.text.index) {
-        msgProvider.add(
-            id,
-            ChatMessage(
-              messageContent: messageContent,
-              isIncomingMessage: true,
-              timestamp: timestamp,
-              successful: true,
-              type: messageType,
-            ),
-            unreadProvider);
+      if (messageType == messageTypes.picture.index) {
+        // save bytes
+        List<int> intList = messageContent.cast<int>().toList();
+        Uint8List data = Uint8List.fromList(intList);
+        messageContent = await saveChatImage(data, id);
       }
+      msgProvider.add(
+        id,
+        ChatMessage(
+          messageContent: messageContent,
+          isIncomingMessage: true,
+          timestamp: timestamp,
+          successful: true,
+          type: messageType,
+        ),
+        unreadProvider,
+      );
     }
   });
 
@@ -156,7 +161,8 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 }
 
 /// Sends message from this user to receiver
-void sendMessage(String receiver, String localContent, messageTypes messageType, {Uint8List? bytes}) {
+void sendMessage(String receiver, String localContent, messageTypes messageType,
+    {Uint8List? bytes}) {
   if (client == null) return;
   final builder = MqttClientPayloadBuilder();
   String timestamp = DateTime.now().toUtc().toString();
