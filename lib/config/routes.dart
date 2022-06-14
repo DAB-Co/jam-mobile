@@ -1,6 +1,7 @@
 var homepage = "homepage";
 var login = "login";
 var register = "register";
+var forgotPassword = "forgotPassword";
 var dm = "dm";
 var about = "about";
 var contactUs = "contactUs";

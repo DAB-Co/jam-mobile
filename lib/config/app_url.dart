@@ -5,7 +5,7 @@ class AppUrl {
 
   static const String login = apiUrl + "/auth";
   static const String register = apiUrl + "/signup";
-  static const String forgotPassword = apiUrl + "/forgot-password";
+  static const String forgotPassword = apiUrl + "/forgot_password";
   static const String wake = apiUrl + "/wake";
   static const String logout = apiUrl + "/logout";
   static const String block = apiUrl + "/block";

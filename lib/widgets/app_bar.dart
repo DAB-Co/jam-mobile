@@ -10,9 +10,9 @@ void handleThreeDotClick(String value) {
   }
 }
 
-AppBar formAppBar() {
+AppBar formAppBar({bool backButtonVisible: false}) {
   return AppBar(
-    automaticallyImplyLeading: false,
+    automaticallyImplyLeading: backButtonVisible,
     backgroundColor: Colors.pinkAccent,
     title: Text("Jam"),
     actions: <Widget>[
