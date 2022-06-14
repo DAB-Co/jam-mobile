@@ -409,8 +409,19 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     XFile? image = await _picker.pickImage(
       source: ImageSource.gallery,
     );
-    print(image);
     Navigator.pop(context);
+    _sendImage(image);
+  }
+
+  void _selectCamera() async {
+    XFile? image = await _picker.pickImage(
+      source: ImageSource.camera,
+    );
+    Navigator.pop(context);
+    _sendImage(image);
+  }
+
+  Future _sendImage(XFile? image) async {
     if (image != null) {
       // compress the image
       Uint8List imageBytes = await File(image.path).readAsBytes();
@@ -423,6 +434,4 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       sendMessage(otherId, imgPath, MessageTypes.picture, bytes: compressed);
     }
   }
-
-  void _selectCamera() {}
 }
