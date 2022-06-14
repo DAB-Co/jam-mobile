@@ -42,8 +42,8 @@ dependencies:
   path_provider: ^2.0.8
   webview_flutter: ^3.0.0
   language_picker: ^0.4.1
-  percent_indicator: ^4.0.0
-  cached_network_image: ^3.2.0
+  percent_indicator: ^4.2.2
+  cached_network_image: ^3.2.1
   image_picker: ^0.8.4+11
   flutter_image_compress: ^1.1.0
   package_info_plus: ^1.4.2
