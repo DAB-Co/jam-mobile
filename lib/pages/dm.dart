@@ -43,7 +43,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     chatTextController.dispose();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
     print("dm dispose");
   }
@@ -60,7 +60,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();
     print("dm init state");
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -104,7 +104,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       String message = chatTextController.text.trim();
       chatTextController.clear();
       if (message == "") return;
-      sendMessage(otherId, message, messageTypes.text);
+      sendMessage(otherId, message, MessageTypes.text);
     }
 
     TextButton blockButton = TextButton(
@@ -216,7 +216,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
                     // Decrement unread messages with this user and scroll to bottom
-                    WidgetsBinding.instance?.addPostFrameCallback((_) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
                       print("post frame callback");
                       _controller.jumpTo(_controller.position.maxScrollExtent);
                       int unRead =
@@ -365,11 +365,6 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
                   SizedBox(
                     width: 40,
                   ),
-                  iconCreation(Icons.video_camera_back, Colors.blue, "Video",
-                      _selectVideo),
-                  SizedBox(
-                    width: 40,
-                  ),
                   iconCreation(
                       Icons.insert_photo, Colors.purple, "Image", _selectImage),
                 ],
@@ -425,11 +420,9 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       // copy the compressed image into a separate folder
       String imgPath = await saveChatImage(compressed, user.id!);
       // give the path of image to sendMessage function
-      sendMessage(otherId, imgPath, messageTypes.picture, bytes: compressed);
+      sendMessage(otherId, imgPath, MessageTypes.picture, bytes: compressed);
     }
   }
 
   void _selectCamera() {}
-
-  void _selectVideo() {}
 }

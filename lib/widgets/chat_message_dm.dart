@@ -7,7 +7,7 @@ import 'package:jam/providers/mqtt.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Container chatMessage(ChatMessage msg) {
-  if (msg.type == messageTypes.picture.index) {
+  if (msg.type == MessageTypes.picture.index) {
     return Container(
       height: 400,
       width: 400,
