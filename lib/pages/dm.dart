@@ -18,6 +18,7 @@ import 'package:jam/util/chat_media_utils.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:jam/widgets/chat_message_dm.dart';
 import 'package:jam/widgets/profile_picture.dart';
+import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 class DM extends StatefulWidget {
@@ -433,13 +434,20 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     // select video from gallery
     XFile? video = await _picker.pickVideo(
       source: ImageSource.gallery,
+      maxDuration: Duration(minutes: 5),
     );
     if (video != null) {
+      String videoPath = video.path;
       // convert file to bytes
-      Uint8List videoBytes = await File(video.path).readAsBytes();
+      Uint8List videoBytes = await File(videoPath).readAsBytes();
       print(videoBytes.length);
-      // send bytes
-      sendMessage(otherId, video.path, MessageTypes.video, bytes: videoBytes);
+      if (videoBytes.length > 16000000) {
+        showSnackBar(context, "Maximum video size is 16 MB");
+      } else {
+        // Below line can be uncommented if videos are deleted too often
+        // videoPath = await saveChatMedia(videoBytes, otherId);
+        sendMessage(otherId, videoPath, MessageTypes.video, bytes: videoBytes);
+      }
     }
   }
 
