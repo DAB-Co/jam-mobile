@@ -363,16 +363,18 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
                 children: [
                   iconCreation(
                       Icons.camera_alt, Colors.pink, "Camera", _selectCamera),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  iconCreation(Icons.video_camera_back, Colors.blue, "Video",
+                  /**
+                      SizedBox(
+                      width: 40,
+                      ),
+                      iconCreation(Icons.video_camera_back, Colors.blue, "Video",
                       _selectVideo),
+                   **/
                   SizedBox(
                     width: 40,
                   ),
-                  iconCreation(
-                      Icons.insert_photo, Colors.purple, "Image", _selectImage),
+                  iconCreation(Icons.insert_photo, Colors.purple, "Gallery",
+                      _selectImage),
                 ],
               ),
             ],
@@ -410,6 +412,8 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
 
   final ImagePicker _picker = ImagePicker();
 
+  void _selectCamera() {}
+
   void _selectImage() async {
     Navigator.pop(context);
     // select image from gallery
@@ -429,6 +433,8 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     }
   }
 
+  // this function is not used because after sending a video
+  // with mqtt, other user can't choose if they want to download
   void _selectVideo() async {
     Navigator.pop(context);
     // select video from gallery
@@ -450,6 +456,4 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       }
     }
   }
-
-  void _selectCamera() {}
 }
