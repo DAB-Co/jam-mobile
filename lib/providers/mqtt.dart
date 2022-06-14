@@ -136,11 +136,12 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       var id = message["from"];
       var messageContent = message["content"];
       var messageType = message["type"];
-      if (messageType == MessageTypes.picture.index) {
-        // save bytes
+      if (messageType == MessageTypes.picture.index ||
+          messageType == MessageTypes.video.index) {
+        // save incoming media to local storage
         List<int> intList = messageContent.cast<int>().toList();
         Uint8List data = Uint8List.fromList(intList);
-        messageContent = await saveChatImage(data, id);
+        messageContent = await saveChatMedia(data, id); // path of new media
       }
       msgProvider.add(
         id,

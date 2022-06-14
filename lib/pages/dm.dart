@@ -43,7 +43,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
   void dispose() {
     // Clean up the controller when the widget is disposed.
     chatTextController.dispose();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
     print("dm dispose");
   }
@@ -60,7 +60,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
     Provider.of<MessageProvider>(context, listen: false).enterDM(otherId);
     super.initState();
     print("dm init state");
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -104,7 +104,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       String message = chatTextController.text.trim();
       chatTextController.clear();
       if (message == "") return;
-      sendMessage(otherId, message, messageTypes.text);
+      sendMessage(otherId, message, MessageTypes.text);
     }
 
     TextButton blockButton = TextButton(
@@ -216,7 +216,7 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
                     if (snapshot.hasError)
                       return Text('Error: ${snapshot.error}');
                     // Decrement unread messages with this user and scroll to bottom
-                    WidgetsBinding.instance?.addPostFrameCallback((_) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
                       print("post frame callback");
                       _controller.jumpTo(_controller.position.maxScrollExtent);
                       int unRead =
@@ -410,12 +410,11 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
   final ImagePicker _picker = ImagePicker();
 
   void _selectImage() async {
+    Navigator.pop(context);
     // select image from gallery
     XFile? image = await _picker.pickImage(
       source: ImageSource.gallery,
     );
-    print(image);
-    Navigator.pop(context);
     if (image != null) {
       // compress the image
       Uint8List imageBytes = await File(image.path).readAsBytes();
@@ -423,13 +422,26 @@ class _DMState extends State<DM> with WidgetsBindingObserver {
       Uint8List compressed = await compressChatImage(imageBytes);
       print(compressed.length);
       // copy the compressed image into a separate folder
-      String imgPath = await saveChatImage(compressed, user.id!);
+      String imgPath = await saveChatMedia(compressed, user.id!);
       // give the path of image to sendMessage function
-      sendMessage(otherId, imgPath, messageTypes.picture, bytes: compressed);
+      sendMessage(otherId, imgPath, MessageTypes.picture, bytes: compressed);
+    }
+  }
+
+  void _selectVideo() async {
+    Navigator.pop(context);
+    // select video from gallery
+    XFile? video = await _picker.pickVideo(
+      source: ImageSource.gallery,
+    );
+    if (video != null) {
+      // convert file to bytes
+      Uint8List videoBytes = await File(video.path).readAsBytes();
+      print(videoBytes.length);
+      // send bytes
+      sendMessage(otherId, video.path, MessageTypes.video, bytes: videoBytes);
     }
   }
 
   void _selectCamera() {}
-
-  void _selectVideo() {}
 }

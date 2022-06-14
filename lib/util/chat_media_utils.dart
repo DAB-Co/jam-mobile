@@ -25,7 +25,7 @@ Future<Uint8List> compressChatImage(Uint8List bytes) async {
   }
 }
 
-Future<String> saveChatImage(Uint8List bytes, String fromWhomUserId) async {
+Future<String> saveChatMedia(Uint8List bytes, String fromWhomUserId) async {
   Directory dir = await getApplicationDocumentsDirectory();
   String path = dir.path;
   String now = DateTime.now().toString();

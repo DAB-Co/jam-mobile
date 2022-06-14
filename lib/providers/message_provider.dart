@@ -98,6 +98,8 @@ class MessageProvider extends ChangeNotifier {
     print("adding message");
     if (message.type == MessageTypes.picture.index) {
       chatPair.lastMessage = "Image";
+    } else if (message.type == MessageTypes.video.index) {
+      chatPair.lastMessage = "Video";
     } else {
       chatPair.lastMessage = message.messageContent;
     }

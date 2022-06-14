@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/providers/mqtt.dart';
+import 'package:jam/widgets/video_player.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Container chatMessage(ChatMessage msg) {
-  if (msg.type == messageTypes.picture.index) {
+  if (msg.type == MessageTypes.picture.index) {
     return Container(
       height: 400,
       width: 400,
@@ -18,6 +19,14 @@ Container chatMessage(ChatMessage msg) {
           fit: BoxFit.contain,
           image: (FileImage(File(msg.messageContent))),
         ),
+      ),
+    );
+  } else if (msg.type == MessageTypes.video.index) {
+    return Container(
+      child: CustomVideoPlayer(videoPath: msg.messageContent),
+      decoration: BoxDecoration(
+        border:
+            Border.all(color: msg.successful ? Colors.transparent : Colors.red),
       ),
     );
   } else {
