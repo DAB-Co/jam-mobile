@@ -96,7 +96,7 @@ class MessageProvider extends ChangeNotifier {
     }
     await chat.put(key, message);
     print("adding message");
-    if (message.type == messageTypes.picture.index) {
+    if (message.type == MessageTypes.picture.index) {
       chatPair.lastMessage = "Image";
     } else {
       chatPair.lastMessage = message.messageContent;

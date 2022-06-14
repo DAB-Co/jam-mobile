@@ -25,7 +25,7 @@ var clientId;
 var msgProvider;
 var unreadProvider;
 
-enum messageTypes {
+enum MessageTypes {
   text,
   picture,
   video,
@@ -136,7 +136,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
       var id = message["from"];
       var messageContent = message["content"];
       var messageType = message["type"];
-      if (messageType == messageTypes.picture.index) {
+      if (messageType == MessageTypes.picture.index) {
         // save bytes
         List<int> intList = messageContent.cast<int>().toList();
         Uint8List data = Uint8List.fromList(intList);
@@ -161,7 +161,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 }
 
 /// Sends message from this user to receiver
-void sendMessage(String receiver, String localContent, messageTypes messageType,
+void sendMessage(String receiver, String localContent, MessageTypes messageType,
     {Uint8List? bytes}) {
   if (client == null) return;
   final builder = MqttClientPayloadBuilder();
@@ -169,7 +169,7 @@ void sendMessage(String receiver, String localContent, messageTypes messageType,
   var message = {
     "from": user.id,
     "timestamp": timestamp,
-    "content": messageType == messageTypes.text ? localContent : bytes!,
+    "content": messageType == MessageTypes.text ? localContent : bytes!,
     "type": messageType.index,
   };
   builder.addUTF8String(jsonEncode(message));

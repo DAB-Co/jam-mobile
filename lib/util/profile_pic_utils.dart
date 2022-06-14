@@ -131,6 +131,6 @@ Future deleteSmallPicture(String id) async {
 }
 
 void _clearImageCache() {
-  imageCache?.clear();
-  imageCache?.clearLiveImages();
+  imageCache.clear();
+  imageCache.clearLiveImages();
 }

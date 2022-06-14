@@ -31,7 +31,7 @@ Future<String> saveChatImage(Uint8List bytes, String fromWhomUserId) async {
   String now = DateTime.now().toString();
   String imgPath = "$path/$now-$fromWhomUserId";
   await File(imgPath).writeAsBytes(bytes);
-  imageCache?.clear();
-  imageCache?.clearLiveImages();
+  imageCache.clear();
+  imageCache.clearLiveImages();
   return imgPath;
 }
