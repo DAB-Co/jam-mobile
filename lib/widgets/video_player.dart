@@ -20,10 +20,14 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
   final String videoPath;
 
   late VideoPlayerController _controller;
+  bool videoExists = true;
 
   @override
   void initState() {
     super.initState();
+    if (!File(videoPath).existsSync()) {
+      videoExists = false;
+    }
     _controller = VideoPlayerController.file(File(videoPath))
       ..initialize().then((_) {
         // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
@@ -33,6 +37,23 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+    if (!videoExists) {
+      return Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.red,
+        ),
+        padding: EdgeInsets.all(16),
+        child: Text(
+          "Video deleted",
+          style: TextStyle(
+            fontSize: 15,
+            color: Colors.white,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      );
+    }
     return Stack(
       children: [
         _controller.value.isInitialized
