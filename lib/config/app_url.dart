@@ -15,6 +15,7 @@ class AppUrl {
   static const String updateProfilePic = apiUrl + "/update_profile_picture";
   static const String getLanguages = apiUrl + "/get_languages";
   static const String deleteAccount = apiUrl + "/delete_account";
+  static const String changePassword = apiUrl + "/change_password";
 
   static const String suggestion = baseURL + "/suggestion";
 
