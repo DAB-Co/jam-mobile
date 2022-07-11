@@ -6,7 +6,7 @@ import 'package:jam/config/app_url.dart';
 /// Sends message to server, returns true if server returns success message
 Future<String?> sendForgotPasswordRequest(String email) async {
   final Map<String, String> dataToSend = {
-    "user_id": email,
+    "user_email": email,
   };
   try {
     var response = await post(
