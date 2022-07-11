@@ -45,9 +45,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         if (serverResponse == null) {
           showSnackBar(context, "Check your connection");
         } else if (serverResponse == "OK") {
-          showSnackBar(context, "Please check your email");
-        } else if (serverResponse == "email not found") {
-          showSnackBar(context, "Wrong email address");
+          showSnackBar(context, "Success! Please check your email");
         } else if (serverResponse.contains("Cannot POST")) {
           showSnackBar(context, "Cannot post forgot_password");
         } else {
