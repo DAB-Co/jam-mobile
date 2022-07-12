@@ -4,6 +4,8 @@ import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
 import 'package:jam/models/user.dart';
 
+import '../providers/user_provider.dart';
+
 /// Returns 1 if language is set successfully in server,
 /// 2 if language is already in server,
 /// 0 if failed
@@ -30,6 +32,7 @@ Future<int> setLanguages(User user, List<String> iso, bool toAdd, context) async
     }
     if (response.body == "Wrong api token") {
       print("wrong api token in set language call");
+      logout();
       return 0;
     }
     if (response.statusCode == 422) {
