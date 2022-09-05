@@ -1,4 +1,4 @@
-name: build-jam-apk
+ame: build-jam-apk
 
 on:
   push:
