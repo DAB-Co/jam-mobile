@@ -173,6 +173,17 @@ class _ProfileState extends State<Profile> {
                   Divider(color: Colors.grey),
                   ListTile(
                     leading: Icon(
+                      Icons.language,
+                      color: Colors.black,
+                    ),
+                    title: const Text('Your Preferences'),
+                    onTap: () {
+                      Navigator.pushNamed(context, "prefs");
+                    },
+                  ),
+                  Divider(color: Colors.grey),
+                  ListTile(
+                    leading: Icon(
                       Icons.block,
                       color: Colors.red,
                     ),

@@ -18,7 +18,8 @@ import 'package:jam/widgets/inactive_dialog.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
-import '../main.dart';
+//used for spotify redirect
+//import '../main.dart';
 
 /* Hive functions are usually here
   Hive boxes:
@@ -160,8 +161,7 @@ class MessageProvider extends ChangeNotifier {
     }
     if (wakeResult["refresh_token_expired"]) {
       // redirect to spotify login
-      navigatorKey.currentState?.pushNamedAndRemoveUntil(
-          spotifyLogin, (Route<dynamic> route) => false);
+      //navigatorKey.currentState?.pushNamedAndRemoveUntil(spotifyLogin, (Route<dynamic> route) => false);
       return;
     }
     else if (wakeResult["was_inactive"]) {

@@ -28,6 +28,7 @@ import '/providers/user_provider.dart';
 import '/util/shared_preference.dart';
 import 'models/user.dart';
 import 'pages/forms/login.dart';
+import 'pages/manual_prefs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Important!
@@ -123,6 +124,7 @@ class MyApp extends StatelessWidget {
           routes.profilePicSelection: (context) => ProfilePicSelection(),
           routes.drawYourself: (context) => DrawYourself(),
           routes.forgotPassword: (context) => ForgotPassword(),
+          "prefs": (context) => Prefs(),
         },
         navigatorKey: navigatorKey,
       ),
