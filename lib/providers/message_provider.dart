@@ -19,7 +19,7 @@ import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 //used for spotify redirect
-//import '../main.dart';
+import '../main.dart';
 
 /* Hive functions are usually here
   Hive boxes:

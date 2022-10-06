@@ -55,11 +55,84 @@ class _PrefsState extends State<Prefs> {
       ),
     );
 
+    Container _circlePrefItem(String preference) => Container(
+      margin: const EdgeInsets.all(10.0),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: (Color(0x88FF4081)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              preference,
+              style: TextStyle(color: Colors.white),
+            ),
+            IconButton(
+              padding: EdgeInsets.zero,
+              constraints: BoxConstraints(),
+              splashRadius: 25,
+              onPressed: () => print("adding $preference"),
+              icon: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
     void _openPrefPickerDialog() => showDialog(
       context: context,
       builder: (context) => Theme(
         data: Theme.of(context).copyWith(primaryColor: Colors.pink),
-        child: Scaffold(),
+        child: Scaffold(
+          body: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const Text(
+                    "Available Preferences:",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  SizedBox(height: 20),
+                  prefs == null || prefs.length == 0
+                      ? Column(
+                    children: [
+                      Icon(
+                        Icons.warning,
+                        color: Colors.pinkAccent,
+                      ),
+                      SizedBox(height: 10),
+                      const Text(
+                        "Choose preferences.",
+                        style: TextStyle(fontSize: 15),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  )
+                      : Container(
+                    margin: EdgeInsets.only(bottom: okVisible ? 80 : 40),
+                    child: ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: prefs.length,
+                      itemBuilder: (context, index) {
+                        return _circlePrefItem(prefs[index]);
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        ),
       ),
     );
 
