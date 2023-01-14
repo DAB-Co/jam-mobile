@@ -19,7 +19,6 @@ Future<Map<String, dynamic>?> wakeRequest(
   List<OtherUser> friendsList = [];
   Map<String, dynamic> result = {
     "friends": friendsList,
-    "refresh_token_expired": false,
     "was_inactive": false,
   };
   var response;
@@ -40,8 +39,9 @@ Future<Map<String, dynamic>?> wakeRequest(
     }
 
     Map<String, dynamic> rawFriends = decoded["friends"];
-    result["refresh_token_expired"] = decoded["refresh_token_expired"];
     result["was_inactive"] = decoded["was_inactive"];
+    result["user_preferences"] = decoded["user_preferences"];
+    result["available_preferences"] = decoded["available_preferences"];
     print("raw friends length:");
     print(rawFriends.length);
     for (String userId in rawFriends.keys) {
