@@ -145,6 +145,7 @@ class MessageProvider extends ChangeNotifier {
   /// Delete stored friend data that is not in wake
   Future wake(User user, context) async {
     Map<String, dynamic>? wakeResult = await wakeRequest(user.id!, user.token!);
+    print(wakeResult);
     if (wakeResult == null) {
       // server error or network error
       print("wake result null");
