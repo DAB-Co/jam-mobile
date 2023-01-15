@@ -9,8 +9,9 @@ import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/store_profile_hive.dart';
 import 'package:jam/widgets/profile_picture.dart';
-import 'package:jam/widgets/profile_lists.dart';
 import 'package:provider/provider.dart';
+
+import '../../util/util_functions.dart';
 
 class ProfileOther extends StatefulWidget {
   const ProfileOther({required this.otherUsername, required this.otherId})
@@ -59,8 +60,7 @@ class _ProfileOtherState extends State<ProfileOther> {
     topPreferencesCall(userId, user.token!, otherId);
     _getAndSaveLanguages(userId, user.token!, otherId);
     // hive box names
-    String taBoxName = tracksArtistsBoxName(userId, otherId);
-    String lBoxName = languagesBoxName(userId);
+    String colorBoxName = colorsBoxName(otherId);
 
     return Scaffold(
       appBar: AppBar(
@@ -76,7 +76,7 @@ class _ProfileOtherState extends State<ProfileOther> {
             SizedBox(height: 30),
             Divider(color: Colors.black),
             FutureBuilder(
-              future: openHiveBox(taBoxName),
+              future: openHiveBox(colorBoxName),
               builder: (context, snapshot) {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
@@ -84,21 +84,38 @@ class _ProfileOtherState extends State<ProfileOther> {
                     print("other profile future builder waiting");
                     return Center(child: CircularProgressIndicator());
                   default:
-                    return tracksArtistsListOther(user.id!, otherId, context);
-                }
-              },
-            ),
-            Divider(color: Colors.black),
-            FutureBuilder(
-              future: openHiveBox(lBoxName),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    print("other profile languages future builder waiting");
-                    return Center(child: CircularProgressIndicator());
-                  default:
-                    return languagesListOther(user.id!, otherId, context);
+                    return ValueListenableBuilder(
+                      valueListenable:
+                      Hive.box(colorBoxName).listenable(),
+                      builder: (context, Box box, widget) {
+                        List<String> colors = box.get("colors");
+
+                        return Column(
+                          children: [
+                            SizedBox(height: 20),
+                            Text("Your Colors:"),
+                            SizedBox(height: 20),
+                            colors.length == 0
+                                ? Text("No colors")
+                                : ListView.separated(
+                              shrinkWrap: true,
+                              physics:
+                              NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) =>
+                                  ListTile(
+                                    tileColor: fromHex(colors[index]),
+                                  ),
+                              separatorBuilder: (context, index) =>
+                                  Divider(
+                                    color: Colors.grey,
+                                  ),
+                              itemCount: colors.length,
+                            ),
+                            SizedBox(height: 20),
+                          ],
+                        );
+                      },
+                    );
                 }
               },
             ),

@@ -3,8 +3,6 @@ import 'dart:typed_data';
 
 import 'package:http/http.dart';
 import 'package:jam/config/app_url.dart';
-import 'package:jam/models/artist_model.dart';
-import 'package:jam/models/track_model.dart';
 import 'package:jam/providers/user_provider.dart';
 import 'package:jam/util/profile_pic_utils.dart';
 import 'package:jam/util/store_profile_hive.dart';
@@ -54,84 +52,19 @@ Future topPreferencesCall(
       await saveBigPicture(profilePic, otherId);
     }
 
-    List<dynamic> thisUser = separateArtistAndTrack(decoded["user_data"]);
-    List<Track> thisUserTracks = thisUser[0];
-    List<Artist> thisUserArtists = thisUser[1];
-    List<String> thisUserGenres = thisUser[2];
+    print("decoded");
+    print(decoded);
 
-    // user's own tracks and artists
     if (userId == otherId) {
-      await storeTracksAndArtistsSelf(
-          userId, thisUserTracks, thisUserArtists, thisUserGenres);
-      return;
+      List<String> userColors = decoded["user_data"].where((element) => element["type"] == "color").map((e) => e["preference_id"]).toList().cast<String>();
+      print(userColors);
+      await storeColors(userId, userColors);
+    } else {
+      List<String> otherColors = decoded["req_user_data"].where((element) => element["type"] == "color").map((e) => e["preference_id"]).toList().cast<String>();
+      print(otherColors);
+      await storeColors(otherId, otherColors);
     }
-
-    List<dynamic> otherUser = separateArtistAndTrack(decoded["req_user_data"]);
-    List<Track> otherUserTracks = otherUser[0];
-    List<Artist> otherUserArtists = otherUser[1];
-    List<String> otherUserGenres = otherUser[2];
-
-    List<List<Track>> tracks = [thisUserTracks, otherUserTracks];
-    List<Track> commonTracks = tracks
-        .fold<Set<Track>>(
-            tracks.first.toSet(), (a, b) => a.intersection(b.toSet()))
-        .toList();
-
-    List<List<Artist>> artists = [thisUserArtists, otherUserArtists];
-    List<Artist> commonArtists = artists
-        .fold<Set<Artist>>(
-            artists.first.toSet(), (a, b) => a.intersection(b.toSet()))
-        .toList();
-
-    List<List<String>> genres = [thisUserGenres, otherUserGenres];
-    List<String> commonGenres = genres
-        .fold<Set<String>>(
-            genres.first.toSet(), (a, b) => a.intersection(b.toSet()))
-        .toList();
-
-    List<Track> otherTracks =
-        otherUserTracks.toSet().difference(commonTracks.toSet()).toList();
-    List<Artist> otherArtists =
-        otherUserArtists.toSet().difference(commonArtists.toSet()).toList();
-    List<String> otherGenres =
-        otherUserGenres.toSet().difference(commonGenres.toSet()).toList();
-
-    // save to hive
-    await storeTracksAndArtistsOther(userId, otherId, commonTracks, otherTracks,
-        commonArtists, otherArtists, commonGenres, otherGenres);
   } catch (err) {
     print(err);
   }
-}
-
-/// [tracks, artists, genres]
-List<List> separateArtistAndTrack(l) {
-  List<Track> tracks = [];
-  List<Artist> artists = [];
-  List<String> genres = [];
-  for (dynamic i in l) {
-    String name = i["name"];
-    var data = jsonDecode(i["raw_data"]);
-    if (i["type"] == "track") {
-      Track cur = Track(
-        name: name,
-        imageUrl: data["album"]["images"][2]["url"],
-        spotifyUrl: data["external_urls"]["spotify"],
-        albumName: data["album"]["name"],
-        artist: data["album"]["artists"][0]["name"],
-      );
-      tracks.add(cur);
-    } else if (i["type"] == "artist") {
-      Artist cur = Artist(
-        name: name,
-        imageUrl: data["images"][2]["url"],
-        spotifyUrl: data["external_urls"]["spotify"],
-        genre: data["genres"].join(', '),
-      );
-      artists.add(cur);
-    } else {
-      genres.add(name);
-    }
-  }
-  return [tracks, artists, genres];
 }

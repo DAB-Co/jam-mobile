@@ -165,8 +165,7 @@ class MessageProvider extends ChangeNotifier {
       navigatorKey.currentState?.pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => SelectColor(
-                wakeResult["user_preferences"],
-              wakeResult["available_preferences"],
+                wakeResult["user_preferences"]
             ),
           ),
           (Route<dynamic> route) => false);

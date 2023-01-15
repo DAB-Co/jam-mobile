@@ -13,9 +13,8 @@ import '../widgets/show_snackbar.dart';
 
 class SelectColor extends StatefulWidget {
   final List<dynamic> userColors;
-  final List<dynamic> availableColors;
 
-  SelectColor(this.userColors, this.availableColors);
+  SelectColor(this.userColors);
 
   @override
   _SelectColorState createState() => _SelectColorState();

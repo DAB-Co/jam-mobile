@@ -8,11 +8,11 @@ import 'package:jam/models/user.dart';
 import 'package:jam/network/delete_account.dart';
 import 'package:jam/network/top_preferences.dart';
 import 'package:jam/providers/user_provider.dart';
+import 'package:jam/util/util_functions.dart';
 import 'package:jam/util/validators.dart';
 import 'package:jam/widgets/alert.dart';
 import 'package:jam/widgets/form_widgets.dart';
 import 'package:jam/widgets/loading.dart';
-import 'package:jam/widgets/profile_lists.dart';
 import 'package:jam/widgets/profile_picture.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
@@ -98,12 +98,16 @@ class _ProfileState extends State<Profile> {
                                     final form = formKey.currentState!;
                                     if (form.validate()) {
                                       form.save();
-                                      String? result = await deleteAccountCall(userId, _password!);
+                                      String? result = await deleteAccountCall(
+                                          userId, _password!);
                                       if (result == null) {
                                         Navigator.pop(context);
-                                        showSnackBar(context, "Check your connection");
+                                        showSnackBar(
+                                            context, "Check your connection");
                                       } else if (result == "OK") {
-                                        Provider.of<UserProvider>(context, listen: false).logout();
+                                        Provider.of<UserProvider>(context,
+                                                listen: false)
+                                            .logout();
                                       } else {
                                         Navigator.pop(context);
                                         showSnackBar(context, result);
@@ -130,7 +134,7 @@ class _ProfileState extends State<Profile> {
     );
 
     topPreferencesCall(userId, user.token!, userId); // request from server
-    String boxName = tracksArtistsBoxName(userId, userId);
+    String colorBoxName = colorsBoxName(userId);
 
     return Scaffold(
       appBar: AppBar(
@@ -165,7 +169,7 @@ class _ProfileState extends State<Profile> {
                       Icons.language,
                       color: Colors.black,
                     ),
-                    title: const Text('Your languages'),
+                    title: const Text('Your Languages'),
                     onTap: () {
                       Navigator.pushNamed(context, chatLanguages);
                     },
@@ -176,7 +180,7 @@ class _ProfileState extends State<Profile> {
                       Icons.block,
                       color: Colors.red,
                     ),
-                    title: const Text('Blocked users'),
+                    title: const Text('Blocked Users'),
                     onTap: () {
                       Navigator.pushNamed(context, blockedUsers);
                     },
@@ -215,15 +219,46 @@ class _ProfileState extends State<Profile> {
                   ),
                   Divider(color: Colors.black),
                   FutureBuilder(
-                    future: openHiveBox(boxName),
+                    future: openHiveBox(colorBoxName),
                     builder: (context, snapshot) {
                       switch (snapshot.connectionState) {
                         case ConnectionState.none:
                         case ConnectionState.waiting:
-                          print("self profile future builder waiting");
+                          print("other profile future builder waiting");
                           return Center(child: CircularProgressIndicator());
                         default:
-                          return tracksArtistsListSelf(userId, userId, context);
+                          return ValueListenableBuilder(
+                            valueListenable:
+                                Hive.box(colorBoxName).listenable(),
+                            builder: (context, Box box, widget) {
+                              List<String> colors = box.get("colors");
+
+                              return Column(
+                                children: [
+                                  SizedBox(height: 20),
+                                  Text("Your Colors:"),
+                                  SizedBox(height: 20),
+                                  colors.length == 0
+                                      ? Text("No colors")
+                                      : ListView.separated(
+                                          shrinkWrap: true,
+                                          physics:
+                                              NeverScrollableScrollPhysics(),
+                                          itemBuilder: (context, index) =>
+                                              ListTile(
+                                                tileColor: fromHex(colors[index]),
+                                          ),
+                                          separatorBuilder: (context, index) =>
+                                              Divider(
+                                            color: Colors.grey,
+                                          ),
+                                          itemCount: colors.length,
+                                        ),
+                                  SizedBox(height: 20),
+                                ],
+                              );
+                            },
+                          );
                       }
                     },
                   ),
