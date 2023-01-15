@@ -85,35 +85,35 @@ class _ProfileOtherState extends State<ProfileOther> {
                     return Center(child: CircularProgressIndicator());
                   default:
                     return ValueListenableBuilder(
-                      valueListenable:
-                      Hive.box(colorBoxName).listenable(),
+                      valueListenable: Hive.box(colorBoxName).listenable(),
                       builder: (context, Box box, widget) {
-                        List<String> colors = box.get("colors");
-
-                        return Column(
-                          children: [
-                            SizedBox(height: 20),
-                            Text("$otherUsername's Colors:"),
-                            SizedBox(height: 20),
-                            colors.length == 0
-                                ? Text("No colors")
-                                : ListView.separated(
-                              shrinkWrap: true,
-                              physics:
-                              NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) =>
-                                  ListTile(
-                                    tileColor: fromHex(colors[index]),
-                                  ),
-                              separatorBuilder: (context, index) =>
-                                  Divider(
-                                    color: Colors.grey,
-                                  ),
-                              itemCount: colors.length,
-                            ),
-                            SizedBox(height: 20),
-                          ],
-                        );
+                        try {
+                          List<String> colors = box.get("colors");
+                          return Column(
+                            children: [
+                              SizedBox(height: 20),
+                              Text("$otherUsername's Colors:"),
+                              SizedBox(height: 20),
+                              colors.length == 0
+                                  ? Text("No colors")
+                                  : ListView.separated(
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemBuilder: (context, index) => ListTile(
+                                        tileColor: fromHex(colors[index]),
+                                      ),
+                                      separatorBuilder: (context, index) =>
+                                          Divider(
+                                        color: Colors.grey,
+                                      ),
+                                      itemCount: colors.length,
+                                    ),
+                              SizedBox(height: 20),
+                            ],
+                          );
+                        } catch (e) {
+                          return Center(child: CircularProgressIndicator());
+                        }
                       },
                     );
                 }
