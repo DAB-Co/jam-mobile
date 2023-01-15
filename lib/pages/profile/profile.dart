@@ -255,39 +255,42 @@ class _ProfileState extends State<Profile> {
                       switch (snapshot.connectionState) {
                         case ConnectionState.none:
                         case ConnectionState.waiting:
-                          print("other profile future builder waiting");
                           return Center(child: CircularProgressIndicator());
                         default:
                           return ValueListenableBuilder(
                             valueListenable:
                                 Hive.box(colorBoxName).listenable(),
                             builder: (context, Box box, widget) {
-                              List<String> colors = box.get("colors");
+                              try {
+                                List<String> colors = box.get("colors");
 
-                              return Column(
-                                children: [
-                                  SizedBox(height: 20),
-                                  Text("Your Colors:"),
-                                  SizedBox(height: 20),
-                                  colors.length == 0
-                                      ? Text("No colors")
-                                      : ListView.separated(
-                                          shrinkWrap: true,
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          itemBuilder: (context, index) =>
-                                              ListTile(
+                                return Column(
+                                  children: [
+                                    SizedBox(height: 20),
+                                    Text("Your Colors:"),
+                                    SizedBox(height: 20),
+                                    colors.length == 0
+                                        ? Text("No colors")
+                                        : ListView.separated(
+                                      shrinkWrap: true,
+                                      physics:
+                                      NeverScrollableScrollPhysics(),
+                                      itemBuilder: (context, index) =>
+                                          ListTile(
                                             tileColor: fromHex(colors[index]),
                                           ),
-                                          separatorBuilder: (context, index) =>
-                                              Divider(
+                                      separatorBuilder: (context, index) =>
+                                          Divider(
                                             color: Colors.grey,
                                           ),
-                                          itemCount: colors.length,
-                                        ),
-                                  SizedBox(height: 20),
-                                ],
-                              );
+                                      itemCount: colors.length,
+                                    ),
+                                    SizedBox(height: 20),
+                                  ],
+                                );
+                              } catch (e) {
+                                return Center(child: CircularProgressIndicator());
+                              }
                             },
                           );
                       }
