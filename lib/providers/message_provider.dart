@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
-import 'package:jam/config/routes.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/otherUser.dart';
@@ -19,6 +18,7 @@ import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
+import '../pages/select_color.dart';
 
 
 /* Hive functions are usually here
@@ -160,9 +160,15 @@ class MessageProvider extends ChangeNotifier {
       return;
     }
     if (wakeResult["user_preferences"].length == 0) {
-      // redirect to spotify login
-      navigatorKey.currentState?.pushNamedAndRemoveUntil(
-          selectColor, (Route<dynamic> route) => false);
+      // redirect to color selection screen
+      navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => SelectColor(
+                wakeResult["user_preferences"],
+              wakeResult["available_preferences"],
+            ),
+          ),
+          (Route<dynamic> route) => false);
       return;
     }
     else if (wakeResult["was_inactive"]) {

@@ -13,7 +13,6 @@ import 'package:jam/pages/profile/chat_language.dart';
 import 'package:jam/pages/profile/draw_yourself.dart';
 import 'package:jam/pages/profile/profile.dart';
 import 'package:jam/pages/profile/profile_pic_selection.dart';
-import 'package:jam/pages/select_color.dart';
 import 'package:jam/pages/spotify_login.dart';
 import 'package:jam/providers/message_provider.dart';
 import 'package:jam/providers/unread_message_counter.dart';
@@ -124,7 +123,6 @@ class MyApp extends StatelessWidget {
           routes.profilePicSelection: (context) => ProfilePicSelection(),
           routes.drawYourself: (context) => DrawYourself(),
           routes.forgotPassword: (context) => ForgotPassword(),
-          routes.selectColor: (context) => SelectColor(),
         },
         navigatorKey: navigatorKey,
       ),
