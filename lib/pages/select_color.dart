@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+import 'package:jam/network/update_color_prefs.dart';
+import 'package:provider/provider.dart';
 
+import '../config/routes.dart';
+import '../models/user.dart';
+import '../providers/user_provider.dart';
 import '../util/util_functions.dart';
 import '../widgets/form_widgets.dart';
 import '../widgets/goBackDialog.dart';
@@ -16,15 +21,15 @@ class SelectColor extends StatefulWidget {
   _SelectColorState createState() => _SelectColorState();
 }
 
-bool okVisible = false;
+bool okVisible = true;
+bool isLoading = false;
 
 class _SelectColorState extends State<SelectColor> {
   @override
   Widget build(BuildContext context) {
-    print("user colors: ${widget.userColors}");
-    print("available colors: ${widget.availableColors}");
+    User user = Provider.of<UserProvider>(context).user!;
 
-    if (!ModalRoute.of(context)!.isFirst) {
+    if (!ModalRoute.of(context)!.isFirst && widget.userColors.length == 0) {
       okVisible = false;
     }
 
@@ -71,6 +76,21 @@ class _SelectColorState extends State<SelectColor> {
         );
       }
       return true;
+    }
+
+    void done() async {
+      setState(() {
+        isLoading = true;
+      });
+      int success = await updateColorPrefs(user, widget.userColors.cast());
+      setState(() {
+        isLoading = false;
+      });
+      if (success != 1) {
+        showSnackBar(context, "Could not update colors, check your connection");
+        return;
+      }
+      Navigator.pushReplacementNamed(context, homepage);
     }
 
     return WillPopScope(
@@ -135,8 +155,8 @@ class _SelectColorState extends State<SelectColor> {
                     child: Column(
                       children: [
                         longButtons(
-                          "OK",
-                          () => print("pressed ok"),
+                          isLoading ? "Please Wait..." : "OK",
+                          done,
                           color: Colors.green,
                         ),
                         SizedBox(

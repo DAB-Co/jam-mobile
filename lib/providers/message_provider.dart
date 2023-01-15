@@ -159,6 +159,7 @@ class MessageProvider extends ChangeNotifier {
       showSnackBar(context, "Please Log In Again");
       return;
     }
+    print("user preferences: ${wakeResult["user_preferences"]}");
     if (wakeResult["user_preferences"].length == 0) {
       // redirect to color selection screen
       navigatorKey.currentState?.pushAndRemoveUntil(
