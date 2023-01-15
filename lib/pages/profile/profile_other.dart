@@ -93,7 +93,7 @@ class _ProfileOtherState extends State<ProfileOther> {
                         return Column(
                           children: [
                             SizedBox(height: 20),
-                            Text("Your Colors:"),
+                            Text("$otherUsername's Colors:"),
                             SizedBox(height: 20),
                             colors.length == 0
                                 ? Text("No colors")
