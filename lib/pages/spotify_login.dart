@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Redirected in wake API call
+// Not used anymore since matching is based on color instead of Spotify history
 
 class SpotifyLogin extends StatefulWidget {
   @override

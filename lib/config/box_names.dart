@@ -15,3 +15,7 @@ String tracksArtistsBoxName(String userId, String otherUserId) {
 String languagesBoxName(String userId) {
   return onlyASCII("languages:$userId");
 }
+
+String colorsBoxName(String userId) {
+  return onlyASCII("colors:$userId");
+}

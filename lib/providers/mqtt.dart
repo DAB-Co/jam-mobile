@@ -37,7 +37,7 @@ Future<String> getDeviceIdentifier() async {
 
   if (Platform.isAndroid) {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    deviceIdentifier = androidInfo.androidId!;
+    deviceIdentifier = androidInfo.id!;
   } else if (Platform.isIOS) {
     IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
     deviceIdentifier = iosInfo.identifierForVendor!;

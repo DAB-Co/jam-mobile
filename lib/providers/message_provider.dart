@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:jam/config/box_names.dart';
-import 'package:jam/config/routes.dart';
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/chat_pair_model.dart';
 import 'package:jam/models/otherUser.dart';
@@ -19,6 +18,8 @@ import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
+import '../pages/select_color.dart';
+
 
 /* Hive functions are usually here
   Hive boxes:
@@ -158,10 +159,16 @@ class MessageProvider extends ChangeNotifier {
       showSnackBar(context, "Please Log In Again");
       return;
     }
-    if (wakeResult["refresh_token_expired"]) {
-      // redirect to spotify login
-      navigatorKey.currentState?.pushNamedAndRemoveUntil(
-          spotifyLogin, (Route<dynamic> route) => false);
+    print("user preferences: ${wakeResult["user_preferences"]}");
+    if (wakeResult["user_preferences"].length == 0) {
+      // redirect to color selection screen
+      navigatorKey.currentState?.pushAndRemoveUntil(
+          MaterialPageRoute(
+            builder: (context) => SelectColor(
+                wakeResult["user_preferences"]
+            ),
+          ),
+          (Route<dynamic> route) => false);
       return;
     }
     else if (wakeResult["was_inactive"]) {

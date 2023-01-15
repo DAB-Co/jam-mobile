@@ -11,3 +11,4 @@ var spotifyLogin = "spotifyLogin"; // redirected in wake api call
 var chatLanguages = "chatLanguages";
 var profilePicSelection = "profilePicSelection";
 var drawYourself = "drawYourself";
+var selectColor = "selectColor";
