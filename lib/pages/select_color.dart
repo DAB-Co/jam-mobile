@@ -89,7 +89,7 @@ class _SelectColorState extends State<SelectColor> {
         showSnackBar(context, "Could not update colors, check your connection");
         return;
       }
-      Navigator.pushReplacementNamed(context, homepage);
+      Navigator.pushNamedAndRemoveUntil(context, homepage, (Route<dynamic> route) => false);
     }
 
     return WillPopScope(

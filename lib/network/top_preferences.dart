@@ -52,16 +52,11 @@ Future topPreferencesCall(
       await saveBigPicture(profilePic, otherId);
     }
 
-    print("decoded");
-    print(decoded);
-
     if (userId == otherId) {
       List<String> userColors = decoded["user_data"].where((element) => element["type"] == "color").map((e) => e["preference_id"]).toList().cast<String>();
-      print(userColors);
       await storeColors(userId, userColors);
     } else {
       List<String> otherColors = decoded["req_user_data"].where((element) => element["type"] == "color").map((e) => e["preference_id"]).toList().cast<String>();
-      print(otherColors);
       await storeColors(otherId, otherColors);
     }
   } catch (err) {

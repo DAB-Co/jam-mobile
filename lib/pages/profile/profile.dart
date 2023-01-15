@@ -17,6 +17,8 @@ import 'package:jam/widgets/profile_picture.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
 
+import '../select_color.dart';
+
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -175,6 +177,35 @@ class _ProfileState extends State<Profile> {
                     },
                   ),
                   Divider(color: Colors.grey),
+                  FutureBuilder(
+                    future: openHiveBox(colorBoxName),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          print("other profile future builder waiting");
+                          return Center(child: CircularProgressIndicator());
+                        default:
+                          return ListTile(
+                            leading: Icon(
+                              Icons.color_lens,
+                              color: Colors.black,
+                            ),
+                            title: const Text('Change Favorite Colors'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SelectColor(
+                                      Hive.box(colorBoxName).get("colors")),
+                                ),
+                              );
+                            },
+                          );
+                      }
+                    },
+                  ),
+                  Divider(color: Colors.grey),
                   ListTile(
                     leading: Icon(
                       Icons.block,
@@ -246,7 +277,7 @@ class _ProfileState extends State<Profile> {
                                               NeverScrollableScrollPhysics(),
                                           itemBuilder: (context, index) =>
                                               ListTile(
-                                                tileColor: fromHex(colors[index]),
+                                            tileColor: fromHex(colors[index]),
                                           ),
                                           separatorBuilder: (context, index) =>
                                               Divider(
