@@ -29,7 +29,9 @@ class _SelectColorState extends State<SelectColor> {
     User user = Provider.of<UserProvider>(context).user!;
 
     if (!ModalRoute.of(context)!.isFirst && widget.userColors.length == 0) {
-      okVisible = false;
+      setState(() {
+        okVisible = false;
+      });
     }
 
     Container _circleListItem(String hex) => Container(
