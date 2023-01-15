@@ -81,7 +81,6 @@ class _ProfileOtherState extends State<ProfileOther> {
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
-                    print("other profile future builder waiting");
                     return Center(child: CircularProgressIndicator());
                   default:
                     return ValueListenableBuilder(
