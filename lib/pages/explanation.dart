@@ -30,7 +30,7 @@ class Explanation extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    "\tWelcome to Jam! This is an app that helps people with same music taste get together via spotify. The matches are made daily at the same time for everyone so you won't get a match until midnight GMT. We will send a notification to remind you. Have fun!",
+                    "\tWelcome to Jam! This is an app that matches people with the same favorite colors. The matches are made daily at the same time for everyone so you won't get a match until midnight GMT. We will send a notification to remind you. Have fun!",
                     style: style,
                   ),
                 ],

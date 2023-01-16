@@ -3,6 +3,17 @@ import 'package:jam/config/box_names.dart';
 import 'package:jam/models/artist_model.dart';
 import 'package:jam/models/track_model.dart';
 
+Future storeColors(String userId, List<String> colors) async {
+  String boxName = colorsBoxName(userId);
+  var box;
+  if (!Hive.isBoxOpen(boxName)) {
+    box = await Hive.openBox(boxName);
+  } else {
+    box = Hive.box(boxName);
+  }
+  box.put("colors", colors);
+}
+
 Future storeTracksAndArtistsOther(
   String userId,
   String otherId,
