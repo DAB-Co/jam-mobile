@@ -42,7 +42,7 @@ android {
     defaultConfig {
         applicationId "com.overlap.jam"
         minSdkVersion 19
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         multiDexEnabled true
