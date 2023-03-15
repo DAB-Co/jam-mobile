@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jam/pages/dm.dart';
 import 'package:jam/pages/homepage.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../main.dart';
 
@@ -21,6 +22,18 @@ const NotificationDetails platformChannelSpecifics =
     NotificationDetails(android: androidPlatformChannelSpecifics);
 
 Future initNotifications() async {
+  bool notificationPermission = await Permission.notification.isGranted;
+  if (!notificationPermission) {
+    var askAgain = await Permission.notification.request();
+    if (askAgain.isDenied) {
+      await flutterLocalNotificationsPlugin.show(
+        0,
+        "welcome to jam",
+        null,
+        platformChannelSpecifics,
+      );
+    }
+  }
   // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
   const initializationSettingsAndroid = AndroidInitializationSettings(
       '@mipmap/ic_launcher'); // this doesn't work, there is no icon in notification
