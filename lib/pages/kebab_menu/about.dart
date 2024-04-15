@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatelessWidget {
@@ -20,26 +19,6 @@ class About extends StatelessWidget {
               Text(
                 "Jam",
                 style: TextStyle(fontSize: 50),
-              ),
-              FutureBuilder(future: PackageInfo.fromPlatform(),
-                builder: (context, AsyncSnapshot<PackageInfo> snapshot) {
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return Text("");
-                    default:
-                      if (snapshot.hasError)
-                        return Text('Error: ${snapshot.error}');
-                      else if (snapshot.data == null)
-                        return Text("");
-                      else {
-                        return Text(
-                          snapshot.data!.version,
-                          style: TextStyle(fontSize: 30),
-                        );
-                      }
-                  }
-                },
               ),
               SizedBox(height: 50),
               GestureDetector(
