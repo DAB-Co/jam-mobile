@@ -48,6 +48,7 @@ dependencies:
   flutter_image_compress: ^1.1.0
   uni_links: ^0.5.1
   flutter_material_pickers: ^3.3.0
+  permission_handler: ^10.2.0
 
 dev_dependencies:
   flutter_test:
