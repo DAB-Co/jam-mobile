@@ -33,6 +33,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
+    namespace "com.overlap.jam"
     compileSdkVersion 33
 
     sourceSets {
@@ -41,7 +42,7 @@ android {
 
     defaultConfig {
         applicationId "com.overlap.jam"
-        minSdkVersion 19
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 33
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
