@@ -209,7 +209,7 @@ class _HomepageState extends State<Homepage> {
     print("notification launched app: " + details.didNotificationLaunchApp.toString());
 
     if (details.didNotificationLaunchApp) {
-      String? payload = details.payload;
+      final String? payload = details.notificationResponse?.payload;
       if (payload != null && !checkedNotification) {
         print("payload: " + payload);
         checkedNotification = true;

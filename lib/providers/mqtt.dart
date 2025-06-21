@@ -101,14 +101,13 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
 
   _client.updates?.listen((List<MqttReceivedMessage<MqttMessage>> c) async {
     final MqttPublishMessage byteMessage = c[0].payload as MqttPublishMessage;
-    final payload = MqttEncoding().decoder.convert(byteMessage.payload.message);
+    // Decode the raw bytes into a Dart String:
+    final payload = AsciiPayloadConverter()
+        .convertFromBytes(byteMessage.payload.message);
+
+    final message = jsonDecode(payload);
 
     var topic = c[0].topic;
-
-    var message = jsonDecode(payload);
-    if (message == null) {
-      return;
-    }
 
     if (topic == "/${user.id}/devices/$clientId") {
       // see mqtt error documentation for handling these errors.

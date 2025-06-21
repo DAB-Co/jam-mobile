@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:jam/pages/dm.dart';
@@ -5,41 +7,52 @@ import 'package:jam/pages/homepage.dart';
 
 import '../main.dart';
 
-var flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+AndroidNotificationDetails(
   '3131',
   'Messages',
   channelDescription: 'Messages from other jammers',
   importance: Importance.max,
   priority: Priority.high,
   ticker: 'ticker',
-  icon: "@mipmap/ic_launcher",
+  icon: '@mipmap/ic_launcher',
 );
 const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+NotificationDetails(android: androidPlatformChannelSpecifics);
 
-Future initNotifications() async {
-  // initialise the plugin. app_icon needs to be a added as a drawable resource to the Android head project
-  const initializationSettingsAndroid = AndroidInitializationSettings(
-      '@mipmap/ic_launcher'); // this doesn't work, there is no icon in notification
-  final initializationSettingsIOS = IOSInitializationSettings();
-  final initializationSettingsMacOS = MacOSInitializationSettings();
+Future<void> initNotifications() async {
+  // Initialise the plugin. `app_icon` must be added as a drawable resource in Android project
+  const AndroidInitializationSettings initializationSettingsAndroid =
+  AndroidInitializationSettings('@mipmap/ic_launcher');
+
+  // iOS & macOS initialization
+  final DarwinInitializationSettings initializationSettingsDarwin =
+  DarwinInitializationSettings(
+    requestAlertPermission: true,
+    requestBadgePermission: true,
+    requestSoundPermission: true,
+  );
+
   final InitializationSettings initializationSettings = InitializationSettings(
     android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
-    macOS: initializationSettingsMacOS,
+    iOS: initializationSettingsDarwin,
+    macOS: initializationSettingsDarwin,
   );
+
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onSelectNotification: _selectNotification,
+    onDidReceiveNotificationResponse:
+        (NotificationResponse response) async {
+      _onSelectNotification(response.payload);
+    },
   );
 }
 
-void showNotification(String username, int id) async {
-  String title = "You have messages from $username";
-  String payload = id.toString() + " " + username;
+Future<void> showNotification(String username, int id) async {
+  final title = 'You have messages from $username';
+  final payload = '$id $username';
   await flutterLocalNotificationsPlugin.show(
     id,
     title,
@@ -49,48 +62,47 @@ void showNotification(String username, int id) async {
   );
 }
 
-/// Runs when tapped on notification
-Future<dynamic> _selectNotification(String? payload) async {
-  var details =
-      await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
-  print("selected notification");
-  if (details != null && payload != null) {
-    // payload = id + username
-    String id = payload.split(" ")[0];
-    String username = payload.split(" ")[1];
+/// Handles notification taps (foreground, background, or launch)
+Future<void> _onSelectNotification(String? payload) async {
+  final details =
+  await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+  if (details?.didNotificationLaunchApp == true && payload != null) {
+    final parts = payload.split(' ');
+    final id = parts.first;
+    final username = parts.sublist(1).join(' ');
+
     String? currentRoute;
     navigatorKey.currentState?.popUntil((route) {
       currentRoute = route.settings.name;
       return true;
     });
-    print("current route:");
-    print(currentRoute);
+
+    // If already on the same DM page, do nothing
     if (currentRoute != null) {
-      List<String> splitted = currentRoute!.split(" ");
-      if (splitted.length == 2) {
-        String f = splitted[0];
-        String currentId = splitted[1];
-        // check if already in same dm page
-        if (f == "dm" && currentId == id) return;
+      final splitted = currentRoute!.split(' ');
+      if (splitted.length == 2 && splitted[0] == 'dm' && splitted[1] == id) {
+        return;
       }
     }
+
+    // Navigate to home first
     navigatorKey.currentState?.pushAndRemoveUntil(
-        MaterialPageRoute(
-          builder: (context) => Homepage(
-            openedNotification: true,
-          ),
-        ),
-        (route) => false);
+      MaterialPageRoute(
+        builder: (context) => Homepage(openedNotification: true),
+      ),
+          (route) => false,
+    );
+
+    // Then open the DM
     navigatorKey.currentState?.push(
       MaterialPageRoute(
-        settings: RouteSettings(name: "dm " + id),
+        settings: RouteSettings(name: 'dm $id'),
         builder: (context) => DM(
           otherUsername: username,
           otherId: id,
         ),
       ),
     );
-  } else {
-    print("details null");
   }
 }
