@@ -1,9 +1,6 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:jam/models/chat_message_model.dart';
 import 'package:jam/models/user.dart';
 import 'package:jam/providers/message_provider.dart';
@@ -16,6 +13,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 
 import '../config/app_url.dart';
 import '../main.dart';
+import '../util/device_identifier.dart';
 
 MqttServerClient? client;
 late User user;
@@ -29,29 +27,6 @@ enum MessageTypes {
   text,
   picture,
   video,
-}
-
-Future<String> getDeviceIdentifier() async {
-  String deviceIdentifier = "unknown";
-  DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-
-  if (Platform.isAndroid) {
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    deviceIdentifier = androidInfo.id!;
-  } else if (Platform.isIOS) {
-    IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-    deviceIdentifier = iosInfo.identifierForVendor!;
-  } else if (kIsWeb) {
-    // The web doesnt have a device UID, so use a combination fingerprint as an example
-    WebBrowserInfo webInfo = await deviceInfo.webBrowserInfo;
-    deviceIdentifier = webInfo.vendor! +
-        webInfo.userAgent! +
-        webInfo.hardwareConcurrency.toString();
-  } else if (Platform.isLinux) {
-    LinuxDeviceInfo linuxInfo = await deviceInfo.linuxInfo;
-    deviceIdentifier = linuxInfo.machineId!;
-  }
-  return deviceIdentifier;
 }
 
 Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,

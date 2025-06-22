@@ -21,6 +21,7 @@ class AppUrl {
   static const String deleteAccount = apiUrl + "/delete_account";
   static const String changePassword = apiUrl + "/change_password";
   static const String updateColorPrefs = apiUrl + "/update_preferences";
+  static const String privacyPolicy = baseURL + "/";
 
   static const String suggestion = baseURL + "/suggestion";
 

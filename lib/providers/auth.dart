@@ -6,6 +6,7 @@ import 'package:http/http.dart';
 import 'package:jam/providers/mqtt.dart';
 
 import '../models/user.dart';
+import '../util/device_identifier.dart';
 import '/util/shared_preference.dart';
 import '../config/app_url.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
