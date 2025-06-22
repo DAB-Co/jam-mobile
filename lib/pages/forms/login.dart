@@ -1,10 +1,13 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:jam/widgets/app_bar.dart';
 import 'package:jam/widgets/inactive_dialog.dart';
 import 'package:jam/widgets/loading.dart';
 import 'package:jam/widgets/show_snackbar.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../../config/app_url.dart';
 import '/config/routes.dart' as routes;
 import '../../models/user.dart';
 import '/providers/auth.dart';
@@ -132,7 +135,58 @@ class _LoginState extends State<Login> {
                       ? loading("Authenticating ... Please wait")
                       : longButtons("Login", doLogin),
                   SizedBox(height: 5.0),
-                  forgotLabel
+                  forgotLabel,
+                  SizedBox(height: 30.0),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: 'By logging in, you agree to our ',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20.0,
+                      ),
+                      children: [
+                        TextSpan(
+                          text: 'Terms of Service',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              final url = Uri.parse(AppUrl.privacyPolicy); // Replace with actual URL
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(url, mode: LaunchMode.inAppBrowserView);
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                        ),
+                        TextSpan(
+                          text: ' and ',
+                        ),
+                        TextSpan(
+                          text: 'Privacy Policy',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () async {
+                              final url = Uri.parse(AppUrl.privacyPolicy); // Replace with actual URL
+                              if (await canLaunchUrl(url)) {
+                                await launchUrl(url, mode: LaunchMode.inAppBrowserView);
+                              } else {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                        ),
+                        TextSpan(
+                          text: '.',
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

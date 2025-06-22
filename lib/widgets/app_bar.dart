@@ -31,7 +31,6 @@ void handleThreeDotClick(String value) async {
       if (!await launchUrl(_url)) {
         throw 'Could not launch $_url';
       }
-
   }
 }
 
