@@ -12,7 +12,11 @@ import 'package:jam/util/time_until_match.dart';
 import 'package:jam/widgets/messages_list.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+import '../config/app_url.dart';
+import '../util/device_identifier.dart';
+import '../util/shared_preference.dart';
 import '/config/routes.dart' as routes;
 import '/providers/user_provider.dart';
 import "/util/greetings.dart";
@@ -35,14 +39,29 @@ class _HomepageState extends State<Homepage> {
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).user!;
 
-    void _handleThreeDotClick(String value) {
+    void _handleThreeDotClick(String value) async {
       switch (value) {
         case 'About':
-          Navigator.pushNamed(context, routes.about);
+          navigatorKey.currentState?.pushNamed(routes.about);
           break;
-        case "Contact Us":
-          Navigator.pushNamed(context, routes.contactUs);
+        case 'Privacy Policy':
+          final url = Uri.parse(AppUrl.privacyPolicy);
+          if (await canLaunchUrl(url)) {
+            await launchUrl(url, mode: LaunchMode.inAppBrowserView);
+          } else {
+            // Handle error appropriately
+            throw 'Could not launch $url';
+          }
           break;
+        case 'Help Center':
+          var deviceId = await getDeviceIdentifier();
+          User user = await UserPreferences().getUser();
+          String identifier = "${user.id}:$deviceId";
+          final Uri _url = Uri.parse("mailto:dabco5317@gmail.com?subject=Jam:$identifier");
+
+          if (!await launchUrl(_url)) {
+            throw 'Could not launch $_url';
+          }
       }
     }
 
@@ -100,7 +119,7 @@ class _HomepageState extends State<Homepage> {
           PopupMenuButton<String>(
             onSelected: _handleThreeDotClick,
             itemBuilder: (BuildContext context) {
-              return {"Contact Us", 'About'}.map((String choice) {
+              return {'About', 'Privacy Policy', 'Help Center'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
                   child: Text(choice),
@@ -209,7 +228,7 @@ class _HomepageState extends State<Homepage> {
     print("notification launched app: " + details.didNotificationLaunchApp.toString());
 
     if (details.didNotificationLaunchApp) {
-      String? payload = details.payload;
+      final String? payload = details.notificationResponse?.payload;
       if (payload != null && !checkedNotification) {
         print("payload: " + payload);
         checkedNotification = true;

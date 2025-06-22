@@ -1,7 +1,11 @@
 class AppUrl {
   static const int serverPort = 41370;
-  static const String baseURL = "https://rocketdodgegame.com:$serverPort"; // localhost: http://10.0.2.2
+  static const String baseURL = "https://lastlocation.app:$serverPort";
+  // static const String baseURL = "http://172.20.10.3:$serverPort";
   static const String apiUrl = baseURL + "/api";
+
+  static const String mqttURL = "lastlocation.app"; // this is just the ip or domain
+  static const int mqttPort = 41371;
 
   static const String login = apiUrl + "/auth";
   static const String register = apiUrl + "/signup";
@@ -17,12 +21,10 @@ class AppUrl {
   static const String deleteAccount = apiUrl + "/delete_account";
   static const String changePassword = apiUrl + "/change_password";
   static const String updateColorPrefs = apiUrl + "/update_preferences";
+  static const String privacyPolicy = baseURL + "/";
 
   static const String suggestion = baseURL + "/suggestion";
 
   static const String spotifyUrlStart = baseURL + "/spotify/login";
   static const String spotifyUrlEnd = baseURL + "/spotify/callback";
-
-  static const String mqttURL = "rocketdodgegame.com";
-  static const int mqttPort = 41371;
 }
