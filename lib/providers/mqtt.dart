@@ -61,8 +61,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
   unreadProvider = _unreadProvider;
   var username = user.username!;
   var password = user.token;
-  // msgProvider.init is moved to homepage future builder
-  // await msgProvider.init(unreadProvider, user, context);
+  await msgProvider.init(unreadProvider, user, context);
   provider = msgProvider;
   MqttServerClient _client =
       MqttServerClient.withPort(AppUrl.mqttURL, username, AppUrl.mqttPort);
@@ -76,7 +75,7 @@ Future<MqttServerClient> connect(User _user, MessageProvider _msgProvider,
   _client.onSubscribeFail = onSubscribeFail;
   _client.pongCallback = pong;
   _client.autoReconnect = true;
-  _client.secure = true;
+  _client.secure = false;
 
   var deviceId = await getDeviceIdentifier();
   print("deviceId: " + deviceId);

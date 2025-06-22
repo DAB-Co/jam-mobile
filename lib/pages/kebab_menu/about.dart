@@ -25,7 +25,7 @@ class About extends StatelessWidget {
                 onTap: _launchEmail,
                 child: FittedBox(
                   child: Text(
-                    "overlapco0@gmail.com",
+                    "dabco5317@gmail.com",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 30,

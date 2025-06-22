@@ -1,10 +1,10 @@
 class AppUrl {
-  static const int serverPort = 41370;
+  static const int serverPort = 41369;
   // static const String baseURL = "https://rocketdodgegame.com:$serverPort";
-  static const String baseURL = "http://172.30.48.1:$serverPort";
+  static const String baseURL = "http://172.20.10.3:$serverPort";
   static const String apiUrl = baseURL + "/api";
 
-  static const String mqttURL = "rocketdodgegame.com";
+  static const String mqttURL = "172.20.10.3"; // this is just the ip or domain
   static const int mqttPort = 41371;
 
   static const String login = apiUrl + "/auth";
