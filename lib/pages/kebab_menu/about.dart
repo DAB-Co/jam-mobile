@@ -43,7 +43,7 @@ class About extends StatelessWidget {
   }
 
   void _launchEmail() async {
-    var _url = "mailto:overlapco0@gmail.com?subject=Jam";
+    var _url = "mailto:dabco5317@gmail.com?subject=Jam";
     if (!await launch(_url)) throw 'Could not launch $_url';
   }
 }
